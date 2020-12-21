@@ -5,6 +5,13 @@ using System.Windows.Controls;
 
 namespace MvvmCharting
 {
+    /// <summary>
+    /// An ItemsControl which can notify when the ItemTemplate is
+    /// Applied by the ItemContainer it generated for each item, so
+    /// the owner of the ItemsControl could see the root element in
+    /// the ItemTemplate when it is applied.
+    /// See <see cref="NotifyTemplateAppliedPresenter"/>
+    /// </summary>
     internal class ItemsControlEx : ItemsControl
     {
         public event Action<object, DependencyObject> ItemTemplateApplied;
@@ -19,7 +26,6 @@ namespace MvvmCharting
 
         private void ItemContainerTemplateApplied(object arg1, DependencyObject root)
         {
-            //Debug.WriteLine(this.Name + $"  ItemsControlEx: arg1={arg1},  root={root} !!!");
             this.ItemTemplateApplied?.Invoke(this, root);
         }
     }

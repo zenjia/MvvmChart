@@ -7,6 +7,9 @@ using System.Windows.Shapes;
 
 namespace MvvmCharting
 {
+    /// <summary>
+    /// Represents the scatter dot on the the series Chart.
+    /// </summary>
     public class DataPoint: Control
     {
         static DataPoint()
@@ -30,8 +33,6 @@ namespace MvvmCharting
         public static readonly DependencyProperty FillProperty = Shape.FillProperty.AddOwner(typeof(DataPoint), new PropertyMetadata(Brushes.Blue));
 
 
-
-
         public Style PointStyle
         {
             get { return (Style)GetValue(PointStyleProperty); }
@@ -40,15 +41,13 @@ namespace MvvmCharting
         public static readonly DependencyProperty PointStyleProperty =
             DependencyProperty.Register("PointStyle", typeof(Style), typeof(DataPoint), new PropertyMetadata(null));
 
-
-
-
-
         protected virtual Point GetOffsetForSizeChangedOverride(Size newSize)
         {
-      
-            
-            return default(Point);//new Point(-newSize.Width / 2, -newSize.Height / 2);
+            // The center of EllipseGeometry is (0,0) be default, so it does not need any offset.
+            return default(Point);
+
+            // But if it is an Ellipse of other Shape, then there should be an offset.
+            //return new Point(-newSize.Width / 2, -newSize.Height / 2);
         }
 
         private void ItemPoint_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -97,6 +96,7 @@ namespace MvvmCharting
             {
                 return;
             }
+
 
             var pt = new Point(this.Position.X + this.Offset.X, this.Position.Y + this.Offset.Y);  
               

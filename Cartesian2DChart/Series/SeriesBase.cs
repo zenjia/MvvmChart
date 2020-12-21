@@ -19,6 +19,9 @@ using System.Windows.Shapes;
 
 namespace MvvmCharting
 {
+    /// <summary>
+    /// The base class for all series.
+    /// </summary>
     [TemplatePart(Name = "PART_DataPointItemsControl", Type = typeof(ItemsControlEx))]
     public abstract class SeriesBase : Control
     {
@@ -135,16 +138,16 @@ namespace MvvmCharting
           
             LoadItemPointViewModels(null, this.ItemsSource);
 
-            if (oldValue is INotifyCollectionChanged)
+            if (oldValue is INotifyCollectionChanged oldItemsSource)
             {
-                
+                WeakEventManager<INotifyCollectionChanged, NotifyCollectionChangedEventArgs>
+                    .AddHandler(oldItemsSource, "CollectionChanged", SeriesBase_CollectionChanged);
             }
 
-            if (newValue is INotifyCollectionChanged)
+            if (newValue is INotifyCollectionChanged newItemsSource)
             {
-                //todo: weak event
-                ((INotifyCollectionChanged)newValue).CollectionChanged += SeriesBase_CollectionChanged;
-                
+                 WeakEventManager<INotifyCollectionChanged, NotifyCollectionChangedEventArgs>
+                     .AddHandler(newItemsSource, "CollectionChanged", SeriesBase_CollectionChanged);
             }
         }
 

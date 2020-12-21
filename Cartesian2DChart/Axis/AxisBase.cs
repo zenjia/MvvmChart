@@ -16,7 +16,10 @@ namespace MvvmCharting.Axis
 {
 
     /// <summary>
-    /// numeric(DateTime), linear axis
+    /// The base class for XAxis and YAxis.
+    /// It is basically a numeric, linear axis, and can't handle category data type.
+    /// It can handle DateTime data type by converting it to double type and back using System.Convert.
+    /// Also, user can provide their own customized converters to customize Text of the labels of axis.
     /// </summary>
     [TemplatePart(Name = "PART_AxisItemsControl", Type = typeof(ItemsControlEx))]
     public abstract class AxisBase : Control
@@ -155,29 +158,36 @@ namespace MvvmCharting.Axis
 
         private static void OnAxisOwnerPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((AxisBase)d).OnOwnerChanged();
+            ((AxisBase)d).OnOwnerChanged((IAxisOwner)e.OldValue, (IAxisOwner)e.NewValue);
         }
 
 
 
-        protected virtual void OnOwnerChanged()
+        protected virtual void OnOwnerChanged(IAxisOwner oldValue, IAxisOwner newValue)
         {
-
-            if (this.Owner == null)
+            if (oldValue!=null)
             {
-                return;
+                this.Owner.PaddingChanged -= Owner_PaddingChanged;
+                this.Owner.BorderThicknessChanged -= Owner_BorderThicknessChanged;
+                this.Owner.MarginChanged -= Owner_MarginChanged;
+            }
+
+            Debug.Assert(this.Owner == newValue);
+            if (newValue != null)
+            {
+                SynchronizePadding();
+                SynchronizeBorderThickness();
+                SynchronizeMargin();
+
+                UpdateActualValues();
+
+                newValue.PaddingChanged += Owner_PaddingChanged;
+                newValue.BorderThicknessChanged += Owner_BorderThicknessChanged;
+                newValue.MarginChanged += Owner_MarginChanged;
             }
 
 
-            SynchronizePadding();
-            SynchronizeBorderThickness();
-            SynchronizeMargin();
 
-            UpdateActualValues();
-
-            this.Owner.PaddingChanged += Owner_PaddingChanged; //should be weak??
-            this.Owner.BorderThicknessChanged += Owner_BorderThicknessChanged;
-            this.Owner.MarginChanged += Owner_MarginChanged;
         }
 
         private void Owner_PaddingChanged(Thickness newPadding)
@@ -239,7 +249,6 @@ namespace MvvmCharting.Axis
 
         protected void OnChartPlotAreaRangeChanged(Range newRange)
         {
-           
             UpdateActualValues();
         }
 

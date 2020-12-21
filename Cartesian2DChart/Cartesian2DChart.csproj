@@ -93,6 +93,7 @@
     <Compile Include="Series\specific\GeometryBuilders\PolylineAreaGeometryBuilder.cs" />
     <Compile Include="Series\specific\GeometryBuilders\PolyLineGeometryBuilder.cs" />
     <Compile Include="Series\specific\GeometryBuilders\StepLineGeometryBuilder.cs" />
+    <Compile Include="Series\specific\IGeometryBuilder.cs" />
     <Compile Include="Series\specific\PathSeries.cs" />
     <Compile Include="Series\specific\PolyLineAreaSeries.cs" />
     <Compile Include="Series\specific\PolyLineSeries.cs" />

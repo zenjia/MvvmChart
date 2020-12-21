@@ -46,12 +46,16 @@ namespace MvvmCharting
     }
 
 
-
+    /// <summary>
+    /// A Cartesian 2D Chart, which can displays a list of series(with item points).
+    /// This is the host for almost everything: series plot area,
+    /// x axis & y axis, grid lines, cross hair...
+    /// </summary>
+    [TemplatePart(Name = "PART_Root", Type = typeof(Grid))]
+    [TemplatePart(Name = "PART_PlotAreaRoot", Type = typeof(Grid))]
     [TemplatePart(Name = "PART_HorizontalGridLineItemsControl", Type = typeof(ItemsControlEx))]
     [TemplatePart(Name = "PART_VerticalGridLineItemsControl", Type = typeof(ItemsControlEx))]
     [TemplatePart(Name = "PART_SeriesItemsControl", Type = typeof(ItemsControlEx))]
-    [TemplatePart(Name = "PART_PlotAreaRoot", Type = typeof(Grid))]
-
     [TemplatePart(Name = "PART_HorizontalCrossHair", Type = typeof(Line))]
     [TemplatePart(Name = "PART_VerticalCrossHair", Type = typeof(Line))]
     public class SeriesChart : Control, IXAxisOwner, IYAxisOwner
@@ -228,14 +232,16 @@ namespace MvvmCharting
 
         private void OnSeriesItemsSourceChanged(IList oldValue, IList newValue)
         {
-            if (oldValue is INotifyCollectionChanged)
+            if (oldValue is INotifyCollectionChanged oldItemsSource)
             {
-
+                WeakEventManager<INotifyCollectionChanged, NotifyCollectionChangedEventArgs>
+                    .RemoveHandler(oldItemsSource, "CollectionChanged", SeriesItemsSource_CollectionChanged);
             }
 
-            if (newValue is INotifyCollectionChanged)
+            if (newValue is INotifyCollectionChanged newItemsSource)
             {
-                ((INotifyCollectionChanged)newValue).CollectionChanged += SeriesItemsSource_CollectionChanged;
+                WeakEventManager<INotifyCollectionChanged, NotifyCollectionChangedEventArgs>
+                    .AddHandler(newItemsSource, "CollectionChanged", SeriesItemsSource_CollectionChanged);
             }
 
         }
@@ -445,8 +451,8 @@ namespace MvvmCharting
             if (this._seriesDictionary.ContainsKey(item))
             {
                 var old = this._seriesDictionary[item];
-                old.XRangeChanged += Sr_XRangeChanged;
-                old.YRangeChanged += Sr_YRangeChanged;
+                old.XRangeChanged -= Sr_XRangeChanged;
+                old.YRangeChanged -= Sr_YRangeChanged;
                 this._seriesDictionary.Remove(item);
             }
 

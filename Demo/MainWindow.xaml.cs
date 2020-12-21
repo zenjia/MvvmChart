@@ -20,15 +20,13 @@ namespace Demo
 
         public MainWindow()
         {
-           
+            this.DemoDataViewModel = (DemoDataViewModel)Application.Current.Resources["GlobalDemoDataViewModel"];
             InitializeComponent();
 
-            this.DemoDataViewModel = (DemoDataViewModel)Application.Current.Resources["GlobalDemoDataViewModel"];
+           
         }
 
 
 
-
- 
     }
 }

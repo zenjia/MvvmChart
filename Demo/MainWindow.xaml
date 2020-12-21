@@ -30,10 +30,10 @@
 
 
 
-
         <StackPanel Grid.Row="1">
             <CheckBox Content="ShowSeriesLine" IsChecked="{Binding Source={StaticResource GlobalDemoDataViewModel}, Path=ShowSeriesLine, Mode=TwoWay}"/>
             <CheckBox Content="ShowSeriesPoint" IsChecked="{Binding Source={StaticResource GlobalDemoDataViewModel}, Path=ShowSeriesPoints, Mode=TwoWay}"/>
+
         </StackPanel>
 
 

@@ -15,21 +15,21 @@
        
 
         <DataTemplate x:Key="SeriesTemplate2" DataType="local:SomePointList">
-            <mvvmCharting:PolyLineAreaSeries IndependentValueProperty="t"
+            <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
                                              DependentValueProperty="Y"
                                              Stroke="CadetBlue"
                                              StrokeThickness="1.5"
-                                             Fill="CornflowerBlue"
                                              Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
                                              IsSeriesPointsVisible="{Binding ShowSeriesPoints}"
                                              IsSeriesLineVisible="{Binding ShowSeriesLine}"
                                              ItemsSource="{Binding DataList}">
-                <mvvmCharting:PolyLineAreaSeries.PointDataTemplate>
+                <mvvmCharting:PolyLineSeries.PointDataTemplate>
                     <DataTemplate>
-                        <mvvmCharting:DataPoint Fill="Goldenrod" />
+                        <mvvmCharting:DataPoint Fill="Goldenrod" Width="10" Height="10"
+                                                Opacity="0.3"/>
                     </DataTemplate>
-                </mvvmCharting:PolyLineAreaSeries.PointDataTemplate>
-            </mvvmCharting:PolyLineAreaSeries>
+                </mvvmCharting:PolyLineSeries.PointDataTemplate>
+            </mvvmCharting:PolyLineSeries>
 
         </DataTemplate>
 
@@ -46,7 +46,7 @@
         </DataTemplate>
 
         <DataTemplate x:Key="SeriesTemplate0" DataType="local:SomePointList">
-            <mvvmCharting:PathSeries IndependentValueProperty="t"
+            <mvvmCharting:SplineSeries IndependentValueProperty="t"
                                      DependentValueProperty="Y"
                                      Stroke="Green"
                                      StrokeThickness="1.5"
@@ -54,7 +54,7 @@
                                      IsSeriesPointsVisible="{Binding ShowSeriesPoints}"
                                      IsSeriesLineVisible="{Binding ShowSeriesLine}"
                                      ItemsSource="{Binding DataList}">
-            </mvvmCharting:PathSeries>
+            </mvvmCharting:SplineSeries>
         </DataTemplate>
 
     

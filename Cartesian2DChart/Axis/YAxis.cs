@@ -50,10 +50,20 @@ namespace MvvmCharting.Axis
             return ((IYAxisOwner)this.Owner)?.PlotAreaYDataRange ?? Range.Empty;
         }
 
-        protected override void OnOwnerChanged()
+        protected override void OnOwnerChanged(IAxisOwner oldValue, IAxisOwner newValue)
         {
-            base.OnOwnerChanged();
-            ((IYAxisOwner)this.Owner).PlotAreaYRangeChanged += OnChartPlotAreaRangeChanged;
+            base.OnOwnerChanged(oldValue, newValue);
+
+            if (oldValue != null)
+            {
+                ((IYAxisOwner)oldValue).PlotAreaYRangeChanged -= OnChartPlotAreaRangeChanged;
+            }
+
+            if (newValue != null)
+            {
+                ((IYAxisOwner)newValue).PlotAreaYRangeChanged += OnChartPlotAreaRangeChanged;
+            }
+
         }
 
         protected override void SynchronizePadding()

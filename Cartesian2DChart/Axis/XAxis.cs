@@ -52,10 +52,19 @@ namespace MvvmCharting.Axis
         }
 
 
-        protected override void OnOwnerChanged()
+        protected override void OnOwnerChanged(IAxisOwner oldValue, IAxisOwner newValue)
         {
-            base.OnOwnerChanged();
-            ((IXAxisOwner)this.Owner).PlotAreaXRangeChanged += OnChartPlotAreaRangeChanged;
+            base.OnOwnerChanged(oldValue, newValue);
+
+            if (oldValue !=null)
+            {
+                ((IXAxisOwner)oldValue).PlotAreaXRangeChanged -= OnChartPlotAreaRangeChanged;
+            }
+
+            if (newValue != null)
+            {
+                ((IXAxisOwner)newValue).PlotAreaXRangeChanged += OnChartPlotAreaRangeChanged;
+            }
 
         }
 

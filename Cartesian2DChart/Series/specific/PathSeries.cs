@@ -6,11 +6,6 @@ using System.Windows.Shapes;
 
 namespace MvvmCharting
 {
-    public interface IGeometryBuilder
-    {
-        Geometry GetGeometry(Point[] points);
-    }
-
     /// <summary>
     /// PathSeries just use a Path to draw the series.
     /// This is the generic series type which can be customized to create almost any shape.

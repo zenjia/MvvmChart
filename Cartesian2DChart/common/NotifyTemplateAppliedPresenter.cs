@@ -10,6 +10,11 @@ using System.Windows.Media;
 
 namespace MvvmCharting
 {
+    /// <summary>
+    /// A ContentPresenter that can notify when its Template is applied and expose
+    /// its template child(the root child of it).
+    /// This will be used as the ItemContainer for <see cref="ItemsControlEx"/>.
+    /// </summary>
     internal class NotifyTemplateAppliedPresenter : ContentPresenter
     {
         internal event Action<object, DependencyObject> ItemContainerTemplateApplied;
