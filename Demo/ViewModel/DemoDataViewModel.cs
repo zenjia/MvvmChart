@@ -49,9 +49,11 @@ namespace Demo
             this.ItemsSourceList = new ObservableCollection<SomePointList>();
 
             var first = new SomePointList(0);
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < 50; i++)
             {
-                var pt = new SomePoint(i * 10 + 5 * this._random.NextDouble(), i * 3 + this._random.Next(30));
+                var v = i / 1.0;
+                var y =  Math.Abs(v) < 1e-10 ? 1 : Math.Sin(v) / v;
+                var pt = new SomePoint(v, y);
                 first.DataList.Add(pt);
             }
 
@@ -60,7 +62,7 @@ namespace Demo
             for (int i = 1; i < 3; i++)
             {
                 var list = new SomePointList(i);
-                double yOffset = i * 10;
+                double yOffset = i * 0.5;
                 foreach (var item in first.DataList)
                 {
                     list.DataList.Add(new SomePoint(item.t, item.Y + yOffset));
@@ -70,7 +72,8 @@ namespace Demo
             }
 
 
-
+        
+          
 
 
         }

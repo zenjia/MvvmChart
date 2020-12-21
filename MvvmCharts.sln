@@ -7,6 +7,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cartesian2DChart", "Cartesi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{02960B4D-ACC3-4B6D-93D6-E578F33655E0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "image", "image", "{9B48EA17-0DD6-4CC3-8653-D8AC364EE532}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\OneDrive\2020工作\areaWithDot.PNG = ..\..\..\OneDrive\2020工作\areaWithDot.PNG
+		..\..\..\OneDrive\2020工作\areaWithoutDot.PNG = ..\..\..\OneDrive\2020工作\areaWithoutDot.PNG
+		..\..\..\OneDrive\2020工作\withdot2.PNG = ..\..\..\OneDrive\2020工作\withdot2.PNG
+		..\..\..\OneDrive\2020工作\withoutdot2.PNG = ..\..\..\OneDrive\2020工作\withoutdot2.PNG
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -26,7 +26,7 @@
                 <mvvmCharting:PolyLineSeries.PointDataTemplate>
                     <DataTemplate>
                         <mvvmCharting:DataPoint Fill="Goldenrod" Width="10" Height="10"
-                                                Opacity="0.3"/>
+                                                Opacity="0.5"/>
                     </DataTemplate>
                 </mvvmCharting:PolyLineSeries.PointDataTemplate>
             </mvvmCharting:PolyLineSeries>
@@ -72,8 +72,7 @@
                               SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource GlobalDemoDataViewModel}}">
  
         <mvvmCharting:SeriesChart.XAxis>
-            <axis:XAxis x:Name="XAxis"  
-                        TickInterval="10"/>
+            <axis:XAxis x:Name="XAxis"  />
         </mvvmCharting:SeriesChart.XAxis>
 
         <mvvmCharting:SeriesChart.YAxis>
