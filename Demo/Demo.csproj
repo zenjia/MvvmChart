@@ -112,5 +112,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\areaWithDot.PNG" />
+    <Resource Include="Images\areaWithoutDot.PNG" />
+    <Resource Include="Images\withdot2.PNG" />
+    <Resource Include="Images\withoutdot2.PNG" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
