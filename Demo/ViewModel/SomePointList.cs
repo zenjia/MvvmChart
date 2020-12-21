@@ -3,12 +3,18 @@ using MvvmCharting;
 
 namespace Demo
 {
-    public class SomeSeries: BindableBase
+    public class SomePointList: BindableBase
     {
         public int Index { get;  }
 
-        public ObservableCollection<SomePoint> ItemsSource { get; }
+        public ObservableCollection<SomePoint> DataList { get; }
 
+        private bool _isVisible=true;
+        public bool IsVisible
+        {
+            get { return _isVisible; }
+            set { SetProperty(ref _isVisible, value); }
+        }
 
         private bool _showSeriesLine = true;
         public bool ShowSeriesLine
@@ -24,10 +30,10 @@ namespace Demo
             set { SetProperty(ref _showSeriesPoints, value); }
         }
 
-        public SomeSeries(int index)
+        public SomePointList(int index)
         {
             this.Index = index;
-            this.ItemsSource = new ObservableCollection<SomePoint>();
+            this.DataList = new ObservableCollection<SomePoint>();
           
         }
     }

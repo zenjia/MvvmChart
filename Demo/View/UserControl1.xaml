@@ -7,40 +7,58 @@
              xmlns:mvvmCharting="clr-namespace:MvvmCharting;assembly=Cartesian2DChart"
              xmlns:axis="clr-namespace:MvvmCharting.Axis;assembly=Cartesian2DChart"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" 
+             d:DesignWidth="800">
     <UserControl.Resources>
-        <DataTemplate x:Key="SeriesTemplate0" DataType="local:SomeSeries">
-            <mvvmCharting:LineSeries IndependentValueProperty="t"
-                                     DependentValueProperty="Y"
-                                     Stroke="CadetBlue"
-                                     StrokeThickness="1.5"
-                                     IsSeriesPointsVisible="{Binding ShowSeriesPoints}"
-                                     IsSeriesLineVisible="{Binding ShowSeriesLine}"
-                                     ItemsSource="{Binding ItemsSource}"/>
+        <mvvmCharting:PolylineAreaGeometryBuilder x:Key="PolylineAreaGeometryBuilder"/>
+        <mvvmCharting:PolyLineGeometryBuilder x:Key="PolyLineGeometryBuilder"/>
+       
+
+        <DataTemplate x:Key="SeriesTemplate2" DataType="local:SomePointList">
+            <mvvmCharting:PolyLineAreaSeries IndependentValueProperty="t"
+                                             DependentValueProperty="Y"
+                                             Stroke="CadetBlue"
+                                             StrokeThickness="1.5"
+                                             Fill="CornflowerBlue"
+                                             Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
+                                             IsSeriesPointsVisible="{Binding ShowSeriesPoints}"
+                                             IsSeriesLineVisible="{Binding ShowSeriesLine}"
+                                             ItemsSource="{Binding DataList}">
+                <mvvmCharting:PolyLineAreaSeries.PointDataTemplate>
+                    <DataTemplate>
+                        <mvvmCharting:DataPoint Fill="Goldenrod" />
+                    </DataTemplate>
+                </mvvmCharting:PolyLineAreaSeries.PointDataTemplate>
+            </mvvmCharting:PolyLineAreaSeries>
 
         </DataTemplate>
 
-        <DataTemplate x:Key="SeriesTemplate1" DataType="local:SomeSeries">
+        <DataTemplate x:Key="SeriesTemplate1" DataType="local:SomePointList">
             <mvvmCharting:StepLineSeries IndependentValueProperty="t"
                                          DependentValueProperty="Y"
                                          Stroke="Red"
                                          StrokeThickness="1.5"
+                                         Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
                                          IsSeriesPointsVisible="{Binding ShowSeriesPoints}"
                                          IsSeriesLineVisible="{Binding ShowSeriesLine}"
-                                         ItemsSource="{Binding ItemsSource}"/>
+                                         ItemsSource="{Binding DataList}"/>
 
         </DataTemplate>
 
-        <DataTemplate x:Key="SeriesTemplate2" DataType="local:SomeSeries">
-            <mvvmCharting:CanonicalSplineSeries IndependentValueProperty="t"
-                                                DependentValueProperty="Y"
-                                                Stroke="Green"
-                                                StrokeThickness="1.5"
-                                                IsSeriesPointsVisible="{Binding ShowSeriesPoints}"
-                                                IsSeriesLineVisible="{Binding ShowSeriesLine}"
-                                                ItemsSource="{Binding ItemsSource}"/>
-
+        <DataTemplate x:Key="SeriesTemplate0" DataType="local:SomePointList">
+            <mvvmCharting:PathSeries IndependentValueProperty="t"
+                                     DependentValueProperty="Y"
+                                     Stroke="Green"
+                                     StrokeThickness="1.5"
+                                     Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
+                                     IsSeriesPointsVisible="{Binding ShowSeriesPoints}"
+                                     IsSeriesLineVisible="{Binding ShowSeriesLine}"
+                                     ItemsSource="{Binding DataList}">
+            </mvvmCharting:PathSeries>
         </DataTemplate>
+
+    
+
 
         <local:SeriesTemplateSelector x:Key="SeriesTemplateSelector"
                                       DataTemplate0="{StaticResource SeriesTemplate0}"
@@ -55,7 +73,7 @@
  
         <mvvmCharting:SeriesChart.XAxis>
             <axis:XAxis x:Name="XAxis"  
-                        TickInterval="1"/>
+                        TickInterval="10"/>
         </mvvmCharting:SeriesChart.XAxis>
 
         <mvvmCharting:SeriesChart.YAxis>

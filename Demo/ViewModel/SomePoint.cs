@@ -4,13 +4,15 @@ namespace Demo
 {
     public class SomePoint : BindableBase
     {
-        public int t { get; }
-        public int Y { get; }
+        public double t { get; }
+        public double Y { get; }
 
-        public SomePoint(int t, int y)
+        public SomePoint(double t, double y)
         {
             this.t = t;
             this.Y = y;
         }
+
+        
     }
 }

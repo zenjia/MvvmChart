@@ -5,10 +5,13 @@
     xmlns:axis="clr-namespace:MvvmCharting.Axis">
 
     <Style TargetType="local:DataPoint">
+        <Setter Property="Width" Value="5"/>
+        <Setter Property="Height" Value="5"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:DataPoint">
-                    <Path Fill="Blue" Opacity="0.9">
+                    <Path Fill="{TemplateBinding Fill}" 
+                          Style="{TemplateBinding PointStyle}">
                         <Path.Data>
                             <EllipseGeometry 
                                 RadiusX="5"
@@ -27,16 +30,20 @@
 
     <BooleanToVisibilityConverter x:Key="b2v"/>
 
-    <Style TargetType="local:LineSeries">
+    <local:BezierGeometryBuilder x:Key="BezierGeometryBuilder"/>
+
+    <Style TargetType="local:PathSeries">
         <Setter Property="PointDataTemplate" Value="{StaticResource DefaultItemPointDataTemplate}"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:LineSeries">
+                <ControlTemplate TargetType="local:PathSeries">
                     <Grid>
-                        <Polyline Points="{TemplateBinding PointCollection}"
-                                      Stroke="{TemplateBinding Stroke}"
-                                      StrokeThickness="{TemplateBinding StrokeThickness}"
-                                      Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsSeriesLineVisible, Converter={StaticResource b2v}}"/>
+                        <Path x:Name="PART_Path"
+                              Data="{TemplateBinding PathData}"
+                              Stroke="{TemplateBinding Stroke}"
+                              Fill="{TemplateBinding Fill}"
+                              StrokeThickness="{TemplateBinding StrokeThickness}"
+                              Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsSeriesLineVisible, Converter={StaticResource b2v}}"/>
 
                         <local:ItemsControlEx x:Name="PART_DataPointItemsControl"
                                               ItemsSource="{TemplateBinding DataPointViewModels}"
@@ -55,63 +62,6 @@
         </Setter>
     </Style>
 
-
-    <Style TargetType="local:StepLineSeries">
-        <Setter Property="PointDataTemplate" Value="{StaticResource DefaultItemPointDataTemplate}"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:StepLineSeries">
-                    <Grid>
-                        <Polyline Points="{TemplateBinding PointCollection}"
-                                  Stroke="{TemplateBinding Stroke}"
-                                  StrokeThickness="{TemplateBinding StrokeThickness}"
-                                  Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsSeriesLineVisible, Converter={StaticResource b2v}}"/>
-
-                        <local:ItemsControlEx x:Name="PART_DataPointItemsControl"
-                                                     ItemsSource="{TemplateBinding DataPointViewModels}"
-                                                     ItemTemplate="{TemplateBinding PointDataTemplate}"
-                                                     ItemTemplateSelector="{TemplateBinding PointDataTemplateSelector}"
-                                                     Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsSeriesPointsVisible, Converter={StaticResource b2v}}">
-                            <local:ItemsControlEx.Template>
-                                <ControlTemplate TargetType="local:ItemsControlEx">
-                                    <Canvas IsItemsHost="True"/>
-                                </ControlTemplate>
-                            </local:ItemsControlEx.Template>
-                        </local:ItemsControlEx>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style TargetType="local:CanonicalSplineSeries">
-        <Setter Property="PointDataTemplate" Value="{StaticResource DefaultItemPointDataTemplate}"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:CanonicalSplineSeries">
-                    <Grid>
-                        <local:CanonicalSpline Tension="{TemplateBinding SplineTension}"
-                                               Points="{TemplateBinding PointCollection}"
-                                               Stroke="{TemplateBinding Stroke}"
-                                               StrokeThickness="{TemplateBinding StrokeThickness}"
-                                               Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsSeriesLineVisible, Converter={StaticResource b2v}}"/>
-
-                        <local:ItemsControlEx x:Name="PART_DataPointItemsControl"
-                                              ItemsSource="{TemplateBinding DataPointViewModels}"
-                                              ItemTemplate="{TemplateBinding PointDataTemplate}"
-                                              ItemTemplateSelector="{TemplateBinding PointDataTemplateSelector}"
-                                              Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsSeriesPointsVisible, Converter={StaticResource b2v}}">
-                            <local:ItemsControlEx.Template>
-                                <ControlTemplate TargetType="local:ItemsControlEx">
-                                    <Canvas IsItemsHost="True"/>
-                                </ControlTemplate>
-                            </local:ItemsControlEx.Template>
-                        </local:ItemsControlEx>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
 
     <axis:DefaultAxisValueConverter x:Key="DefaultAxisValueConverter"/>
 

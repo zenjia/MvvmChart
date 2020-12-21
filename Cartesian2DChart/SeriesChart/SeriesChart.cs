@@ -125,8 +125,8 @@ namespace MvvmCharting
             OnYAxisPropertyChanged(null, this.YAxis);
             OnPlotAreaBackgroundPropertyChanged(null, this.PlotAreaBackground);
 
-            this.PART_HorizontalCrossHair = (Line)GetTemplateChild("PART_HorizontalCrossHair");
-            this.PART_VerticalCrossHair = (Line)GetTemplateChild("PART_VerticalCrossHair");
+            this.PART_HorizontalCrossHair = (Line)GetTemplateChild(sPART_HorizontalCrossHair);
+            this.PART_VerticalCrossHair = (Line)GetTemplateChild(sPART_VerticalCrossHair);
 
             this.PART_PlotAreaRoot.MouseMove += PART_PlotAreaRoot_MouseMove;
             this.PART_PlotAreaRoot.MouseLeave += PART_PlotAreaRoot_MouseLeave;
@@ -424,6 +424,12 @@ namespace MvvmCharting
 
         private void SeriesItemTemplateApplied(object sender, DependencyObject root)
         {
+            if (root == null)
+            {
+                //if the ItemTemplate of an ItemsControl is null, then the ItemContainer
+                //it generated will contains nothing. We just simply ignore this situation.
+                return;
+            }
 
             var sr = root as SeriesBase;
             if (sr == null)
@@ -433,14 +439,15 @@ namespace MvvmCharting
 
             var item = sr.DataContext;
 
+            //If the ItemTemplate or ItemTemplateSelector of an ItemsControl is replaced, then its
+            //ItemContainer will re-apply its Template(i.e. ItemTemplate), which will regenerate
+            //the TemplateChild of its ItemContainer. We should check this and remove the old.
             if (this._seriesDictionary.ContainsKey(item))
             {
                 var old = this._seriesDictionary[item];
                 old.XRangeChanged += Sr_XRangeChanged;
                 old.YRangeChanged += Sr_YRangeChanged;
                 this._seriesDictionary.Remove(item);
-
-                //throw new Cartesian2DChartException("The ItemTemplate of an ItemsControl should only be applied once!");
             }
 
             this._seriesDictionary.Add(item, sr);

@@ -93,6 +93,31 @@ namespace MvvmCharting
         public static readonly DependencyProperty IsSeriesLineVisibleProperty =
             DependencyProperty.Register("IsSeriesLineVisible", typeof(bool), typeof(SeriesBase), new PropertyMetadata(true));
 
+        public Brush Stroke
+        {
+            get { return (Brush)GetValue(StrokeProperty); }
+            set { SetValue(StrokeProperty, value); }
+        }
+        public static readonly DependencyProperty StrokeProperty =
+            Shape.StrokeProperty.AddOwner(typeof(SeriesBase));
+
+        public double StrokeThickness
+        {
+            get { return (double)GetValue(StrokeThicknessProperty); }
+            set { SetValue(StrokeThicknessProperty, value); }
+        }
+
+        public static readonly DependencyProperty StrokeThicknessProperty =
+            Shape.StrokeThicknessProperty.AddOwner(typeof(SeriesBase), new PropertyMetadata(1.0));
+
+        public Brush Fill
+        {
+            get { return (Brush)GetValue(FillProperty); }
+            set { SetValue(FillProperty, value); }
+        }
+        public static readonly DependencyProperty FillProperty =
+            Shape.FillProperty.AddOwner(typeof(SeriesBase));
+      
 
 
         private static void OnPointItemsSourcePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -240,8 +265,9 @@ namespace MvvmCharting
                 }
             }
 
-
-            OnItemPointViewModelsChanged();
+            UpdateSeriesRange();
+            UpdatePointsPosition();
+            UpdateShape();
         }
 
         private void UpdatePointsPosition()
@@ -267,19 +293,16 @@ namespace MvvmCharting
                 dpvm.Position = new Point((pt.X - this.PlotAreaXDataRange.Min) * xUnit - 1, (pt.Y - this.PlotAreaYDataRange.Min) * yUnit - 1);
             }
 
-            OnPointsPositionUpdated();
+  
+            UpdateShape();
         }
 
-        protected virtual void OnPointsPositionUpdated()
-        {
-            //
-        }
+       
 
-        protected virtual void OnItemPointViewModelsChanged()
-        {
-            UpdateSeriesRange();
-            UpdatePointsPosition();
-        }
+
+  
+        protected abstract void UpdateShape();
+ 
 
 
 

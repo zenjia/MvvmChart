@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using MvvmCharting;
 
 namespace Demo
@@ -7,7 +8,7 @@ namespace Demo
     public class DemoDataViewModel : BindableBase
     {
         private readonly Random _random = new Random();
-        public ObservableCollection<SomeSeries> ItemsSourceList { get; }
+        public ObservableCollection<SomePointList> ItemsSourceList { get; }
 
         private bool _showSeriesLine = true;
         public bool ShowSeriesLine
@@ -45,19 +46,32 @@ namespace Demo
 
         public DemoDataViewModel()
         {
-            this.ItemsSourceList = new ObservableCollection<SomeSeries>();
+            this.ItemsSourceList = new ObservableCollection<SomePointList>();
 
-            for (int i = 0; i < 3; i++)
+            var first = new SomePointList(0);
+            for (int i = 0; i < 15; i++)
             {
-                var ls = new SomeSeries(i);
-                for (int j = 1; j <= 15; j++)
+                var pt = new SomePoint(i * 10 + 5 * this._random.NextDouble(), i * 3 + this._random.Next(30));
+                first.DataList.Add(pt);
+            }
+
+            this.ItemsSourceList.Add(first);
+
+            for (int i = 1; i < 3; i++)
+            {
+                var list = new SomePointList(i);
+                double yOffset = i * 10;
+                foreach (var item in first.DataList)
                 {
-                    var pt = new SomePoint(j, this._random.Next(i * 10, (i + 1) * 50));
-                    ls.ItemsSource.Add(pt);
+                    list.DataList.Add(new SomePoint(item.t, item.Y + yOffset));
                 }
 
-                this.ItemsSourceList.Add(ls);
+                ItemsSourceList.Add(list);
             }
+
+
+
+
 
         }
     }

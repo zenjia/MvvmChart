@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace MvvmCharting
 {
@@ -19,10 +21,33 @@ namespace MvvmCharting
             this.SizeChanged += ItemPoint_SizeChanged;
         }
 
-        
+        public Brush Fill
+        {
+            get { return (Brush)GetValue(FillProperty); }
+            set { SetValue(FillProperty, value); }
+        }
+
+        public static readonly DependencyProperty FillProperty = Shape.FillProperty.AddOwner(typeof(DataPoint), new PropertyMetadata(Brushes.Blue));
+
+
+
+
+        public Style PointStyle
+        {
+            get { return (Style)GetValue(PointStyleProperty); }
+            set { SetValue(PointStyleProperty, value); }
+        }
+        public static readonly DependencyProperty PointStyleProperty =
+            DependencyProperty.Register("PointStyle", typeof(Style), typeof(DataPoint), new PropertyMetadata(null));
+
+
+
+
 
         protected virtual Point GetOffsetForSizeChangedOverride(Size newSize)
         {
+      
+            
             return default(Point);//new Point(-newSize.Width / 2, -newSize.Height / 2);
         }
 

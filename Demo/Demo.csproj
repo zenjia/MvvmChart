@@ -58,7 +58,7 @@
     </ApplicationDefinition>
     <Compile Include="ViewModel\DemoDataViewModel.cs" />
     <Compile Include="ViewModel\SomePoint.cs" />
-    <Compile Include="ViewModel\SomeSeries.cs" />
+    <Compile Include="ViewModel\SomePointList.cs" />
     <Compile Include="View\UserControl1.xaml.cs">
       <DependentUpon>UserControl1.xaml</DependentUpon>
     </Compile>

@@ -5,6 +5,7 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
 
+        <BooleanToVisibilityConverter x:Key="t2v"/>
         <local:DemoDataViewModel x:Key="GlobalDemoDataViewModel"/>
          
     </Application.Resources>

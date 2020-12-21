@@ -4,8 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Demo"
-        xmlns:mvvmCharting="clr-namespace:MvvmCharting;assembly=Cartesian2DChart"
-        xmlns:axis="clr-namespace:MvvmCharting.Axis;assembly=Cartesian2DChart"
         mc:Ignorable="d"
         x:Name="root"
         Title="MainWindow" Height="750" Width="900">
