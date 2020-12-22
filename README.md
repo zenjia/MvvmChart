@@ -16,7 +16,7 @@ MvvmChart is a simple, MVVM support and highly customizable chart control for WP
 ![PolyLineAreaSeries with item point](https://github.com/zenjia/MvvmChart/blob/master/Demo/Images/areaWithDot.PNG)
 
 ## How to use
-###Quick start:
+### Quick start:
     First define some view models:
 ```c#
     public class SomePoint
@@ -57,7 +57,7 @@ MvvmChart is a simple, MVVM support and highly customizable chart control for WP
 
     </mvvmCharting:SeriesChart>
 ```
-## Advance usages:
+### Advance usages:
 MvvmChart support lots of advanced feature, such as:
 * SeriesDataTemplateSelector support;
 * Series style is highly customizable; 
