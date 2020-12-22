@@ -78,7 +78,22 @@ For example:
         }
     }
 ```
-Here is a screenshort for DateTimeOffset XAxis data:
+and set the converter to the LabelTextConverter property of Axis:
+```xaml
+    <mvvmCharting:SeriesChart SeriesDataTemplate="{StaticResource SeriesTemplate}"
+                              SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource TimeSeriesViewModel}}">
+
+        <mvvmCharting:SeriesChart.XAxis>
+            <axis:XAxis LabelTextConverter="{StaticResource DoubleToDateTimeStringConverter}"/>
+        </mvvmCharting:SeriesChart.XAxis>
+
+        <mvvmCharting:SeriesChart.YAxis>
+            <axis:YAxis/>
+        </mvvmCharting:SeriesChart.YAxis>
+
+    </mvvmCharting:SeriesChart>
+```
+Here is a screenshort from the DateTimeOffset XAxis demo:
 
 ![DateTimeOffset XAxis demo](https://github.com/zenjia/MvvmChart/blob/master/Demo/Images/DateTime.PNG)
 
