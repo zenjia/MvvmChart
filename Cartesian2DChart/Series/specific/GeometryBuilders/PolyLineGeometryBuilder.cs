@@ -29,13 +29,13 @@ namespace MvvmCharting
 
         internal static Geometry CreateGeometry(PointCollection pointCollection)
         {
-            PathGeometry path_geometry = new PathGeometry();
+            var path_geometry = new PathGeometry();
 
-            PolyLineSegment aa = new PolyLineSegment();
-            aa.Points = pointCollection;
+            var polyLineSegment = new PolyLineSegment();
+            polyLineSegment.Points = pointCollection;
 
-            PathFigure figure = new PathFigure();
-            figure.Segments.Add(aa);
+            var figure = new PathFigure();
+            figure.Segments.Add(polyLineSegment);
 
             path_geometry.Figures.Add(figure);
 

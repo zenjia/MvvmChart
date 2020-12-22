@@ -4,6 +4,9 @@ using System.Windows.Data;
 
 namespace MvvmCharting.Axis
 {
+    /// <summary>
+    /// Default double to string converter for AxisLabelText.
+    /// </summary>
     public class DefaultDoubleToAxisLabelTextConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

@@ -15,7 +15,6 @@ namespace MvvmCharting
     internal class ItemsControlEx : ItemsControl
     {
         public event Action<object, DependencyObject> ItemTemplateApplied;
- 
 
         protected override DependencyObject GetContainerForItemOverride()
         {

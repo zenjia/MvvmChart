@@ -9,11 +9,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <mvvmCharting:PolylineAreaGeometryBuilder x:Key="PolylineAreaGeometryBuilder"/>
-        <mvvmCharting:PolyLineGeometryBuilder x:Key="PolyLineGeometryBuilder"/>
-
-
-        <DataTemplate x:Key="SeriesTemplate2" DataType="local:SomePointList">
+ 
+        <DataTemplate x:Key="SeriesTemplate0" DataType="local:SomePointList">
             <mvvmCharting:PolyLineAreaSeries IndependentValueProperty="t"
                                              DependentValueProperty="Y"
                                              Fill="Blue"
@@ -37,7 +34,6 @@
                                              DependentValueProperty="Y"
                                              Fill="Red"
                                              Opacity="0.4"
- 
                                              Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
                                              IsSeriesPointsVisible="{Binding ShowSeriesPoints}"
                                              IsSeriesLineVisible="{Binding ShowSeriesLine}"
@@ -45,16 +41,16 @@
 
         </DataTemplate>
 
-        <DataTemplate x:Key="SeriesTemplate0" DataType="local:SomePointList">
-            <mvvmCharting:StepLineAreaSeries IndependentValueProperty="t"
-                                             DependentValueProperty="Y"
-                                             Fill="Green"
-                                             Opacity="0.6"
-                                             Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
-                                             IsSeriesPointsVisible="{Binding ShowSeriesPoints}"
-                                             IsSeriesLineVisible="{Binding ShowSeriesLine}"
-                                             ItemsSource="{Binding DataList}">
-            </mvvmCharting:StepLineAreaSeries>
+        <DataTemplate x:Key="SeriesTemplate2" DataType="local:SomePointList">
+            <mvvmCharting:SplineAreaSeries IndependentValueProperty="t"
+                                           DependentValueProperty="Y"
+                                           Fill="Green"
+                                           Opacity="0.6"
+                                           Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
+                                           IsSeriesPointsVisible="{Binding ShowSeriesPoints}"
+                                           IsSeriesLineVisible="{Binding ShowSeriesLine}"
+                                           ItemsSource="{Binding DataList}">
+            </mvvmCharting:SplineAreaSeries>
         </DataTemplate>
 
 

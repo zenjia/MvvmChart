@@ -430,10 +430,10 @@ namespace MvvmCharting
 
         private void SeriesItemTemplateApplied(object sender, DependencyObject root)
         {
-            if (root == null)
+            if (root == null || root is TextBlock)
             {
-                //if the ItemTemplate of an ItemsControl is null, then the ItemContainer
-                //it generated will contains nothing. We just simply ignore this situation.
+                //if the ItemTemplate of an ItemsControl is null, it will use the default ItemTemplate
+                //which will create an TextBlock. We just simply ignore this situation.
                 return;
             }
 

@@ -6,53 +6,12 @@ using System.Windows.Media;
 
 namespace MvvmCharting
 {
-
     /// <summary>
     /// Source: http://csharphelper.com/blog/2019/04/draw-a-smooth-curve-in-wpf-and-c/
     /// </summary>
     public class BezierGeometryBuilder : IGeometryBuilder
-    {
-        // Make a Path holding a series of Bezier curves.
-        // The points parameter includes the points to visit
-        // and the control points.
-        private PathGeometry MakeBezierPath(Point[] points)
-        {
-            // Add a PathGeometry.
-            PathGeometry path_geometry = new PathGeometry();
-
-            
-            // Create a PathFigure.
-            PathFigure path_figure = new PathFigure();
-            path_geometry.Figures.Add(path_figure);
-
-            // Start at the first point.
-            path_figure.StartPoint = points[0];
-
-            // Create a PathSegmentCollection.
-            PathSegmentCollection path_segment_collection =
-                new PathSegmentCollection();
-            path_figure.Segments = path_segment_collection;
-
-            // Add the rest of the points to a PointCollection.
-            PointCollection point_collection =
-                new PointCollection(points.Length - 1);
-            for (int i = 1; i < points.Length; i++)
-                point_collection.Add(points[i]);
-
-            // Make a PolyBezierSegment from the points.
-            PolyBezierSegment bezier_segment = new PolyBezierSegment();
-            bezier_segment.Points = point_collection;
-            
-            // Add the PolyBezierSegment to othe segment collection.
-            path_segment_collection.Add(bezier_segment);
-
-            path_figure.Freeze();
-
-            return path_geometry;
-        }
-
-        // Make an array containing Bezier curve points and control points.
-        private Point[] MakeCurvePoints(Point[] points, double tension)
+    {        // Make an array containing Bezier curve points and control points.
+        public static Point[] MakeCurvePoints(Point[] points, double tension)
         {
             if (points.Length < 2)
             {
@@ -101,6 +60,69 @@ namespace MvvmCharting
             // Return the points.
             return result_points.ToArray();
         }
+
+
+        // Make a BezierPathFigure holding a series of Bezier curves.
+        // The points parameter includes the points to visit
+        // and the control points.
+        public static PathFigure MakeBezierPathFigure(Point[] points, bool drawArea=false)
+        {
+            // Create a PathFigure.
+            PathFigure path_figure = new PathFigure();
+
+            var startPoint = drawArea ? new Point(points[0].X, 0): points[0]; 
+            path_figure.StartPoint = startPoint;
+          
+            var pathSegmentCollection = new PathSegmentCollection();
+
+            if (drawArea)
+            {
+                var lineSegment = new LineSegment(points[0], false);
+                pathSegmentCollection.Add(lineSegment);
+            }
+             
+            var pointCollection = new PointCollection(points.Length - 1);
+            for (int i = 1; i < points.Length; i++)
+                pointCollection.Add(points[i]);
+             
+            var bezierSegment = new PolyBezierSegment();
+            bezierSegment.Points = pointCollection;
+
+            // Add the PolyBezierSegment to othe segment collection.
+            pathSegmentCollection.Add(bezierSegment);
+
+            if (drawArea)
+            {
+                int j = points.Length - 1;
+                var lineSegment = new LineSegment(new Point(points[j].X, 0), false);
+                pathSegmentCollection.Add(lineSegment);
+            }
+
+            path_figure.Segments = pathSegmentCollection;
+
+            return path_figure;
+        }
+
+
+
+
+        // Make a Path holding a series of Bezier curves.
+        // The points parameter includes the points to visit
+        // and the control points.
+        private PathGeometry MakeBezierPath(Point[] points)
+        {
+            // Add a PathGeometry.
+            PathGeometry path_geometry = new PathGeometry();
+            
+            // Create a PathFigure.
+            PathFigure path_figure = MakeBezierPathFigure(points);
+            path_figure.Freeze();
+
+            path_geometry.Figures.Add(path_figure);
+
+            return path_geometry;
+        }
+
 
         public double Tension { get; set; } = 0.4;
 

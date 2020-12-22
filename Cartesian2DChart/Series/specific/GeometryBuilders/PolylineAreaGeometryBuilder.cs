@@ -6,7 +6,7 @@ namespace MvvmCharting
 {
     public class PolylineAreaGeometryBuilder : IGeometryBuilder
     {
-        public Geometry GetGeometry(Point[] points)
+        public static Geometry CreateGeometry(Point[] points)
         {
             Point[] arr = new Point[points.Length + 2];
             arr[0] = new Point(points[0].X, 0);
@@ -16,6 +16,11 @@ namespace MvvmCharting
                 arr[i + 1] = points[i];
             }
             return PolyLineGeometryBuilder.CreateGeometry(arr, true);
+        }
+
+        public Geometry GetGeometry(Point[] points)
+        {
+            return CreateGeometry(points);
         }
     }
 }
