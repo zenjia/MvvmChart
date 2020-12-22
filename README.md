@@ -59,10 +59,10 @@ MvvmChart is a simple, MVVM support and highly customizable chart control for WP
 ```
 ### Advance usages:
 MvvmChart support lots of advanced feature, such as:
-* SeriesDataTemplateSelector support;
+* **SeriesDataTemplateSelector** support;
 * Series style is highly customizable; 
-* ItemPoint Style customization support;
-* Axis: Label text ValueConverter & Explicit axis ticks;
-* Besides the several default series types, users can create almost any series thay want just by implementing IGeometryBuilder interface and pass it to the GeometryBuilder property of PathSeries.
+* **ItemPoint** Style customization support;
+* Axis: label text **ValueConverter** & explicit axis ticks;
+* Besides the several default series types, users can create almost any series thay want just by implementing **IGeometryBuilder** interface and pass it to the **GeometryBuilder** property of **PathSeries**.
 
-To see the samples, please run the demo app(more samples will be added soon).
+To see the samples, please run the **demo** app(more samples will be added soon). 
