@@ -95,7 +95,7 @@ and set the converter to the LabelTextConverter property of Axis:
 ```
 Here is a screenshort from the DateTimeOffset XAxis demo:
 
-![DateTimeOffset XAxis demo](https://github.com/zenjia/MvvmChart/blob/master/Demo/Images/DateTime.PNG)
+![DateTimeOffset XAxis demo](https://github.com/zenjia/MvvmChart/blob/master/Demo/Images/DateTimeDemo.PNG)
 
 ### Advance usages:
 MvvmChart support lots of advanced feature, such as:
