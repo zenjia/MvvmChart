@@ -1,5 +1,5 @@
 # MvvmChart
-MvvmChart is a simple, MVVM support and highly customizable chart control for WPF(and UWP soon).
+MvvmChart is a simple, MVVM support and highly customizable chart control for WPF(and UWP soon).\<br>
 ![](https://img.shields.io/badge/license-MIT-green)![](https://img.shields.io/badge/support-WPF-brightgreen)
 
 ## Features
