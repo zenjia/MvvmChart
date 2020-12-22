@@ -12,7 +12,5 @@ namespace Demo
             this.t = t;
             this.Y = y;
         }
-
-        
     }
 }

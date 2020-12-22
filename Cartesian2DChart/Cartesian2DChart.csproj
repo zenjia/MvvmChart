@@ -92,12 +92,14 @@
     <Compile Include="Series\specific\GeometryBuilders\BezierPathBuilder.cs" />
     <Compile Include="Series\specific\GeometryBuilders\PolylineAreaGeometryBuilder.cs" />
     <Compile Include="Series\specific\GeometryBuilders\PolyLineGeometryBuilder.cs" />
+    <Compile Include="Series\specific\GeometryBuilders\StepLineAreaGeometryBuilder.cs" />
     <Compile Include="Series\specific\GeometryBuilders\StepLineGeometryBuilder.cs" />
     <Compile Include="Series\specific\IGeometryBuilder.cs" />
     <Compile Include="Series\specific\PathSeries.cs" />
     <Compile Include="Series\specific\PolyLineAreaSeries.cs" />
     <Compile Include="Series\specific\PolyLineSeries.cs" />
     <Compile Include="Series\specific\SplineSeries.cs" />
+    <Compile Include="Series\specific\StepLineAreaSeries.cs" />
     <Compile Include="Series\specific\StepLineSeries.cs" />
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>

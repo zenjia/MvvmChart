@@ -1,17 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Demo
 {
@@ -33,29 +22,17 @@ namespace Demo
             switch (obj.Index)
             {
                 case 0:
-                    return DataTemplate0;
+                    return this.DataTemplate0;
                 case 1:
-                    return DataTemplate1;
+                    return this.DataTemplate1;
                 case 2:
-                    return DataTemplate2;
+                    return this.DataTemplate2;
  
 
                 default:
                     throw new IndexOutOfRangeException();
             }
 
-        }
-    }
-
-    /// <summary>
-    /// Interaction logic for UserControl1.xaml
-    /// </summary>
-    public partial class UserControl1 : UserControl
-    {
-        public DemoDataViewModel DemoDataViewModel { get; }
-        public UserControl1()
-        {
-            InitializeComponent();
         }
     }
 }

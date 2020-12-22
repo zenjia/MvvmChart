@@ -56,12 +56,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="View\SeriesTemplateDemoView.xaml.cs">
+      <DependentUpon>SeriesTemplateDemoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AreaSeriesDemoView.xaml.cs">
+      <DependentUpon>AreaSeriesDemoView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\DemoDataViewModel.cs" />
     <Compile Include="ViewModel\SomePoint.cs" />
     <Compile Include="ViewModel\SomePointList.cs" />
-    <Compile Include="View\UserControl1.xaml.cs">
-      <DependentUpon>UserControl1.xaml</DependentUpon>
+    <Compile Include="View\LineSeriesDemoView.xaml.cs">
+      <DependentUpon>LineSeriesDemoView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\SeriesTemplateSelector.cs" />
+    <Page Include="View\SeriesTemplateDemoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AreaSeriesDemoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -74,7 +89,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\UserControl1.xaml">
+    <Page Include="View\LineSeriesDemoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -5,6 +5,7 @@ namespace MvvmCharting
 {
     public class StepLineGeometryBuilder : IGeometryBuilder
     {
+        
         public Geometry GetGeometry(Point[] points)
         {
             PointCollection pc = new PointCollection();
@@ -21,4 +22,6 @@ namespace MvvmCharting
  
         }
     }
+
+
 }
