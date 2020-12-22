@@ -1,11 +1,11 @@
 # MvvmChart
-MvvMChart is a simple, MvvM support and highly customizable chart control for WPF(and UWP soon).
+MvvmChart is a simple, MVVM support and highly customizable chart control for WPF(and UWP soon).
 ![](https://img.shields.io/badge/license-MIT-green)![](https://img.shields.io/badge/support-WPF-brightgreen)
 
 ## Features
 * Very lightweighted;
-* Highly MvvM support;
-* Currently support line series( PolylineSeries, StepLineSeres, SplineSeries) and area series(PolylineAreaSeries, StepLineArea) with or without item point;
+* Highly MVVM support(probably the most important feature of MvvmChart);
+* Currently support line series(PolylineSeries, StepLineSeres, SplineSeries) and area series(PolylineAreaSeries, StepLineArea) with or without item points;
 * Highly customizable;
 * Currently only suport WPF(UWP support will be added soon).
 
@@ -15,7 +15,8 @@ MvvMChart is a simple, MvvM support and highly customizable chart control for WP
 ![PolyLineAreaSeries without item point](https://github.com/zenjia/MvvmChart/blob/master/Demo/Images/areaWithoutDot.PNG)
 ![PolyLineAreaSeries with item point](https://github.com/zenjia/MvvmChart/blob/master/Demo/Images/areaWithDot.PNG)
 
-## Quick start
+## How to use
+###Quick start:
     First define some view models:
 ```c#
     public class SomePoint
@@ -42,7 +43,7 @@ MvvMChart is a simple, MvvM support and highly customizable chart control for WP
  ```
   Finally create a SeriesChart and reference the DataTemplate:
  ```Xaml    
-        <mvvmCharting:SeriesChart Background="Bisque"
+    <mvvmCharting:SeriesChart Background="Bisque"
                               SeriesDataTemplate="{StaticResource SeriesTemplate1}"
                               SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource GlobalDemoDataViewModel}}">
 
@@ -56,3 +57,12 @@ MvvMChart is a simple, MvvM support and highly customizable chart control for WP
 
     </mvvmCharting:SeriesChart>
 ```
+## Advance usages:
+MvvmChart support lots of advanced feature, such as:
+* SeriesDataTemplateSelector support;
+* Series style is highly customizable; 
+* ItemPoint Style customization support;
+* Axis: Label text ValueConverter & Explicit axis ticks;
+* Besides the several default series types, users can create almost any series thay want just by implementing IGeometryBuilder interface and pass it to the GeometryBuilder property of PathSeries.
+
+To see the samples, please run the demo app(more samples will be added soon).
