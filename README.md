@@ -1,13 +1,13 @@
 # MvvmChart
-MvvmChart is a simple, MVVM support and highly customizable chart control for WPF(and UWP soon).\<br>
+MvvmChart is a simple, MVVM support and highly customizable chart control for WPF(and UWP soon).</br>
 ![](https://img.shields.io/badge/license-MIT-green)![](https://img.shields.io/badge/support-WPF-brightgreen)
 
 ## Features
-* Very lightweighted;
-* Highly MVVM support(probably the most important feature of MvvmChart);
+* Very **lightweighted**;
+* Highly **MVVM** support(probably the most important feature of MvvmChart);
 * Currently support line series(PolylineSeries, StepLineSeres, SplineSeries) and area series(PolylineAreaSeries, StepLineArea) with or without item points;
 * Highly customizable;
-* Currently only suport WPF(UWP support will be added soon).
+* Currently only suport **WPF**(**UWP** support will be added soon).
 
 ## Screenshots
 ![PolyLineSeries, StepLineSeries& SplineSeries without item point](https://github.com/zenjia/MvvmChart/blob/master/Demo/Images/withoutdot2.PNG)
