@@ -151,7 +151,7 @@
     <Resource Include="Images\withoutdot2.PNG" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\DateTime.PNG" />
+    <Resource Include="Images\DateTimeDemo.PNG" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
