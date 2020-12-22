@@ -57,12 +57,52 @@ MvvmChart is a simple, MVVM support and highly customizable chart control for WP
 
     </mvvmCharting:SeriesChart>
 ```
+## Use with DateTime/DateTimeOffset data:
+MvvmChart supports DateTime/DateTimeOffset type data. When it sees the type of data is the DateTime/DateTimeOffset, it will automatically convert it to double using **DoubleValueConverter.ObjectToDouble()** method. But when displaying the axis label text, it will be the user's responsibility to write a ValueConverter to convert it back and format it to a string. In order to convert the value back correctly, the user can use  **DoubleValueConverter.DoubleToDateTime()**(for DateTime type) or **DoubleValueConverter.DoubleToDateTimeOffset()** (for DateTimeOffset type) method. </br>
+For example:
+```c#
+    public class DoubleToDateTimeStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var q = (double) value;
+
+            var t = DoubleValueConverter.DoubleToDateTimeOffset(q);
+
+            return t.ToString("yyyy MMMM dd");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+```
+and set the converter to the LabelTextConverter property of Axis:
+```xaml
+    <mvvmCharting:SeriesChart SeriesDataTemplate="{StaticResource SeriesTemplate}"
+                              SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource TimeSeriesViewModel}}">
+
+        <mvvmCharting:SeriesChart.XAxis>
+            <axis:XAxis LabelTextConverter="{StaticResource DoubleToDateTimeStringConverter}"/>
+        </mvvmCharting:SeriesChart.XAxis>
+
+        <mvvmCharting:SeriesChart.YAxis>
+            <axis:YAxis/>
+        </mvvmCharting:SeriesChart.YAxis>
+
+    </mvvmCharting:SeriesChart>
+```
+Here is a screenshort from the DateTimeOffset XAxis demo:
+
+![DateTimeOffset XAxis demo](https://github.com/zenjia/MvvmChart/blob/master/Demo/Images/DateTime.PNG)
+
 ### Advance usages:
 MvvmChart support lots of advanced feature, such as:
-* **SeriesDataTemplateSelector** support;
-* Series style is highly customizable; 
-* **ItemPoint** Style customization support;
-* Axis: label text **ValueConverter** & explicit axis ticks;
-* Besides the several default series types, users can create almost any series thay want just by implementing **IGeometryBuilder** interface and pass it to the **GeometryBuilder** property of **PathSeries**.
+* **SeriesDataTemplateSelector**;
+* Style customization for: Series, **ItemPoint**, Axis, GridLine, CrossHair...;
+* explicit axis ticks;
+* Besides the several default series types, users can create almost any series thay want just by implementing **IGeometryBuilder** interface and pass it to the **GeometryBuilder** property of **PathSeries**. </br>
 
-To see the samples, please run the **demo** app(more samples will be added soon). 
+To see the samples, just run the **demo** app(more samples will be added soon). Enjoy!
+
