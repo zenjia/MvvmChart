@@ -144,7 +144,9 @@
       <Name>Cartesian2DChart</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\DateTime.PNG" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\areaWithDot.PNG" />
     <Resource Include="Images\areaWithoutDot.PNG" />

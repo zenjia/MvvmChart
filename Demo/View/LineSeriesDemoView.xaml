@@ -10,7 +10,7 @@
              d:DesignHeight="450" 
              d:DesignWidth="800">
     <UserControl.Resources>
- 
+
 
         <DataTemplate x:Key="SeriesTemplate2" DataType="local:SomePointList">
             <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
@@ -55,7 +55,7 @@
             </mvvmCharting:SplineSeries>
         </DataTemplate>
 
-    
+
 
 
         <local:SeriesTemplateSelector x:Key="SeriesTemplateSelector"
@@ -65,19 +65,42 @@
 
     </UserControl.Resources>
 
-    <mvvmCharting:SeriesChart Background="Bisque"
+
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <mvvmCharting:SeriesChart Background="Bisque"
                               SeriesTemplateSelector="{StaticResource SeriesTemplateSelector}"
                               SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource GlobalDemoDataViewModel}}">
- 
-        <mvvmCharting:SeriesChart.XAxis>
-            <axis:XAxis />
-        </mvvmCharting:SeriesChart.XAxis>
 
-        <mvvmCharting:SeriesChart.YAxis>
-            <axis:YAxis />
-        </mvvmCharting:SeriesChart.YAxis>
+            <mvvmCharting:SeriesChart.XAxis>
+                <axis:XAxis />
+            </mvvmCharting:SeriesChart.XAxis>
 
-    </mvvmCharting:SeriesChart>
+            <mvvmCharting:SeriesChart.YAxis>
+                <axis:YAxis />
+            </mvvmCharting:SeriesChart.YAxis>
+
+        </mvvmCharting:SeriesChart>
+
+        <GroupBox Header="Options" 
+                  Grid.Row="1"
+                  Margin="20" 
+                  HorizontalAlignment="Left"
+                  Padding="9">
+            <StackPanel >
+                <CheckBox Content="ShowSeriesLine" IsChecked="{Binding Source={StaticResource GlobalDemoDataViewModel}, Path=ShowSeriesLine, Mode=TwoWay}"/>
+                <CheckBox Content="ShowSeriesPoint" IsChecked="{Binding Source={StaticResource GlobalDemoDataViewModel}, Path=ShowSeriesPoints, Mode=TwoWay}"/>
+            </StackPanel>
+        </GroupBox>
 
 
+
+
+
+
+
+    </Grid>
 </UserControl>

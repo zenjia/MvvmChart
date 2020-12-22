@@ -27,7 +27,7 @@ namespace Demo
 
             var t = DoubleValueConverter.DoubleToDateTimeOffset(q);
 
-            return t.ToString("yyyy-MM-dd");
+            return t.ToString("yyyy MMMM dd");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

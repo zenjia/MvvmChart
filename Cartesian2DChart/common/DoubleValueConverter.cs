@@ -3,11 +3,15 @@ using System.Globalization;
 
 namespace MvvmCharting
 {
+    /// <summary>
+    /// Convert object to double or vice versa
+    /// 
+    /// </summary>
     public static class DoubleValueConverter
     {
         public static double ObjectToDouble(object obj)
         {
-            double returnValue = 0;
+            double returnValue;
 
             if (obj is DateTime)
             {
@@ -19,7 +23,11 @@ namespace MvvmCharting
             }
             else if (obj is IConvertible)
             {
-                returnValue = (obj as IConvertible).ToDouble(CultureInfo.CurrentCulture);
+                returnValue = ((IConvertible)obj).ToDouble(CultureInfo.CurrentCulture);
+            }
+            else
+            {
+                throw new Cartesian2DChartException($"Type {obj?.GetType()} is not supported! Only type which implement IConvertible is supported!");
             }
 
             return returnValue;
