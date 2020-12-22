@@ -34,12 +34,12 @@ namespace MvvmCharting.Axis
 
             if (this.PART_AxisItemsControl != null)
             {
-                this.PART_AxisItemsControl.ItemTemplateApplied -= PartAxisItemsControlItemTemplateApplied;
+                this.PART_AxisItemsControl.ItemTemplateApplied -= AxisItemsControlItemTemplateApplied;
             }
 
             this.PART_AxisItemsControl = (ItemsControlEx)GetTemplateChild(sPART_AxisItemsControl);
             this.PART_AxisItemsControl.ItemsSource = this.AxisDataOffsets;
-            this.PART_AxisItemsControl.ItemTemplateApplied += PartAxisItemsControlItemTemplateApplied; ;
+            this.PART_AxisItemsControl.ItemTemplateApplied += AxisItemsControlItemTemplateApplied; ;
             TryLoadAxisItemDataOffsets();
         }
 
@@ -66,6 +66,8 @@ namespace MvvmCharting.Axis
             this.AxisDataOffsets = new ObservableCollection<DataOffset>();
             this.SizeChanged += AxisBase_SizeChanged;
 
+
+            
 
         }
 
@@ -146,6 +148,20 @@ namespace MvvmCharting.Axis
             ItemsControl.ItemTemplateSelectorProperty.AddOwner(typeof(AxisBase));
 
 
+        /// <summary>
+        /// A double to string convert.
+        /// The Axis only receive double values, so its the user's responsibility to provide a proper
+        /// converter in order to correctly display the Label text. 
+        /// If the double is converted from DateTime or DateTimeOffset, then it should be
+        /// convert back to DateTime or DateTimeOffset first before it can be convert to a user-formatted string
+        /// </summary>
+        public IValueConverter LabelTextConverter
+        {
+            get { return (IValueConverter)GetValue(LabelTextConverterProperty); }
+            set { SetValue(LabelTextConverterProperty, value); }
+        }
+        public static readonly DependencyProperty LabelTextConverterProperty =
+            DependencyProperty.Register("LabelTextConverter", typeof(IValueConverter), typeof(AxisBase), new PropertyMetadata(null));
 
 
         public IAxisOwner Owner
@@ -308,10 +324,6 @@ namespace MvvmCharting.Axis
 
 
         /// <summary>
-        /// 1.Range是否null，是否不同
-        /// 2.ActualLength: a.ActualWidth or ActualHeight. b. Padding
-        /// 3.this.PART_root是否为null，OnApplyTemplate
-        /// 4.Tick的设置：TickCount，TickInterval
         /// </summary>
         /// <param name="newRange"></param>
         public bool TryLoadAxisItemDataOffsets()
@@ -339,11 +351,7 @@ namespace MvvmCharting.Axis
 
             UpdateAxisItemOffset();
 
-            if (this.AxisDataOffsets.Any())
-            {
-                Debug.WriteLine(GetType() + $"  ActualLength = {GetActualLength()}");
-                Debug.WriteLine(GetType() + $"  first = {this.AxisDataOffsets.First().Offset.ToString("F2")}, last = {this.AxisDataOffsets.Last().Offset.ToString("F2")},");
-            }
+ 
 
             this._currentActualValues = values;
             return true;
@@ -367,13 +375,15 @@ namespace MvvmCharting.Axis
         private AxisActualValues _currentActualValues;
 
 
-        private void PartAxisItemsControlItemTemplateApplied(object sender, DependencyObject root)
+        private void AxisItemsControlItemTemplateApplied(object sender, DependencyObject root)
         {
-            if (!(root is AxisItem))
+            if (!(root is AxisItem axisItem))
             {
                 throw new MvvmChartUnexpectedTypeException(this.PART_AxisItemsControl.Name + $"  The root item of ItemTemplate of an axis must be based on '{typeof(AxisItem)}'!");
             }
 
+            Binding b = new Binding(nameof(this.LabelTextConverter)) {Source = this};
+            axisItem.SetBinding(AxisItem.LabelTextConverterProperty, b);
         }
 
  

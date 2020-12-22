@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using MvvmCharting;
 
 namespace Demo
 {
-    public class DemoDataViewModel : BindableBase
+    public class BigDataViewModel : BindableBase
     {
         public ObservableCollection<SomePointList> ItemsSourceList { get; }
 
         private bool _showSeriesLine = true;
         public bool ShowSeriesLine
         {
-            get { return _showSeriesLine; }
+            get { return this._showSeriesLine; }
             set
             {
 
-                if (SetProperty(ref _showSeriesLine, value))
+                if (SetProperty(ref this._showSeriesLine, value))
                 {
                     foreach (var sr in this.ItemsSourceList)
                     {
@@ -26,13 +25,13 @@ namespace Demo
             }
         }
 
-        private bool _showSeriesPoints = true;
+        private bool _showSeriesPoints = false;
         public bool ShowSeriesPoints
         {
-            get { return _showSeriesPoints; }
+            get { return this._showSeriesPoints; }
             set
             {
-                if (SetProperty(ref _showSeriesPoints, value))
+                if (SetProperty(ref this._showSeriesPoints, value))
                 {
                     foreach (var sr in this.ItemsSourceList)
                     {
@@ -43,18 +42,20 @@ namespace Demo
             }
         }
 
-        public DemoDataViewModel()
+        public BigDataViewModel()
         {
             this.ItemsSourceList = new ObservableCollection<SomePointList>();
 
             var first = new SomePointList(0);
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 3000; i++)
             {
-                var v = i / 1.0;
-                var y =  Math.Abs(v) < 1e-10 ? 1 : Math.Sin(v) / v;
+                var v = i / 100.0;
+                var y = Math.Abs(v) < 1e-10 ? 1 : Math.Sin(v) / v;
                 var pt = new SomePoint(v, y);
                 first.DataList.Add(pt);
             }
+
+            first.ShowSeriesPoints = false;
 
             this.ItemsSourceList.Add(first);
 
@@ -66,13 +67,13 @@ namespace Demo
                 {
                     list.DataList.Add(new SomePoint(item.t, item.Y + yOffset));
                 }
-
-                ItemsSourceList.Add(list);
+                list.ShowSeriesPoints = false;
+                this.ItemsSourceList.Add(list);
             }
 
 
-        
-          
+
+
 
 
         }

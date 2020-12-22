@@ -56,6 +56,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ViewModel\DateTimeTest\TimeSeriesData.cs" />
+    <Compile Include="ViewModel\DateTimeTest\TimeSeriesViewModel.cs" />
+    <Compile Include="View\DateTimeDemoView.xaml.cs">
+      <DependentUpon>DateTimeDemoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\DateTimeTest\TimeSeriesPoint.cs" />
+    <Compile Include="View\BigDataTestView.xaml.cs">
+      <DependentUpon>BigDataTestView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\Big Data\BigDataViewModel.cs" />
     <Compile Include="View\SeriesTemplateDemoView.xaml.cs">
       <DependentUpon>SeriesTemplateDemoView.xaml</DependentUpon>
     </Compile>
@@ -69,6 +79,14 @@
       <DependentUpon>LineSeriesDemoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SeriesTemplateSelector.cs" />
+    <Page Include="View\DateTimeDemoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\BigDataTestView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\SeriesTemplateDemoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

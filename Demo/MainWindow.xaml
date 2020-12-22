@@ -13,6 +13,8 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+       
+
         <TabControl TabStripPlacement="Left" Margin="20">
 
             <TabItem Header="SeriesTemplate Demo" Padding="6">
@@ -26,9 +28,17 @@
             <TabItem Header="Area Series Demo" Padding="6">
                 <local:AreaSeriesDemoView Margin="15"/>
             </TabItem>
+
+            <TabItem Header="DateTime Demo" Padding="6">
+                <local:DateTimeDemoView Margin="15"/>
+            </TabItem>
+
+            <TabItem Header="big data Test" Padding="6">
+                <local:BigDataTestView Margin="15"/>
+            </TabItem>
         </TabControl>
 
-
+ 
 
         <GroupBox Header="Options" 
                   Grid.Row="1"

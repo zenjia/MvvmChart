@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace MvvmCharting.Axis
 {
-    internal class DefaultAxisValueConverter : IValueConverter
+    public class DefaultDoubleToAxisLabelTextConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

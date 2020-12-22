@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using MvvmCharting;
 
 namespace Demo
 {
-    public class DemoDataViewModel : BindableBase
+    public class TimeSeriesViewModel : BindableBase
     {
-        public ObservableCollection<SomePointList> ItemsSourceList { get; }
+        public ObservableCollection<TimeSeriesData> ItemsSourceList { get; }
 
         private bool _showSeriesLine = true;
         public bool ShowSeriesLine
         {
-            get { return _showSeriesLine; }
+            get { return this._showSeriesLine; }
             set
             {
 
-                if (SetProperty(ref _showSeriesLine, value))
+                if (SetProperty(ref this._showSeriesLine, value))
                 {
                     foreach (var sr in this.ItemsSourceList)
                     {
@@ -29,10 +28,10 @@ namespace Demo
         private bool _showSeriesPoints = true;
         public bool ShowSeriesPoints
         {
-            get { return _showSeriesPoints; }
+            get { return this._showSeriesPoints; }
             set
             {
-                if (SetProperty(ref _showSeriesPoints, value))
+                if (SetProperty(ref this._showSeriesPoints, value))
                 {
                     foreach (var sr in this.ItemsSourceList)
                     {
@@ -43,16 +42,19 @@ namespace Demo
             }
         }
 
-        public DemoDataViewModel()
+        public TimeSeriesViewModel()
         {
-            this.ItemsSourceList = new ObservableCollection<SomePointList>();
+            this.ItemsSourceList = new ObservableCollection<TimeSeriesData>();
 
-            var first = new SomePointList(0);
+            var first = new TimeSeriesData(0);
+            DateTimeOffset now = DateTimeOffset.Now;
             for (int i = 0; i < 30; i++)
             {
+
+                var t = now.AddMonths(i);
                 var v = i / 1.0;
-                var y =  Math.Abs(v) < 1e-10 ? 1 : Math.Sin(v) / v;
-                var pt = new SomePoint(v, y);
+                var y = Math.Abs(v) < 1e-10 ? 1 : Math.Sin(v) / v;
+                var pt = new TimeSeriesPoint(t, y);
                 first.DataList.Add(pt);
             }
 
@@ -60,19 +62,19 @@ namespace Demo
 
             for (int i = 1; i < 3; i++)
             {
-                var list = new SomePointList(i);
+                var list = new TimeSeriesData(i);
                 double yOffset = i * 0.5;
                 foreach (var item in first.DataList)
                 {
-                    list.DataList.Add(new SomePoint(item.t, item.Y + yOffset));
+                    list.DataList.Add(new TimeSeriesPoint(item.t, item.Y + yOffset));
                 }
 
-                ItemsSourceList.Add(list);
+                this.ItemsSourceList.Add(list);
             }
 
 
-        
-          
+
+
 
 
         }

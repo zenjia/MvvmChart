@@ -321,7 +321,7 @@ namespace MvvmCharting
 
 
 
-            var pt = new Point(Convert.ToDouble(x), Convert.ToDouble(y));
+            var pt = new Point(DoubleValueConverter.ObjectToDouble(x), DoubleValueConverter.ObjectToDouble(y));
 
             return pt;
 

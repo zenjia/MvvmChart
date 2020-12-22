@@ -63,11 +63,10 @@
     </Style>
 
 
-    <axis:DefaultAxisValueConverter x:Key="DefaultAxisValueConverter"/>
+    <axis:DefaultDoubleToAxisLabelTextConverter x:Key="DefaultDoubleToAxisLabelTextConverter"/>
 
     <Style TargetType="axis:XAxisItem">
         <Setter Property="HorizontalAlignment" Value="Left"/>
-        <Setter Property="ValueConverter" Value="{StaticResource DefaultAxisValueConverter}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="axis:XAxisItem">
@@ -88,7 +87,6 @@
     <Style TargetType="axis:YAxisItem">
         <Setter Property="HorizontalAlignment" Value="Right"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
-        <Setter Property="ValueConverter" Value="{StaticResource DefaultAxisValueConverter}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="axis:YAxisItem">
@@ -116,6 +114,7 @@
     </DataTemplate>
 
     <Style TargetType="axis:XAxis">
+        <Setter Property="LabelTextConverter" Value="{StaticResource DefaultDoubleToAxisLabelTextConverter}"/>
         <Setter Property="ItemTemplate" Value="{StaticResource DefualtXAxisItemDataTemplate}"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -140,6 +139,7 @@
     </Style>
 
     <Style TargetType="axis:YAxis">
+        <Setter Property="LabelTextConverter" Value="{StaticResource DefaultDoubleToAxisLabelTextConverter}"/>
         <Setter Property="ItemTemplate" Value="{StaticResource DefualtYAxisItemDataTemplate}"/>
         <Setter Property="Template">
             <Setter.Value>
