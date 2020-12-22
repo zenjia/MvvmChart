@@ -7,38 +7,34 @@
         mc:Ignorable="d"
         Title="Demo" Height="750" Width="900">
 
-    <Grid >
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
 
-       
 
-        <TabControl TabStripPlacement="Left" Margin="20">
 
-            <TabItem Header="SeriesTemplate Demo" Padding="6">
-                <local:SeriesTemplateDemoView Margin="15"/>
-            </TabItem>
 
-            <TabItem Header="Line Series Demo" Padding="6">
-                <local:LineSeriesDemoView Margin="15"/>
-            </TabItem>
+    <TabControl TabStripPlacement="Left" Margin="20">
 
-            <TabItem Header="Area Series Demo" Padding="6">
-                <local:AreaSeriesDemoView Margin="15"/>
-            </TabItem>
+        <TabItem Header="SeriesTemplate Demo" Padding="6">
+            <local:SeriesTemplateDemoView Margin="15"/>
+        </TabItem>
 
-            <TabItem Header="DateTime Demo" Padding="6">
-                <local:DateTimeDemoView Margin="15"/>
-            </TabItem>
+        <TabItem Header="Line Series Demo" Padding="6">
+            <local:LineSeriesDemoView Margin="15"/>
+        </TabItem>
 
-            <TabItem Header="big data Test" Padding="6">
-                <local:BigDataTestView Margin="15"/>
-            </TabItem>
-        </TabControl>
+        <TabItem Header="Area Series Demo" Padding="6">
+            <local:AreaSeriesDemoView Margin="15"/>
+        </TabItem>
 
- 
+        <TabItem Header="DateTime Demo" Padding="6">
+            <local:DateTimeDemoView Margin="15"/>
+        </TabItem>
+
+        <TabItem Header="big data Test" Padding="6">
+            <local:BigDataTestView Margin="15"/>
+        </TabItem>
+    </TabControl>
+
+
 
 
 </Window>

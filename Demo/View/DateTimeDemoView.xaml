@@ -29,8 +29,7 @@
 
     </UserControl.Resources>
 
-    <mvvmCharting:SeriesChart Background="Bisque"
-                              SeriesDataTemplate="{StaticResource SeriesTemplate}"
+    <mvvmCharting:SeriesChart SeriesDataTemplate="{StaticResource SeriesTemplate}"
                               SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource TimeSeriesViewModel}}">
 
         <mvvmCharting:SeriesChart.XAxis>
