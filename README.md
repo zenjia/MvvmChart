@@ -157,7 +157,7 @@ or
 
         </DataTemplate>
 ```
-Please note: to make this work, you should set UseGeometryBuilder to False.
 
-    To see more samples, just download the source code, and run the **demo** app(more samples will be added soon). Enjoy!
+![Scatter customization demo screen shot](https://img2020.cnblogs.com/blog/2238515/202012/2238515-20201223140833298-1559993859.png)
+（To see more samples, just download the source code, and run the **demo** app(more samples will be added continually). Enjoy!）
 
