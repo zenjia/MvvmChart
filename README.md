@@ -99,6 +99,66 @@ Here is a screenshort from the DateTimeOffset XAxis demo:
 ![DateTimeOffset XAxis demo](https://github.com/zenjia/MvvmChart/blob/master/Demo/Images/DateTimeDemo.PNG)
 
 ### Advance usages:
+#### Change the default ScatterTemplate
+There are two ways to achieve this:
+1. Implementing IScatterGeometryBuilder:
+```c#
+    public class RectangleBuilder : IScatterGeometryBuilder
+    {
+        public Geometry GetGeometry()
+        {
+            return new RectangleGeometry(new Rect(new Size(10,10)));
+        }
+    }
+```
+Define your new ScatterTemplate:
+```xaml
+        <mvvmCharting:RectangleBuilder x:Key="RectangleBuilder"/>
 
-    To see the andvance usage samples, just download the source code, and run the **demo** app(more samples will be added soon). Enjoy!
+        <DataTemplate x:Key="MyScatterTemplate">
+            <mvvmCharting:Scatter GeometryBuilder="{StaticResource RectangleBuilder}"
+                                  Fill="Red"/>
+        </DataTemplate>
+                
+```
+And reference the new DataTemplate in SeriesBase.ScatterTemplate property:
+
+```xaml
+        <DataTemplate x:Key="SeriesTemplate1" DataType="local:SomePointList">
+            <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
+                                         DependentValueProperty="Y"
+                                         Stroke="CadetBlue"
+                                         StrokeThickness="1.5"
+                                         ItemsSource="{Binding DataList}"
+                                         ScatterTemplate="{StaticResource MyScatterTemplate}">
+  
+            </mvvmCharting:PolyLineSeries>
+
+        </DataTemplate>
+```
+
+or
+2.Set the Data propery of Scatter to a new Geometry in xaml directly.
+
+```xaml
+        <DataTemplate x:Key="SeriesTemplate0" DataType="local:SomePointList">
+            <mvvmCharting:PolyLineAreaSeries IndependentValueProperty="t"
+                                             DependentValueProperty="Y"
+                                             Fill="Blue"
+                                             ItemsSource="{Binding DataList}">
+                <mvvmCharting:PolyLineAreaSeries.ScatterTemplate>
+                    <DataTemplate>
+                        <mvvmCharting:Scatter UseGeometryBuilder="False"
+                                              Fill="Red">
+                            <RectangleGeometry Rect="0,0,50,50"/>
+                        </mvvmCharting:Scatter>
+                    </DataTemplate>
+                </mvvmCharting:PolyLineAreaSeries.ScatterTemplate>
+            </mvvmCharting:PolyLineAreaSeries>
+
+        </DataTemplate>
+```
+Please note: to make this work, you should set UseGeometryBuilder to False.
+
+    To see more samples, just download the source code, and run the **demo** app(more samples will be added soon). Enjoy!
 
