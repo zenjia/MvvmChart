@@ -148,8 +148,7 @@ or
                                              ItemsSource="{Binding DataList}">
                 <mvvmCharting:PolyLineAreaSeries.ScatterTemplate>
                     <DataTemplate>
-                        <mvvmCharting:Scatter UseGeometryBuilder="False"
-                                              Fill="Red">
+                        <mvvmCharting:Scatter Fill="Red">
                             <RectangleGeometry Rect="0,0,50,50"/>
                         </mvvmCharting:Scatter>
                     </DataTemplate>
