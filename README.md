@@ -157,7 +157,6 @@ or
 
         </DataTemplate>
 ```
-Please note: to make this work, you should set UseGeometryBuilder to False.
 
-    To see more samples, just download the source code, and run the **demo** app(more samples will be added soon). Enjoy!
+（To see more samples, just download the source code, and run the **demo** app(more samples will be added continually). Enjoy!）
 
