@@ -30,7 +30,7 @@ namespace MvvmCharting.Axis
             this.SetBinding(DataValueProperty, b);
 
             this.UpdateLabelTextBinding();
-            this.SizeChanged += this.AxisItem_SizeChanged;
+            
         }
 
 
@@ -43,10 +43,12 @@ namespace MvvmCharting.Axis
             this.TryDoTranslateTransform();
         }
 
-        private void AxisItem_SizeChanged(object sender, SizeChangedEventArgs e)
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
+            base.OnRenderSizeChanged(sizeInfo);
             this.TryDoTranslateTransform();
         }
+
 
         public double TickLength
         {

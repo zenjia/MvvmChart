@@ -64,18 +64,13 @@ namespace MvvmCharting.Axis
         protected AxisBase()
         {
             this.AxisDataOffsets = new ObservableCollection<DataOffset>();
-            this.SizeChanged += AxisBase_SizeChanged;
-
-
-            
 
         }
 
-        private void AxisBase_SizeChanged(object sender, SizeChangedEventArgs e)
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
-
+            base.OnRenderSizeChanged(sizeInfo);
             UpdateActualValues();
-
         }
 
         public double TickInterval

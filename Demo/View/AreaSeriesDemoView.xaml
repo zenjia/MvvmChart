@@ -19,12 +19,12 @@
                                              IsSeriesPointsVisible="{Binding ShowSeriesPoints}"
                                              IsSeriesLineVisible="{Binding ShowSeriesLine}"
                                              ItemsSource="{Binding DataList}">
-                <mvvmCharting:PolyLineAreaSeries.PointDataTemplate>
+                <mvvmCharting:PolyLineAreaSeries.ScatterTemplate>
                     <DataTemplate>
-                        <mvvmCharting:DataPoint Fill="Goldenrod" Width="10" Height="10"
-                                                Opacity="0.5"/>
+                        <mvvmCharting:Scatter Fill="Red" 
+                                              Opacity="0.5"/>
                     </DataTemplate>
-                </mvvmCharting:PolyLineAreaSeries.PointDataTemplate>
+                </mvvmCharting:PolyLineAreaSeries.ScatterTemplate>
             </mvvmCharting:PolyLineAreaSeries>
 
         </DataTemplate>
@@ -87,7 +87,7 @@
                   Padding="9">
             <StackPanel >
                 <CheckBox Content="ShowSeriesLine" IsChecked="{Binding Source={StaticResource GlobalDemoDataViewModel}, Path=ShowSeriesLine, Mode=TwoWay}"/>
-                <CheckBox Content="ShowSeriesPoint" IsChecked="{Binding Source={StaticResource GlobalDemoDataViewModel}, Path=ShowSeriesPoints, Mode=TwoWay}"/>
+                <CheckBox Content="ShowSeriesScatter" IsChecked="{Binding Source={StaticResource GlobalDemoDataViewModel}, Path=ShowSeriesPoints, Mode=TwoWay}"/>
             </StackPanel>
         </GroupBox>
 

@@ -90,7 +90,7 @@ namespace MvvmCharting
         private Dictionary<object, SeriesBase> _seriesDictionary = new Dictionary<object, SeriesBase>();
         public SeriesChart()
         {
-            this.SizeChanged += SizeChangedHandler;
+            
         }
 
         #region overrides
@@ -421,12 +421,7 @@ namespace MvvmCharting
             UpdateRange();
         }
 
-        private void SizeChangedHandler(object sender, SizeChangedEventArgs e)
-        {
-            //this.PART_root.Clip = new RectangleGeometry(new Rect(0, -Double.MaxValue, e.NewSize.Width, Double.MaxValue));
-
-            //ChartSizeChanged?.Invoke(e.NewSize);
-        }
+ 
 
         private void SeriesItemTemplateApplied(object sender, DependencyObject root)
         {

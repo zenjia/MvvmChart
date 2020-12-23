@@ -9,7 +9,7 @@ namespace MvvmCharting
     /// <summary>
     /// Source: http://csharphelper.com/blog/2019/04/draw-a-smooth-curve-in-wpf-and-c/
     /// </summary>
-    public class BezierGeometryBuilder : IGeometryBuilder
+    public class BezierGeometryBuilder : ISeriesGeometryBuilder
     {        // Make an array containing Bezier curve points and control points.
         public static Point[] MakeCurvePoints(Point[] points, double tension)
         {

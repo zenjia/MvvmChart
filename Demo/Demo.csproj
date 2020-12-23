@@ -56,6 +56,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="View\ScatterCustomizationDemoView.xaml.cs">
+      <DependentUpon>ScatterCustomizationDemoView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\DateTimeTest\TimeSeriesData.cs" />
     <Compile Include="ViewModel\DateTimeTest\TimeSeriesViewModel.cs" />
     <Compile Include="View\DateTimeDemoView.xaml.cs">
@@ -79,6 +82,10 @@
       <DependentUpon>LineSeriesDemoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SeriesTemplateSelector.cs" />
+    <Page Include="View\ScatterCustomizationDemoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\DateTimeDemoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

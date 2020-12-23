@@ -9,6 +9,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
+
+
         <DataTemplate x:Key="SeriesTemplate1" DataType="local:SomePointList">
             <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
                                          DependentValueProperty="Y"
@@ -18,16 +20,11 @@
                                          IsSeriesPointsVisible="{Binding ShowSeriesPoints}"
                                          IsSeriesLineVisible="{Binding ShowSeriesLine}"
                                          ItemsSource="{Binding DataList}">
-                <mvvmCharting:PolyLineSeries.PointDataTemplate>
-                    <DataTemplate>
-                        <mvvmCharting:DataPoint Fill="Goldenrod" Width="10" Height="10"
-                                                Opacity="0.5"/>
-                    </DataTemplate>
-                </mvvmCharting:PolyLineSeries.PointDataTemplate>
+  
             </mvvmCharting:PolyLineSeries>
-
         </DataTemplate>
     </UserControl.Resources>
+
     <mvvmCharting:SeriesChart Background="Bisque"
                               SeriesDataTemplate="{StaticResource SeriesTemplate1}"
                               SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource GlobalDemoDataViewModel}}">

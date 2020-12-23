@@ -32,6 +32,10 @@
         <TabItem Header="big data Test" Padding="6">
             <local:BigDataTestView Margin="15"/>
         </TabItem>
+        <TabItem Header="Scatter Customization" Padding="6">
+            <local:ScatterCustomizationDemoView Margin="15"/>
+        </TabItem>
+        
     </TabControl>
 
 

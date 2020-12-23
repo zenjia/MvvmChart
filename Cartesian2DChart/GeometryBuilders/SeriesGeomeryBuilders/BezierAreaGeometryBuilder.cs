@@ -3,7 +3,7 @@ using System.Windows.Media;
 
 namespace MvvmCharting
 {
-    public class BezierAreaGeometryBuilder : IGeometryBuilder
+    public class BezierAreaGeometryBuilder : ISeriesGeometryBuilder
     {
         public double Tension { get; set; } = 0.4;
         public Geometry GetGeometry(Point[] points)

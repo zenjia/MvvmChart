@@ -3,29 +3,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:MvvmCharting"
     xmlns:axis="clr-namespace:MvvmCharting.Axis">
-
-    <Style TargetType="local:DataPoint">
-        <Setter Property="Width" Value="6"/>
-        <Setter Property="Height" Value="6"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:DataPoint">
-                    <Path Fill="{TemplateBinding Fill}" 
-                          Style="{TemplateBinding PointStyle}">
-                        <Path.Data>
-                            <EllipseGeometry 
-                                RadiusX="{Binding Width, RelativeSource={RelativeSource TemplatedParent}}"
-                                RadiusY="{Binding Height, RelativeSource={RelativeSource TemplatedParent}}"/>
-                        </Path.Data>
-                    </Path> 
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+ 
+    <local:EllipseGeometryBuilder x:Key="EllipseGeometryBuilder" RadiusX="6" RadiusY="6"/>
 
     <DataTemplate x:Key="DefaultItemPointDataTemplate" 
                   DataType="local:DataPointViewModel">
-        <local:DataPoint />
+        <local:Scatter Fill="RoyalBlue" 
+                       GeometryBuilder="{StaticResource EllipseGeometryBuilder}"
+                       Opacity="0.8"/>
     </DataTemplate>
 
     <BooleanToVisibilityConverter x:Key="b2v"/>
@@ -33,7 +18,7 @@
     <local:BezierGeometryBuilder x:Key="BezierGeometryBuilder"/>
 
     <Style TargetType="local:PathSeries">
-        <Setter Property="PointDataTemplate" Value="{StaticResource DefaultItemPointDataTemplate}"/>
+        <Setter Property="ScatterTemplate" Value="{StaticResource DefaultItemPointDataTemplate}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:PathSeries">
@@ -47,7 +32,7 @@
 
                         <local:ItemsControlEx x:Name="PART_DataPointItemsControl"
                                               ItemsSource="{TemplateBinding DataPointViewModels}"
-                                              ItemTemplate="{TemplateBinding PointDataTemplate}"
+                                              ItemTemplate="{TemplateBinding ScatterTemplate}"
                                               ItemTemplateSelector="{TemplateBinding PointDataTemplateSelector}"
                                               Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsSeriesPointsVisible, Converter={StaticResource b2v}}">
                             <local:ItemsControlEx.Template>

@@ -3,7 +3,7 @@ using System.Windows.Media;
 
 namespace MvvmCharting
 {
-    public class PolyLineGeometryBuilder : IGeometryBuilder
+    public class PolyLineGeometryBuilder : ISeriesGeometryBuilder
     {
         internal static Geometry CreateGeometry(Point[] points, bool isClosed = false)
         {

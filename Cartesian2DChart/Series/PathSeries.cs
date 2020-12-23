@@ -9,7 +9,7 @@ namespace MvvmCharting
     /// <summary>
     /// PathSeries just use a Path to draw the series.
     /// This is the generic series type which can be customized to create almost any shape.
-    /// To achieve this, just simply pass a IGeometryBuilder object to the GeometryBuilder property.
+    /// To achieve this, just simply pass a ISeriesGeometryBuilder object to the GeometryBuilder property.
     /// By default, the GeometryBuilder property is set to a PolyLineGeometryBuilder.
     /// </summary>
     public class PathSeries : SeriesBase
@@ -28,13 +28,13 @@ namespace MvvmCharting
             DependencyProperty.Register("PathData", typeof(Geometry), typeof(PathSeries), new PropertyMetadata(null));
 
 
-        public IGeometryBuilder GeometryBuilder
+        public ISeriesGeometryBuilder GeometryBuilder
         {
-            get { return (IGeometryBuilder)GetValue(GeometryBuilderProperty); }
+            get { return (ISeriesGeometryBuilder)GetValue(GeometryBuilderProperty); }
             set { SetValue(GeometryBuilderProperty, value); }
         }
         public static readonly DependencyProperty GeometryBuilderProperty =
-            DependencyProperty.Register("GeometryBuilder", typeof(IGeometryBuilder), typeof(PathSeries), new PropertyMetadata(new PolyLineGeometryBuilder(), OnGeometryProviderPropertyChanged));
+            DependencyProperty.Register("GeometryBuilder", typeof(ISeriesGeometryBuilder), typeof(PathSeries), new PropertyMetadata(new PolyLineGeometryBuilder(), OnGeometryProviderPropertyChanged));
 
         private static void OnGeometryProviderPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

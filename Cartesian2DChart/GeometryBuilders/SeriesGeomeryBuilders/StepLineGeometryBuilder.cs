@@ -3,7 +3,7 @@ using System.Windows.Media;
 
 namespace MvvmCharting
 {
-    public class StepLineGeometryBuilder : IGeometryBuilder
+    public class StepLineGeometryBuilder : ISeriesGeometryBuilder
     {
         
         public Geometry GetGeometry(Point[] points)

@@ -30,7 +30,7 @@ namespace MvvmCharting
 
         public SeriesBase()
         {
-            this.SizeChanged += SeriesBase_SizeChanged;
+            
         }
 
         public override void OnApplyTemplate()
@@ -44,10 +44,12 @@ namespace MvvmCharting
             this.PART_ItemsControl.ItemTemplateApplied += PART_ItemsControl_ItemPointGenerated;
         }
 
-        private void SeriesBase_SizeChanged(object sender, SizeChangedEventArgs e)
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
+            base.OnRenderSizeChanged(sizeInfo);
             UpdatePointsPosition();
         }
+
 
         public event Action<Range> XRangeChanged;
         public event Action<Range> YRangeChanged;
@@ -354,13 +356,13 @@ namespace MvvmCharting
 
 
 
-        public DataTemplate PointDataTemplate
+        public DataTemplate ScatterTemplate
         {
-            get { return (DataTemplate)GetValue(PointDataTemplateProperty); }
-            set { SetValue(PointDataTemplateProperty, value); }
+            get { return (DataTemplate)GetValue(ScatterTemplateProperty); }
+            set { SetValue(ScatterTemplateProperty, value); }
         }
-        public static readonly DependencyProperty PointDataTemplateProperty =
-            DependencyProperty.Register("PointDataTemplate", typeof(DataTemplate), typeof(SeriesBase), new PropertyMetadata(null));
+        public static readonly DependencyProperty ScatterTemplateProperty =
+            DependencyProperty.Register("ScatterTemplate", typeof(DataTemplate), typeof(SeriesBase), new PropertyMetadata(null));
 
         public DataTemplateSelector PointDataTemplateSelector
         {
@@ -376,23 +378,22 @@ namespace MvvmCharting
 
         private void PART_ItemsControl_ItemPointGenerated(object arg1, DependencyObject root)
         {
-            var itemPoint = VisualTreeHelper2.GetAllChildren(root).OfType<DataPoint>().SingleOrDefault();
+            var itemPoint = VisualTreeHelper2.GetAllChildren(root).OfType<Scatter>().SingleOrDefault();
             if (itemPoint == null)
             {
-                throw new Cartesian2DChartException("The root element in the PointDataTemplate should be of DataPoint type!");
+                throw new Cartesian2DChartException("The root element in the ScatterTemplate should be of Scatter type!");
             }
 
-            //if (itemPoint.GetBindingExpression(DataPoint.PositionProperty) != null)
+            //if (itemPoint.GetBindingExpression(Scatter.PositionProperty) != null)
             //{
             //    BindingOperations.ClearBinding();
             //}
 
             Binding b = new Binding();
             b.Path = new PropertyPath(nameof(DataPointViewModel.Position));
-            itemPoint.SetBinding(DataPoint.PositionProperty, b);
+            itemPoint.SetBinding(Scatter.PositionProperty, b);
 
-
-
+       
 
         }
     }

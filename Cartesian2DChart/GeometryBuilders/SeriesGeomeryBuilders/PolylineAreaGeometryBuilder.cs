@@ -4,7 +4,7 @@ using System.Windows.Media;
 
 namespace MvvmCharting
 {
-    public class PolylineAreaGeometryBuilder : IGeometryBuilder
+    public class PolylineAreaGeometryBuilder : ISeriesGeometryBuilder
     {
         public static Geometry CreateGeometry(Point[] points)
         {
