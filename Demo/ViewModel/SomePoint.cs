@@ -1,4 +1,5 @@
-﻿using MvvmCharting;
+﻿using MvvmChart.Common;
+using MvvmCharting;
 
 namespace Demo
 {

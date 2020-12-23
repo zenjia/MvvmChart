@@ -13,6 +13,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using MvvmChart.Common;
 using MvvmCharting.Axis;
 
 namespace MvvmCharting

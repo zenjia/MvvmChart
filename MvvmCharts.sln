@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cartesian2DChart", "Cartesi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{02960B4D-ACC3-4B6D-93D6-E578F33655E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonLib", "CommonLib\CommonLib.csproj", "{2AC79084-DEF9-4164-8ACE-BCB735047D96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,14 @@ Global
 		{02960B4D-ACC3-4B6D-93D6-E578F33655E0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{02960B4D-ACC3-4B6D-93D6-E578F33655E0}.Release|x86.ActiveCfg = Release|Any CPU
 		{02960B4D-ACC3-4B6D-93D6-E578F33655E0}.Release|x86.Build.0 = Release|Any CPU
+		{2AC79084-DEF9-4164-8ACE-BCB735047D96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AC79084-DEF9-4164-8ACE-BCB735047D96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AC79084-DEF9-4164-8ACE-BCB735047D96}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2AC79084-DEF9-4164-8ACE-BCB735047D96}.Debug|x86.Build.0 = Debug|Any CPU
+		{2AC79084-DEF9-4164-8ACE-BCB735047D96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AC79084-DEF9-4164-8ACE-BCB735047D96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AC79084-DEF9-4164-8ACE-BCB735047D96}.Release|x86.ActiveCfg = Release|Any CPU
+		{2AC79084-DEF9-4164-8ACE-BCB735047D96}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

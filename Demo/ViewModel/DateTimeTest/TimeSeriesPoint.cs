@@ -1,4 +1,5 @@
 ﻿using System;
+using MvvmChart.Common;
 using MvvmCharting;
 
 namespace Demo

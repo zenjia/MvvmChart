@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace MvvmCharting
+namespace MvvmChart.Common
 {
     public abstract class BindableBase : INotifyPropertyChanged
     {

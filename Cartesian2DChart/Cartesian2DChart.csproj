@@ -76,14 +76,8 @@
     <Compile Include="Axis\AxisItem\XAxisItem.cs" />
     <Compile Include="Axis\YAxis.cs" />
     <Compile Include="Axis\AxisItem\YAxisItem.cs" />
-    <Compile Include="common\BindableBase.cs" />
-    <Compile Include="common\Cartesian2DChartException.cs" />
-    <Compile Include="common\CollectionHelper.cs" />
-    <Compile Include="common\DoubleHelper.cs" />
     <Compile Include="common\ItemsControlEx.cs" />
-    <Compile Include="common\DoubleValueConverter.cs" />
     <Compile Include="common\PointHelper.cs" />
-    <Compile Include="common\Range.cs" />
     <Compile Include="common\SizeHelper.cs" />
     <Compile Include="common\VisualTreeHelper2.cs" />
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\EllipseGeometryBuilder.cs" />
@@ -138,6 +132,11 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\CommonLib\CommonLib.csproj">
+      <Project>{2ac79084-def9-4164-8ace-bcb735047d96}</Project>
+      <Name>CommonLib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

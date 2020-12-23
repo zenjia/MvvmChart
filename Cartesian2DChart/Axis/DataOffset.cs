@@ -1,4 +1,6 @@
-﻿namespace MvvmCharting.Axis
+﻿using MvvmChart.Common;
+
+namespace MvvmCharting.Axis
 {
     public class DataOffset : BindableBase
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MvvmCharting
+namespace MvvmChart.Common
 {
     public static class DoubleHelper
     {

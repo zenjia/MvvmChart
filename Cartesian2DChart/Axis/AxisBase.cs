@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using MvvmChart.Common;
 
 namespace MvvmCharting.Axis
 {

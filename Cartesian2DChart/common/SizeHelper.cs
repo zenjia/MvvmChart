@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using MvvmChart.Common;
 
 namespace MvvmCharting
 {

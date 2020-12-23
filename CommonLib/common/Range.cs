@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace MvvmCharting
+﻿namespace MvvmChart.Common
 {
     public struct Range
     {

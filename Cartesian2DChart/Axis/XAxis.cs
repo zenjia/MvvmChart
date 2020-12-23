@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using MvvmChart.Common;
 
 namespace MvvmCharting.Axis
 {

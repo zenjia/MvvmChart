@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using MvvmChart.Common;
 using MvvmCharting;
 
 namespace Demo

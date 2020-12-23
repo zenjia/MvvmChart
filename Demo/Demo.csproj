@@ -150,6 +150,10 @@
       <Project>{28c40709-2e83-4a1f-be8a-eba5ab886012}</Project>
       <Name>Cartesian2DChart</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CommonLib\CommonLib.csproj">
+      <Project>{2ac79084-def9-4164-8ace-bcb735047d96}</Project>
+      <Name>CommonLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\areaWithDot.PNG" />
