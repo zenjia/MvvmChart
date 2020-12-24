@@ -1,5 +1,8 @@
-﻿namespace MvvmChart.Common
+﻿using System;
+
+namespace MvvmChart.Common
 {
+
     public struct Range
     {
         public static readonly Range Empty = new Range(double.NaN, double.NaN);
@@ -12,22 +15,26 @@
         {
             this.Max = max;
             this.Min = min;
- 
         }
 
         public bool IsEmpty
         {
-           get{ return this.Min.IsNaN(); }
+            get { return this.Min.IsNaN() || this.Min.IsNaN() || this.Max.IsNaN(); }
+        }
+
+        public bool IsValid
+        {
+            get { return !this.IsEmpty && !double.IsInfinity(this.Min) && !double.IsInfinity(this.Max); }
         }
 
         public override string ToString()
         {
-            return $"({this.Min}, {this.Max})";
+            return $"({this.Min.ToString("F4")}, {this.Max.ToString("F4")})";
         }
 
         public double Span
         {
-            get{ return this.Max - this.Min; }
+            get { return this.Max - this.Min; }
         }
 
         public override bool Equals(object obj)
@@ -51,7 +58,7 @@
             return Equals(this, other);
         }
 
-    
+
 
         public override int GetHashCode()
         {
@@ -74,4 +81,8 @@
             return d <= this.Max && d >= this.Min;
         }
     }
+
+ 
+
+
 }

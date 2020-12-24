@@ -1,4 +1,5 @@
 ﻿
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -19,13 +20,34 @@ namespace MvvmCharting
             DefaultStyleKeyProperty.OverrideMetadata(typeof(PathSeries), new FrameworkPropertyMetadata(typeof(PathSeries)));
         }
 
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            OnPathDataChanged();
+            //UpdateShape();
+        }
+
         public Geometry PathData
         {
             get { return (Geometry)GetValue(PathDataProperty); }
             set { SetValue(PathDataProperty, value); }
         }
         public static readonly DependencyProperty PathDataProperty =
-            DependencyProperty.Register("PathData", typeof(Geometry), typeof(PathSeries), new PropertyMetadata(null));
+            DependencyProperty.Register("PathData", typeof(Geometry), typeof(PathSeries), new PropertyMetadata(null, OnPathDataPropertyChanged));
+
+        private static void OnPathDataPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((PathSeries)d).OnPathDataChanged();
+        }
+
+        private void OnPathDataChanged()
+        {
+            if (this.PART_Path != null)
+            {
+                this.PART_Path.Data = this.PathData;
+            }
+
+        }
 
 
         public ISeriesGeometryBuilder GeometryBuilder
@@ -38,18 +60,19 @@ namespace MvvmCharting
 
         private static void OnGeometryProviderPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-             ((PathSeries)d).UpdateShape();
+            ((PathSeries)d).UpdateShape();
         }
 
 
         protected override void UpdateShape()
         {
-            if (this.GeometryBuilder == null || this.DataPointViewModels == null)
+            if (this.GeometryBuilder == null || this._dataPointViewModels.Count == 0)
             {
                 return;
             }
-            var rawPoints = this.DataPointViewModels.Select(x => x.Position).OrderBy(x => x.X).ToArray();
+            var rawPoints = this._dataPointViewModels.Select(x => x.Position).OrderBy(x => x.X).ToArray();
             this.PathData = this.GeometryBuilder.GetGeometry(rawPoints);
+
         }
     }
 }

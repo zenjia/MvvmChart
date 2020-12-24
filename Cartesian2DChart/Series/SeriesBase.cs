@@ -23,27 +23,55 @@ namespace MvvmCharting
     /// <summary>
     /// The base class for all series.
     /// </summary>
-    [TemplatePart(Name = "PART_DataPointItemsControl", Type = typeof(ItemsControlEx))]
+    [TemplatePart(Name = "PART_DataPointItemsControl", Type = typeof(SlimItemsControl))]
+    [TemplatePart(Name = "PART_Path", Type = typeof(Path))]
     public abstract class SeriesBase : Control
     {
+ 
+        private static readonly string sPART_Path = "PART_Path";
         private static readonly string sPART_DataPointItemsControl = "PART_DataPointItemsControl";
-        private ItemsControlEx PART_ItemsControl;
+        private SlimItemsControl PART_ItemsControl;
+        protected Path PART_Path { get; private set; }
 
         public SeriesBase()
         {
-            
+
         }
 
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
+
+            this.PART_Path = (Path)this.GetTemplateChild(sPART_Path);
+            if (this.PART_Path != null)
+            {
+                this.PART_Path.Visibility = this.IsLineOrAreaVisible ? Visibility.Visible : Visibility.Collapsed;
+                this.PART_Path.Stroke = this.Stroke;
+                this.PART_Path.StrokeThickness = this.StrokeThickness;
+                this.PART_Path.Fill = this.Fill;
+            }
+
+
             if (this.PART_ItemsControl != null)
             {
-                this.PART_ItemsControl.ItemTemplateApplied -= PART_ItemsControl_ItemPointGenerated;
+                this.PART_ItemsControl.ItemTemplateContentLoaded -= PART_ItemsControl_ItemPointGenerated;
             }
-            this.PART_ItemsControl = (ItemsControlEx)GetTemplateChild(sPART_DataPointItemsControl);
-            this.PART_ItemsControl.ItemTemplateApplied += PART_ItemsControl_ItemPointGenerated;
+
+            this.PART_ItemsControl = (SlimItemsControl)GetTemplateChild(sPART_DataPointItemsControl);
+            if (this.PART_ItemsControl != null)
+            {
+                this.PART_ItemsControl.ItemTemplateContentLoaded += PART_ItemsControl_ItemPointGenerated;
+                this.PART_ItemsControl.Visibility = this.IsScatterVisible ? Visibility.Visible : Visibility.Collapsed;
+
+                this.PART_ItemsControl.ItemsSource = this._dataPointViewModels;
+                this.PART_ItemsControl.ItemTemplateSelector = this.ScatterTemplateSelector;
+                this.PART_ItemsControl.ItemTemplate = this.ScatterTemplate;
+            }
+
+
+
         }
+
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
@@ -54,7 +82,7 @@ namespace MvvmCharting
 
         public event Action<Range> XRangeChanged;
         public event Action<Range> YRangeChanged;
-         
+
 
         public string IndependentValueProperty
         {
@@ -83,29 +111,69 @@ namespace MvvmCharting
 
 
 
-        public bool IsSeriesPointsVisible
+        public bool IsScatterVisible
         {
-            get { return (bool)GetValue(IsSeriesPointsVisibleProperty); }
-            set { SetValue(IsSeriesPointsVisibleProperty, value); }
+            get { return (bool)GetValue(IsScatterVisibleProperty); }
+            set { SetValue(IsScatterVisibleProperty, value); }
         }
-        public static readonly DependencyProperty IsSeriesPointsVisibleProperty =
-            DependencyProperty.Register("IsSeriesPointsVisible", typeof(bool), typeof(SeriesBase), new PropertyMetadata(true));
+        public static readonly DependencyProperty IsScatterVisibleProperty =
+            DependencyProperty.Register("IsScatterVisible", typeof(bool), typeof(SeriesBase), new PropertyMetadata(true, OnIsSeriesPointsVisiblePropertyChanged));
 
-        public bool IsSeriesLineVisible
+        private static void OnIsSeriesPointsVisiblePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            get { return (bool)GetValue(IsSeriesLineVisibleProperty); }
-            set { SetValue(IsSeriesLineVisibleProperty, value); }
+            ((SeriesBase)d).OnIsSeriesPointsVisibleChanged();
         }
-        public static readonly DependencyProperty IsSeriesLineVisibleProperty =
-            DependencyProperty.Register("IsSeriesLineVisible", typeof(bool), typeof(SeriesBase), new PropertyMetadata(true));
 
+        private void OnIsSeriesPointsVisibleChanged()
+        {
+            if (this.PART_ItemsControl != null)
+            {
+                this.PART_ItemsControl.Visibility = this.IsScatterVisible ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        public bool IsLineOrAreaVisible
+        {
+            get { return (bool)GetValue(IsLineOrAreaVisibleProperty); }
+            set { SetValue(IsLineOrAreaVisibleProperty, value); }
+        }
+        public static readonly DependencyProperty IsLineOrAreaVisibleProperty =
+            DependencyProperty.Register("IsLineOrAreaVisible", typeof(bool), typeof(SeriesBase), new PropertyMetadata(true, OnIsLineOrAreaVisiblePropertyChanged));
+
+        private static void OnIsLineOrAreaVisiblePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((SeriesBase)d).OnIsLineOrAreaVisibleChanged();
+        }
+
+        private void OnIsLineOrAreaVisibleChanged()
+        {
+            if (this.PART_ItemsControl != null)
+            {
+                this.PART_Path.Visibility = this.IsLineOrAreaVisible ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        #region Path properties
         public Brush Stroke
         {
             get { return (Brush)GetValue(StrokeProperty); }
             set { SetValue(StrokeProperty, value); }
         }
         public static readonly DependencyProperty StrokeProperty =
-            Shape.StrokeProperty.AddOwner(typeof(SeriesBase));
+            Shape.StrokeProperty.AddOwner(typeof(SeriesBase), new PropertyMetadata(OnStrokePropertyChanged));
+
+        private static void OnStrokePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((SeriesBase)d).OnStrokeChanged();
+        }
+
+        private void OnStrokeChanged()
+        {
+            if (this.PART_Path != null)
+            {
+                this.PART_Path.Stroke = this.Stroke;
+            }
+        }
 
         public double StrokeThickness
         {
@@ -114,7 +182,23 @@ namespace MvvmCharting
         }
 
         public static readonly DependencyProperty StrokeThicknessProperty =
-            Shape.StrokeThicknessProperty.AddOwner(typeof(SeriesBase), new PropertyMetadata(1.0));
+            Shape.StrokeThicknessProperty.AddOwner(typeof(SeriesBase), new PropertyMetadata(1.0, OnStrokeThicknessPropertyChanged));
+
+        private static void OnStrokeThicknessPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+
+            ((SeriesBase)d).OnStrokeThicknessChanged();
+        }
+
+        private void OnStrokeThicknessChanged()
+        {
+            if (this.PART_Path != null)
+            {
+                this.PART_Path.StrokeThickness = this.StrokeThickness;
+            }
+
+
+        }
 
         public Brush Fill
         {
@@ -122,8 +206,21 @@ namespace MvvmCharting
             set { SetValue(FillProperty, value); }
         }
         public static readonly DependencyProperty FillProperty =
-            Shape.FillProperty.AddOwner(typeof(SeriesBase));
-      
+            Shape.FillProperty.AddOwner(typeof(SeriesBase), new PropertyMetadata(OnFillPropertyChanged));
+
+        private static void OnFillPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((SeriesBase)d).OnFillChanged();
+        }
+        private void OnFillChanged()
+        {
+            if (this.PART_Path != null)
+            {
+                this.PART_Path.Fill = this.Fill;
+            }
+        }
+
+        #endregion
 
 
         private static void OnPointItemsSourcePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -138,7 +235,7 @@ namespace MvvmCharting
 
         protected virtual void OnPointItemsSourcePropertyChanged(IList oldValue, IList newValue)
         {
-          
+
             LoadItemPointViewModels(null, this.ItemsSource);
 
             if (oldValue is INotifyCollectionChanged oldItemsSource)
@@ -149,8 +246,8 @@ namespace MvvmCharting
 
             if (newValue is INotifyCollectionChanged newItemsSource)
             {
-                 WeakEventManager<INotifyCollectionChanged, NotifyCollectionChangedEventArgs>
-                     .AddHandler(newItemsSource, "CollectionChanged", SeriesBase_CollectionChanged);
+                WeakEventManager<INotifyCollectionChanged, NotifyCollectionChangedEventArgs>
+                    .AddHandler(newItemsSource, "CollectionChanged", SeriesBase_CollectionChanged);
             }
         }
 
@@ -163,13 +260,13 @@ namespace MvvmCharting
 
             if (e.Action == NotifyCollectionChangedAction.Reset)
             {
-                this.DataPointViewModels?.Clear();
+                this._dataPointViewModels?.Clear();
             }
 
             LoadItemPointViewModels(e.OldItems, e.NewItems);
         }
 
-        private Range _yDataRange;
+        private Range _yDataRange = Range.Empty;
         public Range YDataRange
         {
             get { return this._yDataRange; }
@@ -186,17 +283,15 @@ namespace MvvmCharting
             }
         }
 
-        private Range _xDataRange;
+        private Range _xDataRange = Range.Empty;
         public Range XDataRange
         {
             get { return this._xDataRange; }
             private set
             {
-
                 if (this._xDataRange != value)
                 {
                     this._xDataRange = value;
-
                     this.XRangeChanged?.Invoke(this.XDataRange);
 
 
@@ -204,7 +299,7 @@ namespace MvvmCharting
             }
         }
 
-        private Range _plotAreaXDataRange;
+        private Range _plotAreaXDataRange = Range.Empty;
         public Range PlotAreaXDataRange
         {
             get { return this._plotAreaXDataRange; }
@@ -221,7 +316,7 @@ namespace MvvmCharting
             }
         }
 
-        private Range _plotAreaYDataRange;
+        private Range _plotAreaYDataRange = Range.Empty;
         public Range PlotAreaYDataRange
         {
             get { return this._plotAreaYDataRange; }
@@ -238,13 +333,7 @@ namespace MvvmCharting
             }
         }
 
-        public ObservableCollection<DataPointViewModel> DataPointViewModels
-        {
-            get { return (ObservableCollection<DataPointViewModel>)GetValue(DataPointViewModelsProperty); }
-            set { SetValue(DataPointViewModelsProperty, value); }
-        }
-        public static readonly DependencyProperty DataPointViewModelsProperty =
-            DependencyProperty.Register("DataPointViewModels", typeof(IList), typeof(SeriesBase), new PropertyMetadata(null));
+        protected readonly ObservableCollection<ScatterViewModel> _dataPointViewModels = new ObservableCollection<ScatterViewModel>();
 
 
         protected void LoadItemPointViewModels(IList oldValue, IList newValue)
@@ -253,27 +342,25 @@ namespace MvvmCharting
             {
                 foreach (var item in oldValue)
                 {
-                    this.DataPointViewModels.Remove(x => x.Item == item);
+                    this._dataPointViewModels.Remove(x => x.Item == item);
                 }
             }
 
             if (newValue != null)
             {
-                if (this.DataPointViewModels == null)
-                {
-                    this.DataPointViewModels = new ObservableCollection<DataPointViewModel>();
-                }
-
                 foreach (var item in newValue)
                 {
-                    var dpvm = new DataPointViewModel(item);
-                    this.DataPointViewModels.Add(dpvm);
+                    var dpvm = new ScatterViewModel(item);
+                    this._dataPointViewModels.Add(dpvm);
                 }
             }
 
+          
             UpdateSeriesRange();
             UpdatePointsPosition();
             UpdateShape();
+
+   
         }
 
         private void UpdatePointsPosition()
@@ -281,34 +368,35 @@ namespace MvvmCharting
             if (this.PlotAreaXDataRange.IsEmpty ||
                 this.PlotAreaYDataRange.IsEmpty ||
                 this.RenderSize.IsInvalid() ||
-                this.DataPointViewModels == null)
+                this._dataPointViewModels.Count == 0)
             {
                 return;
             }
- 
+
             var plotAreaSize = this.RenderSize;
 
             var xRange = this.PlotAreaXDataRange;
             var yRange = this.PlotAreaYDataRange;
             double xUnit = plotAreaSize.Width / xRange.Span;
             double yUnit = plotAreaSize.Height / yRange.Span;
-
-            foreach (var dpvm in this.DataPointViewModels)
+            foreach (var dpvm in this._dataPointViewModels)
             {
                 var pt = GetPointFromItem(dpvm.Item);
                 dpvm.Position = new Point((pt.X - this.PlotAreaXDataRange.Min) * xUnit - 1, (pt.Y - this.PlotAreaYDataRange.Min) * yUnit - 1);
+               
+
             }
 
-  
+
             UpdateShape();
         }
 
-       
 
 
-  
+
+
         protected abstract void UpdateShape();
- 
+
 
 
 
@@ -321,26 +409,32 @@ namespace MvvmCharting
             var x = t.GetProperty(this.IndependentValueProperty).GetValue(item);
             var y = t.GetProperty(this.DependentValueProperty).GetValue(item);
 
-
-
-
             var pt = new Point(DoubleValueConverter.ObjectToDouble(x), DoubleValueConverter.ObjectToDouble(y));
-
             return pt;
 
         }
 
-        private void UpdateSeriesRange()
+        internal void UpdateSeriesRange()
         {
+            if (this._dataPointViewModels.Count == 0)
+            {
+                this.XDataRange = Range.Empty;
+                this.YDataRange = Range.Empty;
+
+                return;
+            }
+
+
             double minX = double.MaxValue, minY = double.MaxValue,
                 maxX = double.MinValue, maxY = double.MinValue;
 
-            foreach (var item in this.DataPointViewModels)
+            foreach (var item in this._dataPointViewModels)
             {
                 var pt = GetPointFromItem(item.Item);
 
                 var x = pt.X;
                 var y = pt.Y;
+
 
                 minX = Math.Min(minX, x);
                 maxX = Math.Max(maxX, x);
@@ -363,38 +457,59 @@ namespace MvvmCharting
             set { SetValue(ScatterTemplateProperty, value); }
         }
         public static readonly DependencyProperty ScatterTemplateProperty =
-            DependencyProperty.Register("ScatterTemplate", typeof(DataTemplate), typeof(SeriesBase), new PropertyMetadata(null));
+            DependencyProperty.Register("ScatterTemplate", typeof(DataTemplate), typeof(SeriesBase), new PropertyMetadata(null, OnScatterTemplatePropertyChanged));
 
-        public DataTemplateSelector PointDataTemplateSelector
+        private static void OnScatterTemplatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            get { return (DataTemplateSelector)GetValue(PointDataTemplateSelectorProperty); }
-            set { SetValue(PointDataTemplateSelectorProperty, value); }
+            ((SeriesBase)d).OnScatterTemplatePropertyChanged();
+
         }
-        public static readonly DependencyProperty PointDataTemplateSelectorProperty =
-            DependencyProperty.Register("PointDataTemplateSelector", typeof(DataTemplateSelector), typeof(SeriesBase), new PropertyMetadata(null));
 
+        private void OnScatterTemplatePropertyChanged()
+        {
+            if (this.PART_ItemsControl != null)
+            {
+                this.PART_ItemsControl.ItemTemplate = this.ScatterTemplate;
+            }
 
+        }
 
+        public DataTemplateSelector ScatterTemplateSelector
+        {
+            get { return (DataTemplateSelector)GetValue(ScatterTemplateSelectorProperty); }
+            set { SetValue(ScatterTemplateSelectorProperty, value); }
+        }
+        public static readonly DependencyProperty ScatterTemplateSelectorProperty =
+            DependencyProperty.Register("ScatterTemplateSelector", typeof(DataTemplateSelector), typeof(SeriesBase), new PropertyMetadata(null, OnScatterDataTemplateSelectorPropertyChanged));
+
+        private static void OnScatterDataTemplateSelectorPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((SeriesBase)d).OnScatterDataTemplateSelectorChanged();
+        }
+
+        private void OnScatterDataTemplateSelectorChanged()
+        {
+            if (this.PART_ItemsControl != null)
+            {
+                this.PART_ItemsControl.ItemTemplateSelector = this.ScatterTemplateSelector;
+            }
+        }
 
 
         private void PART_ItemsControl_ItemPointGenerated(object arg1, DependencyObject root)
         {
-            var itemPoint = VisualTreeHelper2.GetAllChildren(root).OfType<Scatter>().SingleOrDefault();
-            if (itemPoint == null)
+            var scatter = VisualTreeHelper2.GetAllChildren(root).OfType<Scatter>().SingleOrDefault();
+            if (scatter == null)
             {
                 throw new Cartesian2DChartException("The root element in the ScatterTemplate should be of Scatter type!");
             }
 
-            //if (itemPoint.GetBindingExpression(Scatter.PositionProperty) != null)
-            //{
-            //    BindingOperations.ClearBinding();
-            //}
 
             Binding b = new Binding();
-            b.Path = new PropertyPath(nameof(DataPointViewModel.Position));
-            itemPoint.SetBinding(Scatter.PositionProperty, b);
+            b.Path = new PropertyPath(nameof(ScatterViewModel.Position));
+            scatter.SetBinding(Scatter.PositionProperty, b);
 
-       
+
 
         }
     }

@@ -3,9 +3,9 @@ using MvvmChart.Common;
 
 namespace MvvmCharting
 {
-    public class DataPointViewModel: BindableBase
+    public class ScatterViewModel: BindableBase
     {
-        public DataPointViewModel(object item)
+        public ScatterViewModel(object item)
         {
             this.Item = item;
         }

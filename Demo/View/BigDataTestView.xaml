@@ -17,9 +17,10 @@
                                              Stroke="CadetBlue"
                                              StrokeThickness="1.5"
                                              Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
-                                             IsSeriesPointsVisible="{Binding ShowSeriesPoints}"
-                                             IsSeriesLineVisible="{Binding ShowSeriesLine}"
-                                             ItemsSource="{Binding DataList}">
+                                             IsScatterVisible="{Binding ShowSeriesPoints}"
+                                             IsLineOrAreaVisible="{Binding ShowSeriesLine}"
+                                             ItemsSource="{Binding DataList}"
+                                             ScatterTemplate="{StaticResource DefaultItemPointDataTemplate}">
             </mvvmCharting:PolyLineSeries>
 
         </DataTemplate>
@@ -29,17 +30,32 @@
 
     </UserControl.Resources>
 
-    <mvvmCharting:SeriesChart Background="Bisque"
-                              SeriesDataTemplate="{StaticResource SeriesTemplate}"
-                              SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource BigDataViewModel}}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
 
-        <mvvmCharting:SeriesChart.XAxis>
-            <axis:XAxis />
-        </mvvmCharting:SeriesChart.XAxis>
+        </Grid.RowDefinitions>
 
-        <mvvmCharting:SeriesChart.YAxis>
-            <axis:YAxis />
-        </mvvmCharting:SeriesChart.YAxis>
+        <mvvmCharting:SeriesChart Background="Bisque"
+                                  SeriesDataTemplate="{StaticResource SeriesTemplate}"
+                                  SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource BigDataViewModel}}">
 
-    </mvvmCharting:SeriesChart>
+            <mvvmCharting:SeriesChart.XAxis>
+                <axis:XAxis />
+            </mvvmCharting:SeriesChart.XAxis>
+
+            <mvvmCharting:SeriesChart.YAxis>
+                <axis:YAxis />
+            </mvvmCharting:SeriesChart.YAxis>
+
+        </mvvmCharting:SeriesChart>
+
+
+        <CheckBox Grid.Row="1"
+                  Content="ShowScatter" 
+                  IsChecked="{Binding Source={StaticResource BigDataViewModel}, Path=ShowSeriesPoints}"/>
+    </Grid>
+
+
 </UserControl>

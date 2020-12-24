@@ -18,12 +18,13 @@
                                              Stroke="CadetBlue"
                                              StrokeThickness="1.5"
                                              Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
-                                             IsSeriesPointsVisible="{Binding ShowSeriesPoints}"
-                                             IsSeriesLineVisible="{Binding ShowSeriesLine}"
-                                             ItemsSource="{Binding DataList}">
+                                             IsScatterVisible="{Binding ShowSeriesPoints}"
+                                             IsLineOrAreaVisible="{Binding ShowSeriesLine}"
+                                             ItemsSource="{Binding DataList}"
+                                             >
                 <mvvmCharting:PolyLineSeries.ScatterTemplate>
                     <DataTemplate>
-                        <mvvmCharting:Scatter Fill="Red"/>
+                        <mvvmCharting:RoundScatter  Fill="Red"/>
                     </DataTemplate>
                 </mvvmCharting:PolyLineSeries.ScatterTemplate>
             </mvvmCharting:PolyLineSeries>
@@ -36,9 +37,10 @@
                                          Stroke="Red"
                                          StrokeThickness="1.5"
                                          Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
-                                         IsSeriesPointsVisible="{Binding ShowSeriesPoints}"
-                                         IsSeriesLineVisible="{Binding ShowSeriesLine}"
-                                         ItemsSource="{Binding DataList}"/>
+                                         IsScatterVisible="{Binding ShowSeriesPoints}"
+                                         IsLineOrAreaVisible="{Binding ShowSeriesLine}"
+                                         ItemsSource="{Binding DataList}"
+                                         ScatterTemplate="{StaticResource DefaultItemPointDataTemplate}"/>
 
         </DataTemplate>
 
@@ -48,9 +50,10 @@
                                      Stroke="Green"
                                      StrokeThickness="1.5"
                                      Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
-                                     IsSeriesPointsVisible="{Binding ShowSeriesPoints}"
-                                     IsSeriesLineVisible="{Binding ShowSeriesLine}"
-                                     ItemsSource="{Binding DataList}">
+                                     IsScatterVisible="{Binding ShowSeriesPoints}"
+                                     IsLineOrAreaVisible="{Binding ShowSeriesLine}"
+                                     ItemsSource="{Binding DataList}"
+                                     ScatterTemplate="{StaticResource DefaultItemPointDataTemplate}">
             </mvvmCharting:SplineSeries>
         </DataTemplate>
 

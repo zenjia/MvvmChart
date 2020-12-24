@@ -3,44 +3,22 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:MvvmCharting"
     xmlns:axis="clr-namespace:MvvmCharting.Axis">
- 
-    <local:EllipseGeometryBuilder x:Key="EllipseGeometryBuilder" RadiusX="6" RadiusY="6"/>
 
-    <DataTemplate x:Key="DefaultItemPointDataTemplate" 
-                  DataType="local:DataPointViewModel">
-        <local:Scatter Fill="RoyalBlue" 
-                       GeometryBuilder="{StaticResource EllipseGeometryBuilder}"
-                       Opacity="0.8"/>
-    </DataTemplate>
+ 
+
 
     <BooleanToVisibilityConverter x:Key="b2v"/>
 
     <local:BezierGeometryBuilder x:Key="BezierGeometryBuilder"/>
 
     <Style TargetType="local:PathSeries">
-        <Setter Property="ScatterTemplate" Value="{StaticResource DefaultItemPointDataTemplate}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:PathSeries">
                     <Grid>
-                        <Path x:Name="PART_Path"
-                              Data="{TemplateBinding PathData}"
-                              Stroke="{TemplateBinding Stroke}"
-                              Fill="{TemplateBinding Fill}"
-                              StrokeThickness="{TemplateBinding StrokeThickness}"
-                              Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsSeriesLineVisible, Converter={StaticResource b2v}}"/>
+                        <Path x:Name="PART_Path"/>
 
-                        <local:ItemsControlEx x:Name="PART_DataPointItemsControl"
-                                              ItemsSource="{TemplateBinding DataPointViewModels}"
-                                              ItemTemplate="{TemplateBinding ScatterTemplate}"
-                                              ItemTemplateSelector="{TemplateBinding PointDataTemplateSelector}"
-                                              Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsSeriesPointsVisible, Converter={StaticResource b2v}}">
-                            <local:ItemsControlEx.Template>
-                                <ControlTemplate TargetType="local:ItemsControlEx">
-                                    <Canvas IsItemsHost="True"/>
-                                </ControlTemplate>
-                            </local:ItemsControlEx.Template>
-                        </local:ItemsControlEx>
+                        <local:SlimItemsControl x:Name="PART_DataPointItemsControl"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -108,15 +86,15 @@
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Background="{TemplateBinding Background}"
                             Padding="{TemplateBinding Padding}">
-                        <local:ItemsControlEx x:Name="PART_AxisItemsControl"
+                        <local:SlimItemsControl x:Name="PART_AxisItemsControl"
                                               ItemTemplate="{Binding ItemTemplate, RelativeSource={RelativeSource TemplatedParent}}"
                                               ItemTemplateSelector="{Binding ItemTemplateSelector, RelativeSource={RelativeSource TemplatedParent}}">
-                            <local:ItemsControlEx.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <Grid/>
-                                </ItemsPanelTemplate>
-                            </local:ItemsControlEx.ItemsPanel>
-                        </local:ItemsControlEx>
+                            <local:SlimItemsControl.Template>
+                                <ControlTemplate TargetType="local:SlimItemsControl">
+                                    <Grid x:Name="PART_Root"/>
+                                </ControlTemplate>
+                            </local:SlimItemsControl.Template>
+                        </local:SlimItemsControl>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -133,15 +111,15 @@
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Background="{TemplateBinding Background}"
                             Padding="{TemplateBinding Padding}">
-                        <local:ItemsControlEx x:Name="PART_AxisItemsControl"
+                        <local:SlimItemsControl x:Name="PART_AxisItemsControl"
                                               ItemTemplate="{Binding ItemTemplate, RelativeSource={RelativeSource TemplatedParent}}"
                                               ItemTemplateSelector="{Binding ItemTemplateSelector, RelativeSource={RelativeSource TemplatedParent}}">
-                            <local:ItemsControlEx.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <Grid/>
-                                </ItemsPanelTemplate>
-                            </local:ItemsControlEx.ItemsPanel>
-                        </local:ItemsControlEx>
+                            <local:SlimItemsControl.Template>
+                                <ControlTemplate TargetType="local:SlimItemsControl">
+                                    <Grid x:Name="PART_Root"/>
+                                </ControlTemplate>
+                            </local:SlimItemsControl.Template>
+                        </local:SlimItemsControl>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -199,44 +177,34 @@
                             </Border.RenderTransform>
 
                             <Grid x:Name="PART_PlotAreaRoot">
-                                <local:ItemsControlEx x:Name="PART_HorizontalGridLineItemsControl" 
+                                <local:SlimItemsControl x:Name="PART_HorizontalGridLineItemsControl" 
                                                       Visibility="{TemplateBinding HorizontalGridLineVisiblility}" >
-                                    <local:ItemsControlEx.ItemTemplate>
+                                    <local:SlimItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Line/>
                                         </DataTemplate>
-                                    </local:ItemsControlEx.ItemTemplate>
-                                    <ItemsControl.Template>
-                                        <ControlTemplate TargetType="ItemsControl">
-                                            <Canvas IsItemsHost="True"/>
-                                        </ControlTemplate>
-                                    </ItemsControl.Template>
-                                </local:ItemsControlEx>
+                                    </local:SlimItemsControl.ItemTemplate>
+                                </local:SlimItemsControl>
 
-                                <local:ItemsControlEx x:Name="PART_VerticalGridLineItemsControl"
+                                <local:SlimItemsControl x:Name="PART_VerticalGridLineItemsControl"
                                                       Visibility="{TemplateBinding VerticalGridLineVisibility}">
-                                    <local:ItemsControlEx.ItemTemplate>
+                                    <local:SlimItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Line/>
                                         </DataTemplate>
-                                    </local:ItemsControlEx.ItemTemplate>
-                                    <ItemsControl.Template>
-                                        <ControlTemplate TargetType="ItemsControl">
-                                            <Canvas IsItemsHost="True"/>
-                                        </ControlTemplate>
-                                    </ItemsControl.Template>
-                                </local:ItemsControlEx>
+                                    </local:SlimItemsControl.ItemTemplate>
+                                </local:SlimItemsControl>
 
-                                <local:ItemsControlEx x:Name="PART_SeriesItemsControl" 
+                                <local:SlimItemsControl x:Name="PART_SeriesItemsControl" 
                                                       ItemTemplate="{TemplateBinding SeriesDataTemplate}"
                                                       ItemsSource="{TemplateBinding SeriesItemsSource}"
                                                       ItemTemplateSelector="{TemplateBinding SeriesTemplateSelector}">
-                                    <local:ItemsControlEx.Template>
-                                        <ControlTemplate TargetType="local:ItemsControlEx">
-                                            <Grid IsItemsHost="True"/>
+                                    <local:SlimItemsControl.Template>
+                                        <ControlTemplate TargetType="local:SlimItemsControl">
+                                            <Grid x:Name="PART_Root"/>
                                         </ControlTemplate>
-                                    </local:ItemsControlEx.Template>
-                                </local:ItemsControlEx>
+                                    </local:SlimItemsControl.Template>
+                                </local:SlimItemsControl>
 
                                 <Line x:Name="PART_HorizontalCrossHair"
                                       Style="{TemplateBinding HorizontalCrossHairLineStyle}"
@@ -254,5 +222,17 @@
         </Setter>
     </Style>
 
+
+    <Style TargetType="{x:Type local:SlimItemsControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:SlimItemsControl">
+
+                    <Canvas x:Name="PART_Root"/>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 </ResourceDictionary>

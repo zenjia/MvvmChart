@@ -20,9 +20,6 @@ namespace MvvmCharting
     [ContentProperty(nameof(Data))]
     public class Scatter : Shape
     {
-
-
- 
      
         /// <summary>
         /// Gets or sets a <see cref="T:System.Windows.Media.Geometry" /> that specifies the shape to be drawn.
@@ -51,8 +48,6 @@ namespace MvvmCharting
             }
         }
 
- 
-
         public IScatterGeometryBuilder GeometryBuilder
         {
             get { return (IScatterGeometryBuilder)GetValue(GeometryBuilderProperty); }
@@ -67,15 +62,13 @@ namespace MvvmCharting
         {
             ((Scatter)d).UpdateScatterGeometry();
         }
-
-        private bool _usingDefaultScatterGeometryBuilder = false;
+         
         private void UpdateScatterGeometry()
         {
             if (this.GeometryBuilder == null)
             {
                 return;
             }
-
 
 
             this.Data = this.GeometryBuilder?.GetGeometry();
@@ -139,17 +132,28 @@ namespace MvvmCharting
 
             var x = this.Position.X + offset.X;
             var y = this.Position.Y + offset.Y;
-            var translateTransform = this.RenderTransform as TranslateTransform;
-            if (translateTransform == null)
+            if (!double.IsInfinity(x))
             {
-                TranslateTransform a = new TranslateTransform(x, y);
-                this.RenderTransform = a;
+                Canvas.SetLeft(this, x);
             }
-            else
+                
+
+            if (!double.IsInfinity(y))
             {
-                translateTransform.Y = y;
-                translateTransform.X = x;
+                Canvas.SetTop(this, y);
             }
+           
+            //var translateTransform = this.RenderTransform as TranslateTransform;
+            //if (translateTransform == null)
+            //{
+            //    TranslateTransform a = new TranslateTransform(x, y);
+            //    this.RenderTransform = a;
+            //}
+            //else
+            //{
+            //    translateTransform.Y = y;
+            //    translateTransform.X = x;
+            //}
         }
 
 

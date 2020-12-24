@@ -54,9 +54,9 @@ namespace MvvmCharting
     /// </summary>
     [TemplatePart(Name = "PART_Root", Type = typeof(Grid))]
     [TemplatePart(Name = "PART_PlotAreaRoot", Type = typeof(Grid))]
-    [TemplatePart(Name = "PART_HorizontalGridLineItemsControl", Type = typeof(ItemsControlEx))]
-    [TemplatePart(Name = "PART_VerticalGridLineItemsControl", Type = typeof(ItemsControlEx))]
-    [TemplatePart(Name = "PART_SeriesItemsControl", Type = typeof(ItemsControlEx))]
+    [TemplatePart(Name = "PART_HorizontalGridLineItemsControl", Type = typeof(SlimItemsControl))]
+    [TemplatePart(Name = "PART_VerticalGridLineItemsControl", Type = typeof(SlimItemsControl))]
+    [TemplatePart(Name = "PART_SeriesItemsControl", Type = typeof(SlimItemsControl))]
     [TemplatePart(Name = "PART_HorizontalCrossHair", Type = typeof(Line))]
     [TemplatePart(Name = "PART_VerticalCrossHair", Type = typeof(Line))]
     public class SeriesChart : Control, IXAxisOwner, IYAxisOwner
@@ -82,16 +82,16 @@ namespace MvvmCharting
 
         private Grid PART_Root;
         private Grid PART_PlotAreaRoot;
-        private ItemsControlEx PART_SeriesItemsControl;
-        private ItemsControlEx PART_HorizontalGridLineItemsControl;
-        private ItemsControlEx PART_VerticalGridLineItemsControl;
+        private SlimItemsControl PART_SeriesItemsControl;
+        private SlimItemsControl PART_HorizontalGridLineItemsControl;
+        private SlimItemsControl PART_VerticalGridLineItemsControl;
         private Line PART_HorizontalCrossHair;
         private Line PART_VerticalCrossHair;
 
         private Dictionary<object, SeriesBase> _seriesDictionary = new Dictionary<object, SeriesBase>();
         public SeriesChart()
         {
-            
+
         }
 
         #region overrides
@@ -100,29 +100,29 @@ namespace MvvmCharting
             base.OnApplyTemplate();
             if (this.PART_HorizontalGridLineItemsControl != null)
             {
-                this.PART_HorizontalGridLineItemsControl.ItemTemplateApplied -= HorizontalGridLineItemTemplateApplied;
+                this.PART_HorizontalGridLineItemsControl.ItemTemplateContentLoaded -= HorizontalGridLineItemTemplateApplied;
             }
 
             if (this.PART_VerticalGridLineItemsControl != null)
             {
-                this.PART_VerticalGridLineItemsControl.ItemTemplateApplied += VerticalGridLineItemTemplateApplied;
+                this.PART_VerticalGridLineItemsControl.ItemTemplateContentLoaded += VerticalGridLineItemTemplateApplied;
             }
 
             if (this.PART_SeriesItemsControl != null)
             {
-                this.PART_SeriesItemsControl.ItemTemplateApplied -= SeriesItemTemplateApplied;
+                this.PART_SeriesItemsControl.ItemTemplateContentLoaded -= SeriesItemTemplateApplied;
             }
 
-            this.PART_SeriesItemsControl = (ItemsControlEx)GetTemplateChild(sPART_SeriesItemsControl);
-            this.PART_SeriesItemsControl.ItemTemplateApplied += SeriesItemTemplateApplied;
+            this.PART_SeriesItemsControl = (SlimItemsControl)GetTemplateChild(sPART_SeriesItemsControl);
+            this.PART_SeriesItemsControl.ItemTemplateContentLoaded += SeriesItemTemplateApplied;
 
-            this.PART_HorizontalGridLineItemsControl = (ItemsControlEx)GetTemplateChild(sPART_HorizontalGridLineItemsControl);
-            this.PART_VerticalGridLineItemsControl = (ItemsControlEx)GetTemplateChild(sPART_VerticalGridLineItemsControl);
+            this.PART_HorizontalGridLineItemsControl = (SlimItemsControl)GetTemplateChild(sPART_HorizontalGridLineItemsControl);
+            this.PART_VerticalGridLineItemsControl = (SlimItemsControl)GetTemplateChild(sPART_VerticalGridLineItemsControl);
             this.PART_HorizontalGridLineItemsControl.ItemsSource = this.HorizontalGridLineOffsets;
             this.PART_VerticalGridLineItemsControl.ItemsSource = this.VerticalGridLineOffsets;
 
-            this.PART_HorizontalGridLineItemsControl.ItemTemplateApplied += HorizontalGridLineItemTemplateApplied;
-            this.PART_VerticalGridLineItemsControl.ItemTemplateApplied += VerticalGridLineItemTemplateApplied;
+            this.PART_HorizontalGridLineItemsControl.ItemTemplateContentLoaded += HorizontalGridLineItemTemplateApplied;
+            this.PART_VerticalGridLineItemsControl.ItemTemplateContentLoaded += VerticalGridLineItemTemplateApplied;
 
             this.PART_Root = (Grid)GetTemplateChild(sPART_Root);
             this.PART_PlotAreaRoot = (Grid)GetTemplateChild(sPART_PlotAreaRoot);
@@ -269,7 +269,7 @@ namespace MvvmCharting
         }
 
 
-        private Range _yDataRange;
+        private Range _yDataRange = Range.Empty;
 
         public Range YDataRange
         {
@@ -285,7 +285,7 @@ namespace MvvmCharting
             }
         }
 
-        private Range _xDataRange;
+        private Range _xDataRange = Range.Empty;
 
         public Range XDataRange
         {
@@ -320,39 +320,74 @@ namespace MvvmCharting
 
         private void UpdateRange()
         {
+            if (this._seriesDictionary.Count == 0)
+            {
+                this.XDataRange = Range.Empty;
+                this.YDataRange = Range.Empty;
+                return;
+            }
+
             double minX = double.MaxValue, minY = double.MaxValue, maxX = double.MinValue, maxY = double.MinValue;
 
+            bool isXDataRangeEmplty = true;
+            bool isYDataRangeEmplty = true;
             foreach (var sr in this._seriesDictionary.Values)
             {
+
                 if (!sr.XDataRange.IsEmpty)
                 {
-
                     minX = Math.Min(minX, sr.XDataRange.Min);
                     maxX = Math.Max(maxX, sr.XDataRange.Max);
+
+                    if (isXDataRangeEmplty)
+                    {
+                        isXDataRangeEmplty = false;
+                    }
+
                 }
 
                 if (!sr.YDataRange.IsEmpty)
                 {
                     minY = Math.Min(minY, sr.YDataRange.Min);
                     maxY = Math.Max(maxY, sr.YDataRange.Max);
+                    if (isYDataRangeEmplty)
+                    {
+                        isYDataRangeEmplty = false;
+                    }
                 }
 
             }
 
-            this.XDataRange = new Range(minX, maxX);
-            this.YDataRange = new Range(minY, maxY);
+
+
+            if (!isXDataRangeEmplty)
+            {
+                this.XDataRange = new Range(minX, maxX);
+            }
+
+            if (!isYDataRangeEmplty)
+            {
+                this.YDataRange = new Range(minY, maxY);
+            }
+
+
         }
 
         private Range _plotAreaXDataRange;
         public Range PlotAreaXDataRange
         {
-            get { return this._plotAreaXDataRange; }
+            get
+            {
+
+                return this._plotAreaXDataRange;
+            }
             set
             {
                 if (this._plotAreaXDataRange != value)
                 {
                     this._plotAreaXDataRange = value;
                     this.PlotAreaXRangeChanged?.Invoke(value);
+
                     UpdateSeriesChartXRange();
                 }
             }
@@ -385,10 +420,13 @@ namespace MvvmCharting
             }
 
             if (this.PlotAreaXDataRange.IsEmpty ||
-                this.PlotAreaXDataRange.Min != min ||
-                this.PlotAreaXDataRange.Max != max)
+                !this.PlotAreaXDataRange.Min.NearlyEqual(min) ||
+                !this.PlotAreaXDataRange.Max.NearlyEqual(max))
             {
+
                 this.PlotAreaXDataRange = new Range(min, max);
+
+
             }
         }
 
@@ -407,6 +445,7 @@ namespace MvvmCharting
                 this.PlotAreaYDataRange.Min != min ||
                 this.PlotAreaYDataRange.Max != max)
             {
+
                 this.PlotAreaYDataRange = new Range(min, max);
             }
         }
@@ -422,14 +461,13 @@ namespace MvvmCharting
             UpdateRange();
         }
 
- 
+
 
         private void SeriesItemTemplateApplied(object sender, DependencyObject root)
         {
-            if (root == null || root is TextBlock)
+
+            if (root == null)
             {
-                //if the ItemTemplate of an ItemsControl is null, it will use the default ItemTemplate
-                //which will create an TextBlock. We just simply ignore this situation.
                 return;
             }
 
@@ -596,12 +634,10 @@ namespace MvvmCharting
                 }
             }
 
-
         }
 
         private void UpdateHorizontalGridLines()
         {
-
 
 
 
@@ -610,7 +646,6 @@ namespace MvvmCharting
 
         private void UpdateVerticalGridLines()
         {
-
             DoUpdateGridLines(this.VerticalGridLineOffsets, this._verticalTickOffsets);
         }
         #endregion

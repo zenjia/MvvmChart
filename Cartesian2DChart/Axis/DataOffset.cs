@@ -1,4 +1,5 @@
-﻿using MvvmChart.Common;
+﻿using System.Diagnostics;
+using MvvmChart.Common;
 
 namespace MvvmCharting.Axis
 {
@@ -8,7 +9,11 @@ namespace MvvmCharting.Axis
         public double Data
         {
             get { return this._data; }
-            set { SetProperty(ref this._data, value); }
+            set
+            {
+                SetProperty(ref this._data, value);
+ 
+            }
         }
 
         private double _offset;

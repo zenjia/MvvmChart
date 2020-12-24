@@ -22,32 +22,32 @@ namespace MvvmCharting.Axis
     /// It can handle DateTime data type by converting it to double type and back using System.Convert.
     /// Also, user can provide their own customized converters to customize Text of the labels of axis.
     /// </summary>
-    [TemplatePart(Name = "PART_AxisItemsControl", Type = typeof(ItemsControlEx))]
+    [TemplatePart(Name = "PART_AxisItemsControl", Type = typeof(SlimItemsControl))]
     public abstract class AxisBase : Control
     {
         private static readonly string sPART_AxisItemsControl = "PART_AxisItemsControl";
 
-        private ItemsControlEx PART_AxisItemsControl;
-        
+        private SlimItemsControl PART_AxisItemsControl;
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
             if (this.PART_AxisItemsControl != null)
             {
-                this.PART_AxisItemsControl.ItemTemplateApplied -= AxisItemsControlItemTemplateApplied;
+                this.PART_AxisItemsControl.ItemTemplateContentLoaded -= AxisItemsControlItemTemplateApplied;
             }
 
-            this.PART_AxisItemsControl = (ItemsControlEx)GetTemplateChild(sPART_AxisItemsControl);
+            this.PART_AxisItemsControl = (SlimItemsControl)GetTemplateChild(sPART_AxisItemsControl);
             this.PART_AxisItemsControl.ItemsSource = this.AxisDataOffsets;
-            this.PART_AxisItemsControl.ItemTemplateApplied += AxisItemsControlItemTemplateApplied; ;
+            this.PART_AxisItemsControl.ItemTemplateContentLoaded += AxisItemsControlItemTemplateApplied; ;
             TryLoadAxisItemDataOffsets();
         }
 
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
             base.OnPropertyChanged(e);
- 
+
             if (e.Property == BorderThicknessProperty)
             {
                 SynchronizeBorderThickness();
@@ -177,7 +177,7 @@ namespace MvvmCharting.Axis
 
         protected virtual void OnOwnerChanged(IAxisOwner oldValue, IAxisOwner newValue)
         {
-            if (oldValue!=null)
+            if (oldValue != null)
             {
                 this.Owner.PaddingChanged -= Owner_PaddingChanged;
                 this.Owner.BorderThicknessChanged -= Owner_BorderThicknessChanged;
@@ -250,12 +250,11 @@ namespace MvvmCharting.Axis
             var length = GetActualLength();
             if (range.IsEmpty || length.IsNaNOrZero())
             {
-
-
                 return;
             }
-
+          
             this.ActualValues = new AxisActualValues(this.TickCount, this.TickInterval, range, length);
+
         }
 
 
@@ -273,6 +272,7 @@ namespace MvvmCharting.Axis
         protected abstract void DoUpdateAxisItemOffset();
 
 
+        //startValue=0, tickInterval=1.27641050721832E+17, chartRange=(0.0000, 638205253609158000.0000)
         private void LoadAxisDataOffsets(double startValue, double tickInterval, int tickCount)
         {
             var chartRange = GetChartRange();
@@ -281,7 +281,6 @@ namespace MvvmCharting.Axis
                 .Select(i => startValue + i * tickInterval)
                 .Where(x => chartRange.IsInRange(x))
                 .ToArray();
-
             DoLoadAxisDataOffsets(arr);
         }
 
@@ -312,7 +311,7 @@ namespace MvvmCharting.Axis
             }
 
 
-   
+
 
         }
 
@@ -347,7 +346,7 @@ namespace MvvmCharting.Axis
 
             UpdateAxisItemOffset();
 
- 
+
 
             this._currentActualValues = values;
             return true;
@@ -378,11 +377,11 @@ namespace MvvmCharting.Axis
                 throw new MvvmChartUnexpectedTypeException(this.PART_AxisItemsControl.Name + $"  The root item of ItemTemplate of an axis must be based on '{typeof(AxisItem)}'!");
             }
 
-            Binding b = new Binding(nameof(this.LabelTextConverter)) {Source = this};
+            Binding b = new Binding(nameof(this.LabelTextConverter)) {Source = this };
             axisItem.SetBinding(AxisItem.LabelTextConverterProperty, b);
         }
 
- 
+
 
 
 

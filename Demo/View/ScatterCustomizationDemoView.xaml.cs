@@ -12,9 +12,38 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MvvmCharting;
 
 namespace Demo
 {
+    public class MyScatterTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate DataTemplate0 { get; set; }
+        public DataTemplate DataTemplate1 { get; set; }
+
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+            if (item == null)
+            {
+                return null;
+            }
+
+
+            ScatterViewModel obj = (ScatterViewModel)item;
+            SomePoint pt = (SomePoint) obj.Item;
+            int i = (int)pt.t;
+            int j = (int)pt.Y;
+
+            if (i%2==0 && j%2==0)
+            {
+                return DataTemplate1;
+            }
+
+
+            return DataTemplate0;
+        }
+    }
+
     /// <summary>
     /// Interaction logic for ScatterCustomizationDemoView.xaml
     /// </summary>

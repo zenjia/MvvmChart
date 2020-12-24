@@ -6,6 +6,12 @@ namespace MvvmCharting.Axis
 {
     internal class AxisActualValues
     {
+        public override string ToString()
+        {
+            return string.Format($"Input values: CurrentRange={CurrentRange}, ActualRangeSpan={ActualRangeSpan}, ActualLength={ActualLength}" + Environment.NewLine
+            + $"Calculated values: ActualTickInterval={ActualTickInterval}, ActualTickCount={ActualTickCount}");
+        }
+
         #region input values
 
         //private readonly int _tickCount;
@@ -32,7 +38,19 @@ namespace MvvmCharting.Axis
             //this._tickCount = tickCount;
             //this._tickInterval = tickInterval;
 
+            if (tickCount<0 || tickCount>ushort.MaxValue)
+            {
+                throw new NotSupportedException();
+            }
+
+            if (!range.IsValid)
+            {
+                throw new NotSupportedException();
+            }
+
             this.CurrentRange = range;
+
+ 
             this.ActualLength = actualLength;
 
             //below is calculated state:
