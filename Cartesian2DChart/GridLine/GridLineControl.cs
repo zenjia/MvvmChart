@@ -7,12 +7,13 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Shapes;
 using MvvmChart.Common;
+using MvvmChart.Common.Axis;
 
 namespace MvvmCharting
 {
     [TemplatePart(Name = "PART_HorizontalGridLineItemsControl", Type = typeof(SlimItemsControl))]
     [TemplatePart(Name = "PART_VerticalGridLineItemsControl", Type = typeof(SlimItemsControl))]
-    public class GridLineControl : Control
+    public class GridLineControl : Control, IGridLineControl
     {
         static GridLineControl()
         {
@@ -241,7 +242,7 @@ namespace MvvmCharting
         #endregion
 
 
-        public void OnAxisItemCoordinateChanged(Orientation orientation, IEnumerable<double> ticks)
+        public void OnAxisItemCoordinateChanged(AxisType orientation, IEnumerable<double> ticks)
         {
             if (ticks == null)
             {
@@ -250,11 +251,11 @@ namespace MvvmCharting
 
             switch (orientation)
             {
-                case Orientation.Vertical:
+                case AxisType.YAxis:
                     this._horizontalTickOffsets = ticks.ToArray();
                     UpdateHorizontalGridLines();
                     break;
-                case Orientation.Horizontal:
+                case AxisType.XAxis:
                     this._verticalTickOffsets = ticks.ToArray();
                     UpdateVerticalGridLines();
                     break;

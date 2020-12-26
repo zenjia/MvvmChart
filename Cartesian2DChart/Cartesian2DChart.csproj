@@ -90,6 +90,7 @@
     <Compile Include="Axis\IAxisOwner.cs" />
     <Compile Include="Axis\IXAxisOwner.cs" />
     <Compile Include="Axis\IYAxisOwner.cs" />
+    <Compile Include="GridLine\IGridLineControl.cs" />
     <Compile Include="Series\ISeries.cs" />
     <Compile Include="Series\Scatter\Scatter2.cs" />
     <Compile Include="SeriesChart\SeriesChart.cs" />

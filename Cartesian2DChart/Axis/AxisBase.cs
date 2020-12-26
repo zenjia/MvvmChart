@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using Cartesian2DChart.Axis;
 using MvvmChart.Common;
+using MvvmChart.Common.Axis;
 
 namespace MvvmCharting.Axis
 {
@@ -216,8 +217,8 @@ namespace MvvmCharting.Axis
             }
         }
 
-        private Orientation? _orientation;
-        public Orientation? Orientation
+        private AxisType _orientation;
+        public AxisType Orientation
         {
             get { return this._orientation; }
             set
@@ -234,17 +235,17 @@ namespace MvvmCharting.Axis
         private void AttachHandler()
         {
             if (this.Owner == null ||
-                this.Orientation == null)
+                this.Orientation == AxisType.None)
             {
                 return;
             }
 
-            switch ((Orientation)this.Orientation.Value)
+            switch (this.Orientation)
             {
-                case System.Windows.Controls.Orientation.Horizontal:
+                case AxisType.XAxis:
                     ((IXAxisOwner)this.Owner).CanvasHorizontalSettingChanged += AxisBase_CanvasSettingChanged;
                     break;
-                case System.Windows.Controls.Orientation.Vertical:
+                case AxisType.YAxis:
                     ((IYAxisOwner)this.Owner).CanvasVerticalSettingChanged += AxisBase_CanvasSettingChanged;
                     break;
                 default:
@@ -408,7 +409,7 @@ namespace MvvmCharting.Axis
             var coordinates = GetAxisItemCoordinates();
 
 
-            this.Owner.OnAxisItemsCoordinateChanged((Orientation)this.Orientation, coordinates);
+            this.Owner.OnAxisItemsCoordinateChanged(this.Orientation, coordinates);
 
 
            
@@ -476,14 +477,14 @@ namespace MvvmCharting.Axis
             var length = this.DrawingSettings.PlotingLength;
             var uLen = length / span;
 
-            var len = (this.Orientation == System.Windows.Controls.Orientation.Vertical)? this.ActualHeight: this
+            var len = (this.Orientation == AxisType.YAxis) ? this.ActualHeight: this
                 .ActualWidth;
 
   
             foreach (var item in this.ItemDrawingParams)
             {
                 var coordinate = (item.Value - this.DrawingSettings.PlotingDataRange.Min) * uLen;
-                if (this.Orientation == System.Windows.Controls.Orientation.Vertical)
+                if (this.Orientation == AxisType.YAxis)
                 {
                     coordinate = length - coordinate;
                 }

@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Shapes;
 using Cartesian2DChart.Axis;
 using MvvmChart.Common;
+using MvvmChart.Common.Axis;
 using MvvmCharting.Axis;
 
 namespace MvvmCharting
@@ -20,12 +21,11 @@ namespace MvvmCharting
     /// x axis & y axis, grid lines, cross hair...
     /// </summary>
     [TemplatePart(Name = "PART_Root", Type = typeof(Grid))]
-    [TemplatePart(Name = "PART_PlotingCanvas", Type = typeof(Grid))]
+    [TemplatePart(Name = "PART_PlottingCanvas", Type = typeof(Grid))]
     [TemplatePart(Name = "PART_SeriesItemsControl", Type = typeof(SlimItemsControl))]
     [TemplatePart(Name = "PART_HorizontalCrossHair", Type = typeof(Line))]
     [TemplatePart(Name = "PART_VerticalCrossHair", Type = typeof(Line))]
     [TemplatePart(Name = "PART_GridLineHolder", Type = typeof(Line))]
-
     public class SeriesChart : Control, IXAxisOwner, IYAxisOwner
     {
         static SeriesChart()
@@ -34,7 +34,7 @@ namespace MvvmCharting
         }
 
         private static readonly string sPART_Root = "PART_Root";
-        private static readonly string sPART_PlotingCanvas = "PART_PlotingCanvas";
+        private static readonly string sPART_PlottingCanvas = "PART_PlottingCanvas";
 
         private static readonly string sPART_SeriesItemsControl = "PART_SeriesItemsControl";
         private static readonly string sPART_HorizontalCrossHair = "PART_HorizontalCrossHair";
@@ -78,7 +78,7 @@ namespace MvvmCharting
         }
         private PlottingSettings GetCanvasSettingChangedEventArgs(Orientation orientation)
         {
-            if (this.PART_PlotingCanvas == null)
+            if (this.PART_PlotitngCanvas == null)
             {
 
                 return null;
@@ -91,7 +91,7 @@ namespace MvvmCharting
             {
                 case Orientation.Horizontal:
 
-                    length = this.PART_PlotingCanvas.ActualWidth;
+                    length = this.PART_PlotitngCanvas.ActualWidth;
                     magrin = new Point(this.Margin.Left, this.Margin.Right);
                     pading = new Point(this.Padding.Left, this.Padding.Right);
                     borderThickness = new Point(this.BorderThickness.Left, this.BorderThickness.Right);
@@ -100,7 +100,7 @@ namespace MvvmCharting
 
 
                 case Orientation.Vertical:
-                    length = this.PART_PlotingCanvas.ActualHeight;
+                    length = this.PART_PlotitngCanvas.ActualHeight;
                     magrin = new Point(this.Margin.Top, this.Margin.Bottom);
                     pading = new Point(this.Padding.Top, this.Padding.Bottom);
                     borderThickness = new Point(this.BorderThickness.Top, this.BorderThickness.Bottom);
@@ -143,7 +143,7 @@ namespace MvvmCharting
         }
 
         private Grid PART_Root;
-        private Grid PART_PlotingCanvas;
+        private Grid PART_PlotitngCanvas;
         private SlimItemsControl PART_SeriesItemsControl;
 
         private Line PART_HorizontalCrossHair;
@@ -197,7 +197,7 @@ namespace MvvmCharting
 
 
             this.PART_Root = (Grid)GetTemplateChild(sPART_Root);
-            this.PART_PlotingCanvas = (Grid)GetTemplateChild(sPART_PlotingCanvas);
+            this.PART_PlotitngCanvas = (Grid)GetTemplateChild(sPART_PlottingCanvas);
 
             OnXAxisPropertyChanged(null, this.XAxis);
             OnYAxisPropertyChanged(null, this.YAxis);
@@ -209,7 +209,7 @@ namespace MvvmCharting
                 this.PART_HorizontalCrossHair.SetBinding(Control.StyleProperty,
                     new Binding(nameof(HorizontalCrossHairLineStyle)) { Source = this });
                 this.PART_HorizontalCrossHair.SetBinding(Line.X2Property,
-                    new Binding(nameof(ActualWidth)) { Source = this.PART_PlotingCanvas });
+                    new Binding(nameof(ActualWidth)) { Source = this.PART_PlotitngCanvas });
 
             }
 
@@ -219,20 +219,20 @@ namespace MvvmCharting
                 this.PART_VerticalCrossHair.SetBinding(Control.StyleProperty,
                     new Binding(nameof(VerticalCrossHairLineStyle)) { Source = this });
                 this.PART_VerticalCrossHair.SetBinding(Line.Y2Property,
-                    new Binding(nameof(ActualHeight)) { Source = this.PART_PlotingCanvas });
+                    new Binding(nameof(ActualHeight)) { Source = this.PART_PlotitngCanvas });
             }
 
             this.PART_GridLineHolder = (ContentControl)GetTemplateChild(sPART_GridLineHolder);
             OnGridLineControlChanged();
 
-            this.PART_PlotingCanvas.MouseMove += PartPlotingCanvasMouseMove;
-            this.PART_PlotingCanvas.MouseLeave += PartPlotingCanvasMouseLeave;
-            this.PART_PlotingCanvas.SizeChanged += PART_PlotingCanvas_SizeChanged;
+            this.PART_PlotitngCanvas.MouseMove += PartPlotitngCanvasMouseMove;
+            this.PART_PlotitngCanvas.MouseLeave += PartPlotitngCanvasMouseLeave;
+            this.PART_PlotitngCanvas.SizeChanged += PartPlotitngCanvasSizeChanged;
         }
 
 
 
-        private void PART_PlotingCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void PartPlotitngCanvasSizeChanged(object sender, SizeChangedEventArgs e)
         {
 
             if (!this.IsLoaded)
@@ -641,13 +641,13 @@ namespace MvvmCharting
 
 
 
-        public GridLineControl GridLineControl
+        public IGridLineControl GridLineControl
         {
-            get { return (GridLineControl)GetValue(GridLineControlProperty); }
+            get { return (IGridLineControl)GetValue(GridLineControlProperty); }
             set { SetValue(GridLineControlProperty, value); }
         }
         public static readonly DependencyProperty GridLineControlProperty =
-            DependencyProperty.Register("GridLineControl", typeof(GridLineControl), typeof(SeriesChart), new PropertyMetadata(null, OnGridLineControlPropertyChanged));
+            DependencyProperty.Register("GridLineControl", typeof(IGridLineControl), typeof(SeriesChart), new PropertyMetadata(null, OnGridLineControlPropertyChanged));
 
         private static void OnGridLineControlPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -664,8 +664,8 @@ namespace MvvmCharting
             }
             this.PART_GridLineHolder.Content = this.GridLineControl;
 
-            this.GridLineControl?.OnAxisItemCoordinateChanged(Orientation.Vertical, this.YAxis?.GetAxisItemCoordinates());
-            this.GridLineControl?.OnAxisItemCoordinateChanged(Orientation.Horizontal, this.XAxis?.GetAxisItemCoordinates());
+            this.GridLineControl?.OnAxisItemCoordinateChanged(AxisType.YAxis, this.YAxis?.GetAxisItemCoordinates());
+            this.GridLineControl?.OnAxisItemCoordinateChanged(AxisType.XAxis, this.XAxis?.GetAxisItemCoordinates());
         }
 
 
@@ -709,7 +709,7 @@ namespace MvvmCharting
  
                 this.PART_Root.Children.Add(newValue as UIElement);
                 newValue.Owner = this;
-                newValue.Orientation = Orientation.Horizontal;
+                newValue.Orientation = AxisType.XAxis;
                 newValue.AxisPlacementChanged += OnAxisPlacementChanged;
                 OnAxisPlacementChanged(newValue);
             }
@@ -754,7 +754,7 @@ namespace MvvmCharting
  
                 this.PART_Root.Children.Add(newValue as UIElement);
                 newValue.Owner = this;
-                newValue.Orientation = Orientation.Vertical;
+                newValue.Orientation = AxisType.YAxis;
                 newValue.AxisPlacementChanged += OnAxisPlacementChanged;
                 OnAxisPlacementChanged(newValue);
             }
@@ -763,9 +763,9 @@ namespace MvvmCharting
         private void OnAxisPlacementChanged(IAxis obj)
         {
             var axis = obj as UIElement;
-            switch ((Orientation)obj.Orientation)
+            switch (obj.Orientation)
             {
-                case Orientation.Horizontal:
+                case AxisType.XAxis:
                     Grid.SetColumn(axis, 1);
                     switch (obj.Placement)
                     {
@@ -779,7 +779,7 @@ namespace MvvmCharting
                             throw new NotSupportedException($"XAxis does not support '{obj.Placement}' placement!");
                     }
                     break;
-                case Orientation.Vertical:
+                case AxisType.YAxis:
                     Grid.SetRow(axis, 1);
 
                     switch (obj.Placement)
@@ -819,19 +819,19 @@ namespace MvvmCharting
 
         private void OnPlotAreaBackgroundPropertyChanged(UIElement oldValue, UIElement newValue)
         {
-            if (this.PART_PlotingCanvas == null)
+            if (this.PART_PlotitngCanvas == null)
             {
                 return;
             }
 
-            if (this.PART_PlotingCanvas.Children.Contains(oldValue))
+            if (this.PART_PlotitngCanvas.Children.Contains(oldValue))
             {
-                this.PART_PlotingCanvas.Children.Remove(oldValue);
+                this.PART_PlotitngCanvas.Children.Remove(oldValue);
             }
 
-            if (newValue != null && !this.PART_PlotingCanvas.Children.Contains(newValue))
+            if (newValue != null && !this.PART_PlotitngCanvas.Children.Contains(newValue))
             {
-                this.PART_PlotingCanvas.Children.Insert(0, newValue);
+                this.PART_PlotitngCanvas.Children.Insert(0, newValue);
             }
 
         }
@@ -879,7 +879,7 @@ namespace MvvmCharting
 
 
 
-        private void PartPlotingCanvasMouseMove(object sender, MouseEventArgs e)
+        private void PartPlotitngCanvasMouseMove(object sender, MouseEventArgs e)
         {
             bool isHorizontalCrossHairVisible = this.HorizontalCrossHairVisibility == Visibility.Visible;
             bool isVerticalCrossHairVisible = this.VerticalCrossHairVisiblity == Visibility.Visible;
@@ -890,7 +890,7 @@ namespace MvvmCharting
                 return;
             }
 
-            var mousePoint = e.GetPosition(this.PART_PlotingCanvas);
+            var mousePoint = e.GetPosition(this.PART_PlotitngCanvas);
 
             if (isHorizontalCrossHairVisible)
             {
@@ -905,7 +905,7 @@ namespace MvvmCharting
 
         }
 
-        private void PartPlotingCanvasMouseLeave(object sender, MouseEventArgs e)
+        private void PartPlotitngCanvasMouseLeave(object sender, MouseEventArgs e)
         {
             if (this.PART_HorizontalCrossHair.Visibility != Visibility.Collapsed)
             {
@@ -957,7 +957,7 @@ namespace MvvmCharting
         #endregion
 
 
-        public void OnAxisItemsCoordinateChanged(Orientation orientation, IEnumerable<double> ticks)
+        public void OnAxisItemsCoordinateChanged(AxisType orientation, IEnumerable<double> ticks)
         {
             this.GridLineControl?.OnAxisItemCoordinateChanged(orientation, ticks);
         }

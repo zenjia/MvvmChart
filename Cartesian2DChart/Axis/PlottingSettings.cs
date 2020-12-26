@@ -6,8 +6,7 @@ namespace MvvmCharting.Axis
 {
     public class PlottingSettings
     {
- 
-
+        
         public Orientation Orientation { get; }
         public double RenderSize { get; }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
+using MvvmChart.Common.Axis;
 using MvvmCharting.Axis;
 
 
@@ -10,7 +11,9 @@ namespace Cartesian2DChart.Axis
     {
         IAxisOwner Owner { get; set; }
         AxisPlacement Placement { get; set; }
-        Orientation? Orientation { get; set; }
+
+ 
+        AxisType Orientation { get; set; }
 
         event Action<IAxis> AxisPlacementChanged;
         IEnumerable<double> GetAxisItemCoordinates();

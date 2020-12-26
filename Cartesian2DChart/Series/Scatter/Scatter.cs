@@ -109,6 +109,7 @@ namespace MvvmCharting
         {
             UpdateAdjustedCoordinate();
 
+             
 
         }
 

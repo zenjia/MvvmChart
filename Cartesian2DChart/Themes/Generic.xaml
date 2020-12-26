@@ -188,14 +188,14 @@
 
     <axis:AxisBase x:Key="XAxis" 
                    x:Shared="False"
-                   Orientation="Horizontal"
+                   Orientation="XAxis"
                    Placement="Bottom">
 
     </axis:AxisBase>
 
     <axis:AxisBase x:Key="YAxis" 
                    x:Shared="False"
-                   Orientation="Vertical" 
+                   Orientation="YAxis" 
                    Placement="Left">
 
     </axis:AxisBase>
@@ -285,7 +285,7 @@
                                 <ScaleTransform ScaleY="-1" />
                             </Border.RenderTransform>
 
-                            <Grid x:Name="PART_PlotingCanvas" >
+                            <Grid x:Name="PART_PlottingCanvas" >
                                 <ContentControl x:Name="PART_GridLineHolder"/>
 
                                 <local:SlimItemsControl x:Name="PART_SeriesItemsControl" />

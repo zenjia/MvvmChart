@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Media;
 
 namespace MvvmCharting
@@ -69,6 +70,8 @@ namespace MvvmCharting
                 return;
             }
 
+ 
+            
             var coordinates = this.GetCoordinates();  
           
             this.PathData = this.GeometryBuilder.GetGeometry(coordinates);
