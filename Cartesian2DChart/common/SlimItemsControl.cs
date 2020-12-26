@@ -6,7 +6,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using MvvmChart.Common;
@@ -15,7 +14,7 @@ namespace MvvmCharting
 {
 
     /// <summary>
-    /// This is not an ItemsControl
+    /// This is just a panel wrapper, which can be used through MVVM mode
     /// </summary>
     [TemplatePart(Name = "PART_Root", Type = typeof(Panel))]
     public class SlimItemsControl : Control
@@ -27,6 +26,18 @@ namespace MvvmCharting
 
         private static string RangeActionsNotSupported = "RangeActionsNotSupported";
         private static string UnexpectedCollectionChangeAction = "UnexpectedCollectionChangeAction";
+
+        /// <summary>
+        /// Cached ItemsSource reference which has been added
+        /// </summary>
+        private IList _handledItemsSource;
+
+        /// <summary>
+        /// Fired when ItemTemplate is applied for an item
+        /// </summary>
+        public event Action<object, FrameworkElement> ElementGenerated;
+
+        private Dictionary<object, FrameworkElement> _itemsDictionary = new Dictionary<object, FrameworkElement>();
 
         private Panel PART_Root;
         public override void OnApplyTemplate()
@@ -50,31 +61,16 @@ namespace MvvmCharting
 
         public SlimItemsControl()
         {
-  
             this.Loaded += this.SlimItemsControl_Loaded;
-
- 
-
         }
-
-        
 
         private void SlimItemsControl_Loaded(object sender, RoutedEventArgs e)
         {
-          
             LoadAllItems();
         }
 
-        private IList _handledItemsSource;
- 
- 
- 
 
-        public event Action<object, FrameworkElement> ItemTemplateContentLoaded;
-
-        private Dictionary<object, FrameworkElement> _itemsDictionary = new Dictionary<object, FrameworkElement>();
-
-        #region internal items access routines
+        #region public routines
         public bool ContainsItem(object item)
         {
             return this._itemsDictionary.ContainsKey(item);
@@ -82,7 +78,7 @@ namespace MvvmCharting
 
         public int ItemCount => this._itemsDictionary.Count;
 
-        public FrameworkElement TryGetTemplateElementForItem(object item)
+        public FrameworkElement TryGetElementForItem(object item)
         {
             if (!this._itemsDictionary.ContainsKey(item))
             {
@@ -91,7 +87,7 @@ namespace MvvmCharting
             return this._itemsDictionary[item];
         }
 
-        public IEnumerable<FrameworkElement> GetAllTemplateElements()
+        public IEnumerable<FrameworkElement> GetAllElements()
         {
             if (this._itemsDictionary.Count != this.PART_Root.Children.Count)
             {
@@ -164,10 +160,33 @@ namespace MvvmCharting
 
         private void OnItemTemplateChanged(DataTemplate oldValue, DataTemplate newValue)
         {
+            //If the ItemTemplate or ItemTemplateSelector of an ItemsControl is replaced, then its
+            //ItemContainer will re-apply its Template(i.e. ItemTemplate), which will regenerate
+            //the TemplateChild of its ItemContainer. We should ReloadAllItems.
             ReloadAllItems();
         }
 
+        public DataTemplateSelector ItemTemplateSelector
+        {
+            get { return (DataTemplateSelector)GetValue(ItemTemplateSelectorProperty); }
+            set { SetValue(ItemTemplateSelectorProperty, value); }
+        }
 
+        public static readonly DependencyProperty ItemTemplateSelectorProperty =
+            ItemsControl.ItemTemplateSelectorProperty.AddOwner(typeof(SlimItemsControl), new PropertyMetadata(null, OnItemTemplateSelectorPropertyChanged));
+
+        private static void OnItemTemplateSelectorPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((SlimItemsControl)d).OnItemTemplateSelectorChanged((DataTemplateSelector)e.OldValue, (DataTemplateSelector)e.NewValue);
+        }
+
+        private void OnItemTemplateSelectorChanged(DataTemplateSelector oldValue, DataTemplateSelector newValue)
+        {
+            if (this.ItemTemplate == null)
+            {
+                ReloadAllItems();
+            }
+        }
 
 
 
@@ -205,7 +224,7 @@ namespace MvvmCharting
 
         #region Collection operation
 
-        void OnCollectionChanged(NotifyCollectionChangedEventArgs args)
+        private void OnCollectionChanged(NotifyCollectionChangedEventArgs args)
         {
 
             if (!CanAddItem())
@@ -259,9 +278,7 @@ namespace MvvmCharting
 
         }
 
-
-        // Called when an item is added to the items collection
-        void OnItemAdded(object item, int index)
+        private void OnItemAdded(object item, int index)
         {
 
 #if DEBUG_SlimItemsControl
@@ -274,14 +291,13 @@ namespace MvvmCharting
 
             this.PART_Root.Children.Insert(index, treeRoot);
 
-            this.ItemTemplateContentLoaded?.Invoke(this, treeRoot);
+            this.ElementGenerated?.Invoke(this, treeRoot);
 
 
 
         }
 
-        // Called when an item is removed from the items collection
-        void OnItemRemoved(object item, int itemIndex)
+        private void OnItemRemoved(object item, int itemIndex)
         {
 #if DEBUG_SlimItemsControl
             Debug.WriteLine($"{this.Name}({this.GetHashCode()})....OnItemRemoved....{item}");
@@ -291,7 +307,7 @@ namespace MvvmCharting
 
         }
 
-        void OnItemReplaced(object oldItem, object newItem, int index)
+        private void OnItemReplaced(object oldItem, object newItem, int index)
         {
 #if DEBUG_SlimItemsControl
             Debug.WriteLine($"{this.Name}({this.GetHashCode()})....OnItemReplaced....{oldItem}->{newItem}");
@@ -318,10 +334,10 @@ namespace MvvmCharting
             //this.PART_Root.Children.RemoveAt(index);
             //this.PART_Root.Children.Insert(index, treeRoot);
 
-            this.ItemTemplateContentLoaded?.Invoke(this, treeRoot);
+            this.ElementGenerated?.Invoke(this, treeRoot);
         }
 
-        void OnItemMoved(object item, int oldIndex, int newIndex)
+        private void OnItemMoved(object item, int oldIndex, int newIndex)
         {
 #if DEBUG_SlimItemsControl
             Debug.WriteLine($"{this.Name}({this.GetHashCode()})....OnItemMoved....{item}");
@@ -337,8 +353,7 @@ namespace MvvmCharting
 
         }
 
-        // Called when the items collection is refreshed
-        void OnRefresh()
+        private void OnRefresh()
         {
 #if DEBUG_SlimItemsControl
             Debug.WriteLine($"{this.Name}({this.GetHashCode()})....OnRefresh....");
@@ -426,27 +441,7 @@ namespace MvvmCharting
         }
         #endregion
 
-        public DataTemplateSelector ItemTemplateSelector
-        {
-            get { return (DataTemplateSelector)GetValue(ItemTemplateSelectorProperty); }
-            set { SetValue(ItemTemplateSelectorProperty, value); }
-        }
 
-        public static readonly DependencyProperty ItemTemplateSelectorProperty =
-            ItemsControl.ItemTemplateSelectorProperty.AddOwner(typeof(SlimItemsControl), new PropertyMetadata(null, OnItemTemplateSelectorPropertyChanged));
-
-        private static void OnItemTemplateSelectorPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((SlimItemsControl)d).OnItemTemplateSelectorChanged((DataTemplateSelector)e.OldValue, (DataTemplateSelector)e.NewValue);
-        }
-
-        private void OnItemTemplateSelectorChanged(DataTemplateSelector oldValue, DataTemplateSelector newValue)
-        {
-            if (this.ItemTemplate == null)
-            {
-                ReloadAllItems();
-            }
-        }
 
 
 

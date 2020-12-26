@@ -1,8 +1,4 @@
-﻿using System.Linq;
-using System.Windows;
-using System.Windows.Media;
-
-namespace MvvmCharting
+﻿namespace MvvmCharting
 {
     /// <summary>
     /// A handy class to draw poly line series.

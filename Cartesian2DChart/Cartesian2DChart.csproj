@@ -69,10 +69,11 @@
   <ItemGroup>
     <Compile Include="Axis\AxisDrawingSettings.cs" />
     <Compile Include="Axis\AxisBase.cs" />
-    <Compile Include="Axis\AxisItem\AxisItemItem.cs" />
+    <Compile Include="Axis\AxisItem\AxisItem.cs" />
     <Compile Include="Axis\AxisItemDrawingParam.cs" />
     <Compile Include="Axis\AxisItem\DefaultDoubleToAxisLabelTextConverter.cs" />
     <Compile Include="Axis\AxisItem\IAxisItem.cs" />
+    <Compile Include="Axis\IAxis.cs" />
     <Compile Include="common\IPlottable_1D.cs" />
     <Compile Include="Axis\AxisPlacement.cs" />
     <Compile Include="common\PointHelper.cs" />
@@ -85,6 +86,11 @@
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\RectangleBuilder.cs" />
     <Compile Include="GridLine\GridLineControl.cs" />
     <Compile Include="common\IPlottable_2D.cs" />
+    <Compile Include="Axis\PlottingSettings.cs" />
+    <Compile Include="Axis\IAxisOwner.cs" />
+    <Compile Include="Axis\IXAxisOwner.cs" />
+    <Compile Include="Axis\IYAxisOwner.cs" />
+    <Compile Include="Series\ISeries.cs" />
     <Compile Include="Series\Scatter\Scatter2.cs" />
     <Compile Include="SeriesChart\SeriesChart.cs" />
     <Compile Include="Series\Scatter\IScatter.cs" />

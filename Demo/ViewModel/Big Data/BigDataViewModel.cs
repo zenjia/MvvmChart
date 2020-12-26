@@ -54,10 +54,15 @@ namespace Demo
             set
             {
                 SetProperty(ref this._selectedScatterTemplateType, value);
-                foreach (var list in this.ItemsSourceList)
-                {
-                    list.SelectedScatterTemplateType = value;
-                }
+                OnSelectedScatterTemplateTypeUpdated();
+            }
+        }
+
+        private void OnSelectedScatterTemplateTypeUpdated( )
+        {
+            foreach (var list in this.ItemsSourceList)
+            {
+                list.SelectedScatterTemplateType = this.SelectedScatterTemplateType;
             }
         }
 
@@ -102,8 +107,9 @@ namespace Demo
             }
 
             this.ItemsSourceList.Add(list);
-
+            OnSelectedScatterTemplateTypeUpdated();
             UpdateScatterVisible();
+
         }
 
         public BigDataViewModel()

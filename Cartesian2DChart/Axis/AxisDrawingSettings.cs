@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using MvvmChart.Common;
 
 namespace MvvmCharting.Axis

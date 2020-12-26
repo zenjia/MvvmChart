@@ -1,22 +1,15 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Media;
+using Cartesian2DChart.Axis;
 using MvvmChart.Common;
 
 namespace MvvmCharting.Axis
 {
-
-
     /// <summary>
     /// The base class for XAxis and YAxis.
     /// It is basically a numeric, linear axis, and can't handle category data type.
@@ -24,7 +17,7 @@ namespace MvvmCharting.Axis
     /// Also, user can provide their own customized converters to customize Text of the labels of axis.
     /// </summary>
     [TemplatePart(Name = "PART_AxisItemsControl", Type = typeof(SlimItemsControl))]
-    public class AxisBase : Control
+    public class AxisBase : Control, IAxis
     {
         static AxisBase()
         {
@@ -42,15 +35,21 @@ namespace MvvmCharting.Axis
 
             if (this.PART_AxisItemsControl != null)
             {
-                this.PART_AxisItemsControl.ItemTemplateContentLoaded -= AxisItemsControlItemTemplateApplied;
+                this.PART_AxisItemsControl.ElementGenerated -= AxisItemsControlItemTemplateApplied;
             }
 
             this.PART_AxisItemsControl = (SlimItemsControl)GetTemplateChild(sPART_AxisItemsControl);
             if (this.PART_AxisItemsControl != null)
             {
-                this.PART_AxisItemsControl.ItemsSource = this.ItemDrawingParams;
-                this.PART_AxisItemsControl.ItemTemplateContentLoaded += AxisItemsControlItemTemplateApplied;
 
+                this.PART_AxisItemsControl.ElementGenerated += AxisItemsControlItemTemplateApplied;
+
+                this.PART_AxisItemsControl.SetBinding(SlimItemsControl.ItemTemplateProperty,
+                    new Binding(nameof(this.ItemTemplate)) {Source = this});
+                this.PART_AxisItemsControl.SetBinding(SlimItemsControl.ItemTemplateSelectorProperty,
+                    new Binding(nameof(this.ItemTemplateSelector)) { Source = this });
+
+                this.PART_AxisItemsControl.ItemsSource = this.ItemDrawingParams;
                 TryLoadAxisItemDrawingParams();
             }
 
@@ -189,7 +188,6 @@ namespace MvvmCharting.Axis
         }
 
         private Orientation? _orientation;
-
         public Orientation? Orientation
         {
             get { return this._orientation; }
@@ -227,7 +225,7 @@ namespace MvvmCharting.Axis
             UpdateAxisDrawingSettings();
         }
 
-        private void AxisBase_CanvasSettingChanged(CanvasSettingChangedEventArgs obj)
+        private void AxisBase_CanvasSettingChanged(PlottingSettings obj)
         {
             switch (obj.Orientation)
             {
@@ -248,21 +246,21 @@ namespace MvvmCharting.Axis
                     throw new ArgumentOutOfRangeException();
             }
 
-            this.CanvasSetting = obj;
+            this.PlottingSetting = obj;
 
 
         }
 
-        private CanvasSettingChangedEventArgs _canvasSetting;
-        protected CanvasSettingChangedEventArgs CanvasSetting
+        private PlottingSettings _plottingSetting;
+        protected PlottingSettings PlottingSetting
         {
-            get { return this._canvasSetting; }
+            get { return this._plottingSetting; }
 
             set
             {
-                if (this._canvasSetting != value)
+                if (this._plottingSetting != value)
                 {
-                    this._canvasSetting = value;
+                    this._plottingSetting = value;
                     UpdateAxisDrawingSettings();
                 }
             }
@@ -295,14 +293,14 @@ namespace MvvmCharting.Axis
         private void UpdateAxisDrawingSettings()
         {
             if (/*!this.IsLoaded ||*/
-                this.CanvasSetting == null)
+                this.PlottingSetting == null)
             {
                 return;
             }
 
 
-            var range = this.CanvasSetting.PlotingDataRange;
-            var length = this.CanvasSetting.GetAvailablePlottingSize();
+            var range = this.PlottingSetting.PlotingDataRange;
+            var length = this.PlottingSetting.GetAvailablePlottingSize();
             if (range.IsInvalid || length.IsNaNOrZero())
             {
                 throw new NotImplementedException();
@@ -322,7 +320,7 @@ namespace MvvmCharting.Axis
 
         private IList<double> GetItemDataValues(double startValue, double tickInterval, int tickCount)
         {
-            var chartRange = this.CanvasSetting.PlotingDataRange;
+            var chartRange = this.PlottingSetting.PlotingDataRange;
 
             var arr = Enumerable.Range(0, tickCount)
                 .Select(i => startValue + i * tickInterval)
@@ -363,13 +361,13 @@ namespace MvvmCharting.Axis
 
         }
 
-        internal IEnumerable<double> GetAxisItemCoordinates()
+        public IEnumerable<double> GetAxisItemCoordinates()
         {
-            if (this.CanvasSetting == null)
+            if (this.PlottingSetting == null)
             {
                 return null;
             }
-            var range = this.CanvasSetting.PlotingDataRange;
+            var range = this.PlottingSetting.PlotingDataRange;
             var coordinates = this.ItemDrawingParams.Where(x => range.IsInRange(x.Value)).Select(x => x.Coordinate);
 
             return coordinates;
@@ -473,23 +471,23 @@ namespace MvvmCharting.Axis
 
         private void AxisItemsControlItemTemplateApplied(object sender, DependencyObject root)
         {
-            if (!(root is AxisItemItem axisItem))
+            if (!(root is AxisItem axisItem))
             {
-                throw new MvvmChartUnexpectedTypeException($"The root item of ItemTemplate of an axis must be based on '{typeof(AxisItemItem)}'!");
+                throw new MvvmChartUnexpectedTypeException($"The root item of ItemTemplate of an axis must be based on '{typeof(AxisItem)}'!");
             }
 
             Binding b = new Binding(nameof(this.LabelTextConverter)) { Source = this };
-            axisItem.SetBinding(AxisItemItem.LabelTextConverterProperty, b);
+            axisItem.SetBinding(AxisItem.LabelTextConverterProperty, b);
 
             b = new Binding(nameof(this.Placement)) { Source = this };
-            axisItem.SetBinding(AxisItemItem.PlacementProperty, b);
+            axisItem.SetBinding(AxisItem.PlacementProperty, b);
         }
 
 
 
 
 
-        public event Action<AxisBase> AxisPlacementChanged;
+        public event Action<IAxis> AxisPlacementChanged;
 
 
 

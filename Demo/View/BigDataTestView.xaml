@@ -35,7 +35,7 @@
 
         <DataTemplate x:Key="SeriesTemplate" DataType="local:SomePointList">
             <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
-                                             DependentValueProperty="Y"
+                                         DependentValueProperty="Y"
                                              Stroke="CadetBlue"
                                              StrokeThickness="1.5"
                                              IsScatterVisible="{Binding ShowSeriesPoints}"

@@ -54,9 +54,7 @@
 
 
         <mvvmCharting:SeriesChart Background="Bisque"
-                              HorizontalCrossHairVisibility="Collapsed"
-                              VerticalCrossHairVisiblity="Collapsed"
-                              SeriesDataTemplate="{StaticResource SeriesTemplate1}"
+                                  SeriesDataTemplate="{StaticResource SeriesTemplate1}"
                               SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource DemoDataViewModel}}">
 
         </mvvmCharting:SeriesChart>

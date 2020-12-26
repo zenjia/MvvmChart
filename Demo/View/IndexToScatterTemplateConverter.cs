@@ -12,7 +12,7 @@ namespace Demo
         public DataTemplate Scatter2Template { get; set; }
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            
+ 
             string s = (string) value;
             if (s == "Scatter2Template")
             {

@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Windows;
+using System.Collections.Generic;
+using System.Windows.Controls;
+using MvvmCharting.Axis;
 
 
 namespace Cartesian2DChart.Axis
 {
     public interface IAxis
     {
-        double Minimum { get; }
-        double Maximum { get; }
-        Thickness Padding { get; }
+        IAxisOwner Owner { get; set; }
+        AxisPlacement Placement { get; set; }
+        Orientation? Orientation { get; set; }
 
-        event Action<double> MinimumChanged;
-        event Action<double> MaximumChanged;
-        event Action<Thickness> PaddingChanged;
-
-        void OnDataRangeChanged(Range range);
-        double ActualLength { get; }
+        event Action<IAxis> AxisPlacementChanged;
+        IEnumerable<double> GetAxisItemCoordinates();
     }
 }

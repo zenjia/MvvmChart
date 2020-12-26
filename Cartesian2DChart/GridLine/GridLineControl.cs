@@ -1,18 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MvvmChart.Common;
 
@@ -42,12 +34,12 @@ namespace MvvmCharting
 
             if (this.PART_HorizontalGridLineItemsControl != null)
             {
-                this.PART_HorizontalGridLineItemsControl.ItemTemplateContentLoaded -= HorizontalGridLineItemTemplateApplied;
+                this.PART_HorizontalGridLineItemsControl.ElementGenerated -= HorizontalGridLineItemTemplateApplied;
             }
 
             if (this.PART_VerticalGridLineItemsControl != null)
             {
-                this.PART_VerticalGridLineItemsControl.ItemTemplateContentLoaded += VerticalGridLineItemTemplateApplied;
+                this.PART_VerticalGridLineItemsControl.ElementGenerated += VerticalGridLineItemTemplateApplied;
             }
 
             this.PART_HorizontalGridLineItemsControl = (SlimItemsControl)GetTemplateChild(sPART_HorizontalGridLineItemsControl);
@@ -56,7 +48,7 @@ namespace MvvmCharting
             if (this.PART_HorizontalGridLineItemsControl!=null)
             {
                 this.PART_HorizontalGridLineItemsControl.ItemsSource = this.HorizontalGridLineOffsets;
-                this.PART_HorizontalGridLineItemsControl.ItemTemplateContentLoaded += HorizontalGridLineItemTemplateApplied;
+                this.PART_HorizontalGridLineItemsControl.ElementGenerated += HorizontalGridLineItemTemplateApplied;
 
                 this.PART_HorizontalGridLineItemsControl.SetBinding(UIElement.VisibilityProperty,
                     new Binding(nameof(this.HorizontalGridLineVisiblility)) { Source = this});
@@ -68,7 +60,7 @@ namespace MvvmCharting
                 this.PART_VerticalGridLineItemsControl.SetBinding(UIElement.VisibilityProperty,
                     new Binding(nameof(this.VerticalGridLineVisibility)) { Source = this });
 
-                this.PART_VerticalGridLineItemsControl.ItemTemplateContentLoaded += VerticalGridLineItemTemplateApplied;
+                this.PART_VerticalGridLineItemsControl.ElementGenerated += VerticalGridLineItemTemplateApplied;
 
             }
           

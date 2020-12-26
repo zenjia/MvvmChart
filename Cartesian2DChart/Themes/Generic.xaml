@@ -18,8 +18,7 @@
 
     <local:EllipseGeometryBuilder x:Key="EllipseGeometryBuilder" RadiusX="6" RadiusY="6"/>
 
-    <DataTemplate x:Key="DefaultScatterTemplate" 
-                  DataType="local:ScatterViewModel">
+    <DataTemplate x:Key="DefaultScatterTemplate">
         <local:Scatter Fill="RoyalBlue" 
                               x:Name="Scatter"
                               GeometryBuilder="{StaticResource EllipseGeometryBuilder}"
@@ -75,12 +74,12 @@
 
     <axis:DefaultDoubleToAxisLabelTextConverter x:Key="DefaultDoubleToAxisLabelTextConverter"/>
 
-    <Style TargetType="axis:AxisItemItem">
+    <Style TargetType="axis:AxisItem">
         <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="axis:AxisItemItem">
+                <ControlTemplate TargetType="axis:AxisItem">
                     <Grid x:Name="PART_Root" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -100,8 +99,7 @@
                         <TextBlock x:Name="PART_Label"
                                        Grid.Column="0"
                                        Grid.Row="1"
-                                       HorizontalAlignment="Center"
-                                       Text="{TemplateBinding LabelText}" />
+                                       HorizontalAlignment="Center"/>
 
 
                     </Grid>
@@ -163,7 +161,7 @@
 
 
     <DataTemplate x:Key="DefualtAxisItemDataTemplate" DataType="axis:AxisItemDrawingParam">
-        <axis:AxisItemItem/>
+        <axis:AxisItem/>
     </DataTemplate>
 
 
@@ -178,11 +176,7 @@
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Background="{TemplateBinding Background}"
                             Padding="{TemplateBinding Padding}">
-                        <local:SlimItemsControl x:Name="PART_AxisItemsControl"
-                                              ItemTemplate="{Binding ItemTemplate, RelativeSource={RelativeSource TemplatedParent}}"
-                                              ItemTemplateSelector="{Binding ItemTemplateSelector, RelativeSource={RelativeSource TemplatedParent}}">
- 
-                        </local:SlimItemsControl>
+                        <local:SlimItemsControl x:Name="PART_AxisItemsControl"/>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -294,18 +288,10 @@
                             <Grid x:Name="PART_PlotingCanvas" >
                                 <ContentControl x:Name="PART_GridLineHolder"/>
 
-                                <local:SlimItemsControl x:Name="PART_SeriesItemsControl" 
-                                                      ItemTemplate="{TemplateBinding SeriesDataTemplate}"
-                                                      ItemsSource="{TemplateBinding SeriesItemsSource}"
-                                                      ItemTemplateSelector="{TemplateBinding SeriesTemplateSelector}">
-            
-                                </local:SlimItemsControl>
+                                <local:SlimItemsControl x:Name="PART_SeriesItemsControl" />
 
-                                <Line x:Name="PART_HorizontalCrossHair"
-                                      Y2="{Binding ElementName=PART_PlotingCanvas, Path=ActualHeight}" />
-                                <Line x:Name="PART_VerticalCrossHair"
-                                      X2="{Binding ElementName=PART_PlotingCanvas, Path=ActualWidth}"
-                                />
+                                <Line x:Name="PART_HorizontalCrossHair" />
+                                <Line x:Name="PART_VerticalCrossHair"/>
                             </Grid>
                         </Border>
                     </Grid>
@@ -321,7 +307,7 @@
 
 
     <Style TargetType="local:Scatter2">
-        <Setter Property="Fill" Value="DeepSkyBlue"/>
+        <Setter Property="Fill" Value="DarkOrange"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:Scatter2">

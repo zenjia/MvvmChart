@@ -1,7 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,26 +11,26 @@ namespace MvvmCharting.Axis
     /// The item of an Axis indicates the coordinate, typically including a label and a tick.
     /// </summary>
     [TemplatePart(Name = "PART_Tick", Type = typeof(FrameworkElement))]
-    // [TemplatePart(Name = "PART_Label", Type = typeof(TextBlock))]
-    public class AxisItemItem : Control, IAxisItem
+    [TemplatePart(Name = "PART_Label", Type = typeof(TextBlock))]
+    public class AxisItem : Control, IAxisItem
     {
-        static AxisItemItem()
+        static AxisItem()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(AxisItemItem), new FrameworkPropertyMetadata(typeof(AxisItemItem)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(AxisItem), new FrameworkPropertyMetadata(typeof(AxisItem)));
         }
 
 
         private static readonly string sPART_Tick = "PART_Tick";
-        //private static readonly string sPART_Label = "PART_Label";
+        private static readonly string sPART_Label = "PART_Label";
         protected FrameworkElement PART_Tick { get; private set; }
-        //private FrameworkElement PART_Label;
-        public AxisItemItem()
+        private FrameworkElement PART_Label;
+        public AxisItem()
         {
 
             Binding b = new Binding(nameof(AxisItemDrawingParam.Coordinate));
             this.SetBinding(CoordinateProperty, b);
 
-            
+
             this.UpdateLabelTextBinding();
 
         }
@@ -44,7 +41,12 @@ namespace MvvmCharting.Axis
         {
             base.OnApplyTemplate();
             this.PART_Tick = (FrameworkElement)this.GetTemplateChild(sPART_Tick);
-            //this.PART_Label = (TextBlock)this.GetTemplateChild(sPART_Label);
+
+            this.PART_Label = (TextBlock)this.GetTemplateChild(sPART_Label);
+            if (this.PART_Label != null)
+            {
+                this.PART_Label.SetBinding(TextBlock.TextProperty, new Binding(nameof(this.LabelText)) { Source = this });
+            }
             this.TryDoTranslateTransform();
         }
 
@@ -63,7 +65,7 @@ namespace MvvmCharting.Axis
             set { SetValue(PlacementProperty, value); }
         }
         public static readonly DependencyProperty PlacementProperty =
-            DependencyProperty.Register("Placement", typeof(AxisPlacement), typeof(AxisItemItem), new PropertyMetadata(AxisPlacement.Bottom));
+            DependencyProperty.Register("Placement", typeof(AxisPlacement), typeof(AxisItem), new PropertyMetadata(AxisPlacement.Bottom));
 
 
 
@@ -73,7 +75,7 @@ namespace MvvmCharting.Axis
             set { this.SetValue(TickLengthProperty, value); }
         }
         public static readonly DependencyProperty TickLengthProperty =
-            DependencyProperty.Register("TickLength", typeof(double), typeof(AxisItemItem), new PropertyMetadata(8.0));
+            DependencyProperty.Register("TickLength", typeof(double), typeof(AxisItem), new PropertyMetadata(8.0));
 
         public Brush TickStroke
         {
@@ -81,7 +83,7 @@ namespace MvvmCharting.Axis
             set { this.SetValue(TickStrokeProperty, value); }
         }
         public static readonly DependencyProperty TickStrokeProperty =
-            DependencyProperty.Register("TickStroke", typeof(Brush), typeof(AxisItemItem), new PropertyMetadata(Brushes.Gray));
+            DependencyProperty.Register("TickStroke", typeof(Brush), typeof(AxisItem), new PropertyMetadata(Brushes.Gray));
 
 
         public double Coordinate
@@ -90,11 +92,11 @@ namespace MvvmCharting.Axis
             set { this.SetValue(CoordinateProperty, value); }
         }
         public static readonly DependencyProperty CoordinateProperty =
-            DependencyProperty.Register("Coordinate", typeof(double), typeof(AxisItemItem), new PropertyMetadata(double.NaN, OnPositionPropertyChanged));
+            DependencyProperty.Register("Coordinate", typeof(double), typeof(AxisItem), new PropertyMetadata(double.NaN, OnPositionPropertyChanged));
 
         private static void OnPositionPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((AxisItemItem)d).OnPositionChanged();
+            ((AxisItem)d).OnPositionChanged();
         }
 
         private void OnPositionChanged()
@@ -110,11 +112,11 @@ namespace MvvmCharting.Axis
             set { this.SetValue(LabelTextConverterProperty, value); }
         }
         public static readonly DependencyProperty LabelTextConverterProperty =
-            DependencyProperty.Register("LabelTextConverter", typeof(IValueConverter), typeof(AxisItemItem), new PropertyMetadata(null, OnValueConverterPropertyChanged));
+            DependencyProperty.Register("LabelTextConverter", typeof(IValueConverter), typeof(AxisItem), new PropertyMetadata(null, OnValueConverterPropertyChanged));
 
         private static void OnValueConverterPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((AxisItemItem)d).UpdateLabelTextBinding();
+            ((AxisItem)d).UpdateLabelTextBinding();
         }
 
         private void UpdateLabelTextBinding()
@@ -140,7 +142,7 @@ namespace MvvmCharting.Axis
             set { this.SetValue(LabelTextProperty, value); }
         }
         public static readonly DependencyProperty LabelTextProperty =
-            DependencyProperty.Register("LabelText", typeof(string), typeof(AxisItemItem), new PropertyMetadata(null));
+            DependencyProperty.Register("LabelText", typeof(string), typeof(AxisItem), new PropertyMetadata(null));
 
 
         private double GetAdjustedCoordinate()

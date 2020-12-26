@@ -1,9 +1,5 @@
-﻿
-using System.Diagnostics;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
-using System.Windows.Shapes;
 
 namespace MvvmCharting
 {
@@ -73,9 +69,9 @@ namespace MvvmCharting
                 return;
             }
 
-            var rawPoints = this._coordinateCache; //this._dataPointViewModels.Select(x => x.Coordinate).OrderBy(x => x.X).ToArray();
+            var coordinates = this.GetCoordinates();  
           
-            this.PathData = this.GeometryBuilder.GetGeometry(rawPoints);
+            this.PathData = this.GeometryBuilder.GetGeometry(coordinates);
 
         }
     }
