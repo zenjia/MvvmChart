@@ -799,11 +799,6 @@ namespace MvvmCharting
             }
 
         }
-
-
-
-
-
         #endregion
 
 

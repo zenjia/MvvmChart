@@ -1,9 +1,19 @@
-﻿namespace MvvmCharting.Axis
+﻿using System.Windows.Data;
+
+namespace MvvmCharting.Axis
 {
     public interface IAxisItem: IPlottable_1D
     {
+        /// <summary>
+        /// Accept change of Axis placement
+        /// </summary>
+        /// <param name="newValue"></param>
+        void SetAxisPlacement(AxisPlacement newValue);
 
-        AxisPlacement Placement { get; }
-
+        /// <summary>
+        /// Accept change of Axis <see cref="LabelTextConverter"/>
+        /// </summary>
+        /// <param name="newValue"></param>
+        void SetLabelTextConverter(IValueConverter newValue);
     }
 }

@@ -104,7 +104,15 @@ namespace MvvmCharting.Axis
             this.TryDoTranslateTransform();
         }
 
+        public void SetLabelTextConverter(IValueConverter newValue)
+        {
+            this.LabelTextConverter = newValue;
+        }
 
+        public void SetAxisPlacement(AxisPlacement newValue)
+        {
+            this.Placement = newValue;
+        }
 
         public IValueConverter LabelTextConverter
         {
@@ -121,7 +129,6 @@ namespace MvvmCharting.Axis
 
         private void UpdateLabelTextBinding()
         {
-
 
 
             BindingOperations.ClearBinding(this, LabelTextProperty);

@@ -82,8 +82,23 @@ namespace MvvmCharting.Axis
             ((AxisBase)d).OnPlacementChange();
         }
 
+        private IEnumerable<IAxisItem> GetAllAxisItems()
+        {
+            if (this.PART_AxisItemsControl==null)
+            {
+                return Enumerable.Empty<IAxisItem>();
+            }
+
+            return this.PART_AxisItemsControl.GetAllElements().OfType<IAxisItem>();
+        }
+
         private void OnPlacementChange()
         {
+            foreach (var axisItem in GetAllAxisItems())
+            {
+                axisItem.SetAxisPlacement(this.Placement);
+            }
+
             this.AxisPlacementChanged?.Invoke(this);
         }
 
@@ -170,7 +185,20 @@ namespace MvvmCharting.Axis
             set { SetValue(LabelTextConverterProperty, value); }
         }
         public static readonly DependencyProperty LabelTextConverterProperty =
-            DependencyProperty.Register("LabelTextConverter", typeof(IValueConverter), typeof(AxisBase), new PropertyMetadata(null));
+            DependencyProperty.Register("LabelTextConverter", typeof(IValueConverter), typeof(AxisBase), new PropertyMetadata(null, OnLabelTextConverterPropertyChanged));
+
+        private static void OnLabelTextConverterPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+             ((AxisBase)d).OnLabelTextConverterChanged((IValueConverter)e.OldValue, (IValueConverter)e.NewValue);
+        }
+
+        private void OnLabelTextConverterChanged(IValueConverter oldVlue, IValueConverter newValue)
+        {
+            foreach (var axisItem in GetAllAxisItems())
+            {
+                axisItem.SetLabelTextConverter(this.LabelTextConverter);
+            }
+        }
 
         private IAxisOwner _owner;
         public IAxisOwner Owner
@@ -178,6 +206,7 @@ namespace MvvmCharting.Axis
             get { return this._owner; }
             set
             {
+                
                 if (this._owner != value)
                 {
                     this._owner = value;
@@ -471,16 +500,14 @@ namespace MvvmCharting.Axis
 
         private void AxisItemsControlItemTemplateApplied(object sender, DependencyObject root)
         {
-            if (!(root is AxisItem axisItem))
+            if (!(root is IAxisItem axisItem))
             {
                 throw new MvvmChartUnexpectedTypeException($"The root item of ItemTemplate of an axis must be based on '{typeof(AxisItem)}'!");
             }
 
-            Binding b = new Binding(nameof(this.LabelTextConverter)) { Source = this };
-            axisItem.SetBinding(AxisItem.LabelTextConverterProperty, b);
-
-            b = new Binding(nameof(this.Placement)) { Source = this };
-            axisItem.SetBinding(AxisItem.PlacementProperty, b);
+            axisItem.SetLabelTextConverter(this.LabelTextConverter);
+            axisItem.SetAxisPlacement(this.Placement);
+ 
         }
 
 
