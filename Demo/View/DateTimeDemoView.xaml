@@ -9,6 +9,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
+
         <local:DoubleToDateTimeStringConverter x:Key="DoubleToDateTimeStringConverter"/>
         <local:TimeSeriesViewModel x:Key="TimeSeriesViewModel"/>
         <DataTemplate x:Key="SeriesTemplate" DataType="local:SomePointList">
@@ -19,8 +20,7 @@
                                          Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
                                          IsScatterVisible="{Binding ShowSeriesPoints}"
                                          IsLineOrAreaVisible="{Binding ShowSeriesLine}"
-                                         ItemsSource="{Binding DataList}"
-                                         ScatterTemplate="{StaticResource DefaultItemPointDataTemplate}">
+                                         ItemsSource="{Binding DataList}">
             </mvvmCharting:PolyLineSeries>
 
         </DataTemplate>
@@ -34,12 +34,10 @@
                               SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource TimeSeriesViewModel}}">
 
         <mvvmCharting:SeriesChart.XAxis>
-            <axis:XAxis LabelTextConverter="{StaticResource DoubleToDateTimeStringConverter}"/>
+            <axis:AxisBase LabelTextConverter="{StaticResource DoubleToDateTimeStringConverter}"/>
         </mvvmCharting:SeriesChart.XAxis>
 
-        <mvvmCharting:SeriesChart.YAxis>
-            <axis:YAxis/>
-        </mvvmCharting:SeriesChart.YAxis>
+ 
 
     </mvvmCharting:SeriesChart>
 </UserControl>

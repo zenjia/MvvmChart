@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -20,7 +21,7 @@ namespace MvvmCharting
     [ContentProperty(nameof(Data))]
     public class Scatter : Shape
     {
-     
+
         /// <summary>
         /// Gets or sets a <see cref="T:System.Windows.Media.Geometry" /> that specifies the shape to be drawn.
         /// </summary>
@@ -44,9 +45,12 @@ namespace MvvmCharting
         {
             get
             {
+                
                 return this.Data ?? Geometry.Empty;
             }
         }
+
+        
 
         public IScatterGeometryBuilder GeometryBuilder
         {
@@ -91,34 +95,34 @@ namespace MvvmCharting
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
-            UpdateActualPosition();
+            UpdateAdjustedCoordinate();
+        }
+
+        
+        public Point Coordinate
+        {
+            get { return (Point)GetValue(CoordinateProperty); }
+            set { SetValue(CoordinateProperty, value); }
+        }
+        public static readonly DependencyProperty CoordinateProperty =
+            DependencyProperty.Register("Coordinate", typeof(Point), typeof(Scatter), new PropertyMetadata(PointHelper.EmptyPoint, OnCoordinatePropertyChanged));
+
+        private static void OnCoordinatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((Scatter)d).OnCoordinateChanged((Point)e.NewValue);
+        }
+        private void OnCoordinateChanged(Point newValue)
+        {
+            UpdateAdjustedCoordinate();
+
+
         }
 
 
-        public Point Position
+
+        private void UpdateAdjustedCoordinate()
         {
-            get { return (Point)GetValue(PositionProperty); }
-            set { SetValue(PositionProperty, value); }
-        }
-        public static readonly DependencyProperty PositionProperty =
-            DependencyProperty.Register("Position", typeof(Point), typeof(Scatter), new PropertyMetadata(PointHelper.EmptyPoint, OnPositionPropertyChanged));
-
-        private static void OnPositionPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((Scatter)d).OnPositionChanged((Point)e.NewValue);
-        }
-        private void OnPositionChanged(Point newValue)
-        {
-            UpdateActualPosition();
-
-
-        }
-
-
-
-        private void UpdateActualPosition()
-        {
-            if (this.Position.IsEmpty())
+            if (this.Coordinate.IsEmpty())
             {
                 return;
             }
@@ -130,30 +134,31 @@ namespace MvvmCharting
                 return;
             }
 
-            var x = this.Position.X + offset.X;
-            var y = this.Position.Y + offset.Y;
-            if (!double.IsInfinity(x))
-            {
-                Canvas.SetLeft(this, x);
-            }
-                
+            var x = this.Coordinate.X + offset.X;
+            var y = this.Coordinate.Y + offset.Y;
 
-            if (!double.IsInfinity(y))
+          
+            //if (!double.IsInfinity(x))
+            //{
+            //    Canvas.SetLeft(this, x);
+            //}
+
+
+            //if (!double.IsInfinity(y))
+            //{
+            //    Canvas.SetTop(this, y);
+            //}
+
+            var translateTransform = this.RenderTransform as TranslateTransform;
+            if (translateTransform == null)
             {
-                Canvas.SetTop(this, y);
+                this.RenderTransform = new TranslateTransform(x, y);
             }
-           
-            //var translateTransform = this.RenderTransform as TranslateTransform;
-            //if (translateTransform == null)
-            //{
-            //    TranslateTransform a = new TranslateTransform(x, y);
-            //    this.RenderTransform = a;
-            //}
-            //else
-            //{
-            //    translateTransform.Y = y;
-            //    translateTransform.X = x;
-            //}
+            else
+            {
+                translateTransform.Y = y;
+                translateTransform.X = x;
+            }
         }
 
 

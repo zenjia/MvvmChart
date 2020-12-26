@@ -24,7 +24,7 @@ namespace MvvmCharting
         {
             base.OnApplyTemplate();
             OnPathDataChanged();
-            //UpdateShape();
+            //UpdatePathData();
         }
 
         public Geometry PathData
@@ -60,17 +60,21 @@ namespace MvvmCharting
 
         private static void OnGeometryProviderPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((PathSeries)d).UpdateShape();
+            ((PathSeries)d).UpdatePathData();
         }
 
 
-        protected override void UpdateShape()
+        protected override void UpdatePathData()
         {
-            if (this.GeometryBuilder == null || this._dataPointViewModels.Count == 0)
+            if (this.GeometryBuilder == null ||
+                this.ItemsSource == null ||
+                this.ItemsSource.Count == 0)
             {
                 return;
             }
-            var rawPoints = this._dataPointViewModels.Select(x => x.Position).OrderBy(x => x.X).ToArray();
+
+            var rawPoints = this._coordinateCache; //this._dataPointViewModels.Select(x => x.Coordinate).OrderBy(x => x.X).ToArray();
+          
             this.PathData = this.GeometryBuilder.GetGeometry(rawPoints);
 
         }

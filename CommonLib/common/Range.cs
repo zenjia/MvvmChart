@@ -22,9 +22,12 @@ namespace MvvmChart.Common
             get { return this.Min.IsNaN() || this.Min.IsNaN() || this.Max.IsNaN(); }
         }
 
-        public bool IsValid
+        public bool IsInvalid
         {
-            get { return !this.IsEmpty && !double.IsInfinity(this.Min) && !double.IsInfinity(this.Max); }
+            get { return this.IsEmpty ||
+                         double.IsInfinity(this.Min) ||
+                         double.IsInfinity(this.Max) ||
+                         this.Span.IsZero(); }
         }
 
         public override string ToString()

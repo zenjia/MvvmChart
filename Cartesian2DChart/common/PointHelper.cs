@@ -12,7 +12,10 @@ namespace MvvmCharting
         {
             return pt.X.IsNaN() || pt.Y.IsNaN();
         }
+        public static bool IsInvalid(this Point pt)
+        {
+            return pt.X.IsInvalid() || pt.Y.IsInvalid();
+        }
 
- 
     }
 }

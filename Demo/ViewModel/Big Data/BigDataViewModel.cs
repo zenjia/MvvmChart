@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using MvvmChart.Common;
 using MvvmCharting;
 
@@ -7,6 +8,7 @@ namespace Demo
 {
     public class BigDataViewModel : BindableBase
     {
+        public ObservableCollection<int> AvailableSizes { get; }
         public ObservableCollection<SomePointList> ItemsSourceList { get; }
 
         private bool _showSeriesLine = true;
@@ -26,55 +28,74 @@ namespace Demo
             }
         }
 
-        private bool _showSeriesPoints = false;
-        public bool ShowSeriesPoints
+        private bool _showSeriesPointsGlobal = false;
+        public bool ShowSeriesPointsGlobal
         {
-            get { return this._showSeriesPoints; }
+            get { return this._showSeriesPointsGlobal; }
             set
             {
-                if (SetProperty(ref this._showSeriesPoints, value))
+                if (SetProperty(ref this._showSeriesPointsGlobal, value))
                 {
-                    foreach (var sr in this.ItemsSourceList)
-                    {
-                        sr.ShowSeriesPoints = value;
-                    }
+                    UpdateScatterVisible();
                 }
 
             }
+        }
+
+
+        private int _selectedDataSize = 1000;
+        public int SelectedDataSize
+        {
+            get { return _selectedDataSize; }
+            set
+            {
+                if (SetProperty(ref _selectedDataSize, value))
+                {
+                    RefreshData();
+                }
+
+            }
+        }
+
+        private void UpdateScatterVisible()
+        {
+
+            foreach (var sr in this.ItemsSourceList)
+            {
+                sr.ShowSeriesPoints = this.ShowSeriesPointsGlobal;
+            }
+        }
+
+
+        private void RefreshData()
+        {
+            this.ItemsSourceList.Clear();
+
+            var list = new SomePointList(0);
+            for (int i = 0; i < this.SelectedDataSize; i++)
+            {
+                var v = i / 100.0;
+                var y = Math.Abs(v) < 1e-10 ? 1 : Math.Sin(v) / v;
+                var pt = new SomePoint(v, y);
+                list.DataList.Add(pt);
+            }
+
+            this.ItemsSourceList.Add(list);
+
+            UpdateScatterVisible();
         }
 
         public BigDataViewModel()
         {
             this.ItemsSourceList = new ObservableCollection<SomePointList>();
 
-            var first = new SomePointList(0);
-            for (int i = 0; i < 3000; i++)
+            this.AvailableSizes = new ObservableCollection<int>()
             {
-                var v = i / 100.0;
-                var y = Math.Abs(v) < 1e-10 ? 1 : Math.Sin(v) / v;
-                var pt = new SomePoint(v, y);
-                first.DataList.Add(pt);
-            }
-
-            first.ShowSeriesPoints = false;
-
-            this.ItemsSourceList.Add(first);
-
-            for (int i = 1; i < 3; i++)
-            {
-                var list = new SomePointList(i);
-                double yOffset = i * 0.5;
-                foreach (var item in first.DataList)
-                {
-                    list.DataList.Add(new SomePoint(item.t, item.Y + yOffset));
-                }
-                list.ShowSeriesPoints = false;
-                this.ItemsSourceList.Add(list);
-            }
+                100, 1000, 5000, 10000, 15000, 20000, 90000
+            };
 
 
-
-
+            RefreshData();
 
 
         }

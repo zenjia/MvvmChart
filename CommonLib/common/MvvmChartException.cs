@@ -2,9 +2,9 @@
 
 namespace MvvmChart.Common
 {
-    public class Cartesian2DChartException : Exception
+    public class MvvmChartException : Exception
     {
-        public Cartesian2DChartException(string msg)
+        public MvvmChartException(string msg)
             :base(msg)
         {
             

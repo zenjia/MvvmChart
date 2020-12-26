@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
- 
+        <local:DemoDataViewModel x:Key="DemoDataViewModel"/>
         <DataTemplate x:Key="SeriesTemplate0" DataType="local:SomePointList">
             <mvvmCharting:PolyLineAreaSeries IndependentValueProperty="t"
                                              DependentValueProperty="Y"
@@ -37,8 +37,7 @@
                                              Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
                                              IsScatterVisible="{Binding ShowSeriesPoints}"
                                              IsLineOrAreaVisible="{Binding ShowSeriesLine}"
-                                             ItemsSource="{Binding DataList}"
-                                             ScatterTemplate="{StaticResource DefaultItemPointDataTemplate}"/>
+                                             ItemsSource="{Binding DataList}"/>
 
         </DataTemplate>
 
@@ -50,8 +49,7 @@
                                            Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
                                            IsScatterVisible="{Binding ShowSeriesPoints}"
                                            IsLineOrAreaVisible="{Binding ShowSeriesLine}"
-                                           ItemsSource="{Binding DataList}"
-                                           ScatterTemplate="{StaticResource DefaultItemPointDataTemplate}">
+                                           ItemsSource="{Binding DataList}">
             </mvvmCharting:SplineAreaSeries>
         </DataTemplate>
 
@@ -71,15 +69,9 @@
 
         <mvvmCharting:SeriesChart Background="Bisque"
                               SeriesTemplateSelector="{StaticResource SeriesTemplateSelector}"
-                              SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource GlobalDemoDataViewModel}}">
+                              SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource DemoDataViewModel}}">
 
-            <mvvmCharting:SeriesChart.XAxis>
-                <axis:XAxis />
-            </mvvmCharting:SeriesChart.XAxis>
-
-            <mvvmCharting:SeriesChart.YAxis>
-                <axis:YAxis />
-            </mvvmCharting:SeriesChart.YAxis>
+ 
 
         </mvvmCharting:SeriesChart>
         <GroupBox Header="Options" 
@@ -88,8 +80,8 @@
                   HorizontalAlignment="Left"
                   Padding="9">
             <StackPanel >
-                <CheckBox Content="ShowSeriesLine" IsChecked="{Binding Source={StaticResource GlobalDemoDataViewModel}, Path=ShowSeriesLine, Mode=TwoWay}"/>
-                <CheckBox Content="ShowSeriesScatter" IsChecked="{Binding Source={StaticResource GlobalDemoDataViewModel}, Path=ShowSeriesPoints, Mode=TwoWay}"/>
+                <CheckBox Content="ShowSeriesLine" IsChecked="{Binding Source={StaticResource DemoDataViewModel}, Path=ShowSeriesLine, Mode=TwoWay}"/>
+                <CheckBox Content="ShowSeriesScatter" IsChecked="{Binding Source={StaticResource DemoDataViewModel}, Path=ShowSeriesPoints, Mode=TwoWay}"/>
             </StackPanel>
         </GroupBox>
 

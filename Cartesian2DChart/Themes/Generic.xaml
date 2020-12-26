@@ -4,7 +4,53 @@
     xmlns:local="clr-namespace:MvvmCharting"
     xmlns:axis="clr-namespace:MvvmCharting.Axis">
 
- 
+    <Style TargetType="{x:Type local:SlimItemsControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:SlimItemsControl">
+
+                    <Grid x:Name="PART_Root"/>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <local:EllipseGeometryBuilder x:Key="EllipseGeometryBuilder" RadiusX="6" RadiusY="6"/>
+
+    <DataTemplate x:Key="DefaultScatterTemplate" 
+                  DataType="local:ScatterViewModel">
+        <local:Scatter Fill="RoyalBlue" 
+                              x:Name="Scatter"
+                              GeometryBuilder="{StaticResource EllipseGeometryBuilder}"
+                              Opacity="0.6">
+            <!--
+            <local:Scatter.Style>
+                <Style TargetType="local:Scatter">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="LayoutTransform">
+                                <Setter.Value>
+                                    <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2" ScaleY="2"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </local:Scatter.Style>-->
+        </local:Scatter>
+
+        <!--
+        <DataTemplate.Triggers>
+            <Trigger SourceName="Scatter" Property="IsMouseOver" Value="True">
+                <Setter TargetName="Scatter" Property="LayoutTransform">
+                    <Setter.Value>
+                        <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2" ScaleY="2"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </DataTemplate.Triggers>-->
+    </DataTemplate>
 
 
     <BooleanToVisibilityConverter x:Key="b2v"/>
@@ -12,6 +58,7 @@
     <local:BezierGeometryBuilder x:Key="BezierGeometryBuilder"/>
 
     <Style TargetType="local:PathSeries">
+        <Setter Property="ScatterTemplate" Value="{StaticResource DefaultScatterTemplate}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:PathSeries">
@@ -28,60 +75,105 @@
 
     <axis:DefaultDoubleToAxisLabelTextConverter x:Key="DefaultDoubleToAxisLabelTextConverter"/>
 
-    <Style TargetType="axis:XAxisItem">
+    <Style TargetType="axis:AxisItem">
+        <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="axis:XAxisItem">
-                    <StackPanel>
+                <ControlTemplate TargetType="axis:AxisItem">
+                    <Grid x:Name="PART_Root" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
                         <Line x:Name="PART_Tick"
-                              Y2="{TemplateBinding TickLength}" 
-                              Stroke="{TemplateBinding TickStroke}" 
-                              HorizontalAlignment="Center"/>
+                                  Grid.Row="0"
+                                  Grid.Column="0"
+                                  Y2="{TemplateBinding TickLength}" 
+                                  Stroke="{TemplateBinding TickStroke}" 
+                                  HorizontalAlignment="Center"/>
                         <TextBlock x:Name="PART_Label"
-                                   HorizontalAlignment="Center"
-                                   Text="{TemplateBinding LabelText}" />
-                    </StackPanel>
+                                       Grid.Column="0"
+                                       Grid.Row="1"
+                                       HorizontalAlignment="Center"
+                                       Text="{TemplateBinding LabelText}" />
+
+
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Placement" Value="Top">
+                            <Setter Property="VerticalAlignment" Value="Bottom"/>
+
+
+                            <Setter TargetName="PART_Label" Property="Grid.Row" Value="0"/>
+                            <Setter TargetName="PART_Label" Property="Grid.Column" Value="0"/>
+                            <Setter TargetName="PART_Tick" Property="Grid.Row" Value="1"/>
+                            <Setter TargetName="PART_Tick" Property="Grid.Column" Value="0"/>
+
+
+                        </Trigger>
+
+                        <Trigger Property="Placement" Value="Left">
+                            <Setter Property="HorizontalAlignment"  Value="Right"/>
+ 
+                            <Setter TargetName="PART_Label" Property="Grid.Row" Value="0"/>
+                            <Setter TargetName="PART_Label" Property="Grid.Column" Value="0"/>
+                            <Setter TargetName="PART_Tick" Property="Grid.Row" Value="0"/>
+                            <Setter TargetName="PART_Tick" Property="Grid.Column" Value="1"/>
+
+                            <Setter TargetName="PART_Label" Property="VerticalAlignment" Value="Center"/>
+                            <Setter TargetName="PART_Tick" Property="VerticalAlignment" Value="Center"/>
+
+                            <Setter TargetName="PART_Tick" Property="Y2" Value="0"/>
+                            <Setter TargetName="PART_Tick" Property="X2" Value="{Binding TickLength, RelativeSource={RelativeSource TemplatedParent}}"/>
+
+                        </Trigger>
+
+                        <Trigger Property="Placement" Value="Right">
+
+                            <Setter Property="HorizontalAlignment"  Value="Left"/>
+
+
+
+                            <Setter TargetName="PART_Label" Property="Grid.Row" Value="0"/>
+                            <Setter TargetName="PART_Label" Property="Grid.Column" Value="1"/>
+                            <Setter TargetName="PART_Tick" Property="Grid.Row" Value="0"/>
+                            <Setter TargetName="PART_Tick" Property="Grid.Column" Value="0"/>
+
+                            <Setter TargetName="PART_Label" Property="VerticalAlignment" Value="Center"/>
+                            <Setter TargetName="PART_Tick" Property="VerticalAlignment" Value="Center"/>
+
+                            <Setter TargetName="PART_Tick" Property="Y2" Value="0"/>
+                            <Setter TargetName="PART_Tick" Property="X2" Value="{Binding TickLength, RelativeSource={RelativeSource TemplatedParent}}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
+
+
             </Setter.Value>
         </Setter>
     </Style>
 
-    <Style TargetType="axis:YAxisItem">
-        <Setter Property="HorizontalAlignment" Value="Right"/>
-        <Setter Property="VerticalAlignment" Value="Top"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="axis:YAxisItem">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock x:Name="PART_Label" 
-                                   Text="{TemplateBinding LabelText}" 
-                                   VerticalAlignment="Center"
-                                   Margin="1,0"/>
-                        <Line x:Name="PART_Tick" 
-                              X2="{TemplateBinding TickLength}" 
-                              Stroke="{TemplateBinding TickStroke}" 
-                              VerticalAlignment="Center" />
-                    </StackPanel>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
 
-    <DataTemplate x:Key="DefualtXAxisItemDataTemplate" DataType="axis:DataOffset">
-        <axis:XAxisItem/>
+
+    <DataTemplate x:Key="DefualtAxisItemDataTemplate" DataType="axis:AxisItemDrawingParam">
+        <axis:AxisItem/>
     </DataTemplate>
 
-    <DataTemplate x:Key="DefualtYAxisItemDataTemplate" DataType="axis:DataOffset">
-        <axis:YAxisItem/>
-    </DataTemplate>
 
-    <Style TargetType="axis:XAxis">
+
+    <Style TargetType="axis:AxisBase">
         <Setter Property="LabelTextConverter" Value="{StaticResource DefaultDoubleToAxisLabelTextConverter}"/>
-        <Setter Property="ItemTemplate" Value="{StaticResource DefualtXAxisItemDataTemplate}"/>
+        <Setter Property="ItemTemplate" Value="{StaticResource DefualtAxisItemDataTemplate}"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="axis:XAxis">
+                <ControlTemplate TargetType="axis:AxisBase">
                     <Border BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Background="{TemplateBinding Background}"
@@ -89,11 +181,7 @@
                         <local:SlimItemsControl x:Name="PART_AxisItemsControl"
                                               ItemTemplate="{Binding ItemTemplate, RelativeSource={RelativeSource TemplatedParent}}"
                                               ItemTemplateSelector="{Binding ItemTemplateSelector, RelativeSource={RelativeSource TemplatedParent}}">
-                            <local:SlimItemsControl.Template>
-                                <ControlTemplate TargetType="local:SlimItemsControl">
-                                    <Grid x:Name="PART_Root"/>
-                                </ControlTemplate>
-                            </local:SlimItemsControl.Template>
+ 
                         </local:SlimItemsControl>
                     </Border>
                 </ControlTemplate>
@@ -101,30 +189,22 @@
         </Setter>
     </Style>
 
-    <Style TargetType="axis:YAxis">
-        <Setter Property="LabelTextConverter" Value="{StaticResource DefaultDoubleToAxisLabelTextConverter}"/>
-        <Setter Property="ItemTemplate" Value="{StaticResource DefualtYAxisItemDataTemplate}"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="axis:YAxis">
-                    <Border BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            Background="{TemplateBinding Background}"
-                            Padding="{TemplateBinding Padding}">
-                        <local:SlimItemsControl x:Name="PART_AxisItemsControl"
-                                              ItemTemplate="{Binding ItemTemplate, RelativeSource={RelativeSource TemplatedParent}}"
-                                              ItemTemplateSelector="{Binding ItemTemplateSelector, RelativeSource={RelativeSource TemplatedParent}}">
-                            <local:SlimItemsControl.Template>
-                                <ControlTemplate TargetType="local:SlimItemsControl">
-                                    <Grid x:Name="PART_Root"/>
-                                </ControlTemplate>
-                            </local:SlimItemsControl.Template>
-                        </local:SlimItemsControl>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+
+
+
+    <axis:AxisBase x:Key="XAxis" 
+                   x:Shared="False"
+                   Orientation="Horizontal"
+                   Placement="Bottom">
+
+    </axis:AxisBase>
+
+    <axis:AxisBase x:Key="YAxis" 
+                   x:Shared="False"
+                   Orientation="Vertical" 
+                   Placement="Left">
+
+    </axis:AxisBase>
 
     <Style x:Key="DefaultGridLineStyle" TargetType="Line">
         <Setter Property="Stroke" Value="SkyBlue"/>
@@ -132,24 +212,59 @@
         <Setter Property="StrokeDashArray" Value="3 2"/>
     </Style>
 
+
+
+    <Style TargetType="local:GridLineControl">
+        <Setter Property="VerticalGridLineStyle" Value="{StaticResource DefaultGridLineStyle}"/>
+        <Setter Property="HorizontalGridLineStyle" Value="{StaticResource DefaultGridLineStyle}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:GridLineControl">
+
+                    <Grid Background="{TemplateBinding Background}">
+                        <local:SlimItemsControl x:Name="PART_HorizontalGridLineItemsControl" >
+                            <local:SlimItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Line/>
+                                </DataTemplate>
+                            </local:SlimItemsControl.ItemTemplate>
+                        </local:SlimItemsControl>
+
+                        <local:SlimItemsControl x:Name="PART_VerticalGridLineItemsControl">
+                            <local:SlimItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Line/>
+                                </DataTemplate>
+                            </local:SlimItemsControl.ItemTemplate>
+                        </local:SlimItemsControl>
+
+
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <local:GridLineControl x:Key="DefaultGridLineControl"  x:Shared="False"/>
+
+
     <Style x:Key="DefaultHorizontalCrossHairLineStyle" TargetType="Line">
         <Setter Property="Stroke" Value="Maroon"/>
         <Setter Property="StrokeThickness" Value="0.5"/>
     </Style>
-
 
     <Style x:Key="DefaultVerticalCrossHairLineStyle" TargetType="Line">
         <Setter Property="Stroke" Value="Maroon"/>
         <Setter Property="StrokeThickness" Value="0.5"/>
     </Style>
 
-
     <Style TargetType="local:SeriesChart">
-        <Setter Property="VerticalGridLineStyle" Value="{StaticResource DefaultGridLineStyle}"/>
-        <Setter Property="HorizontalGridLineStyle" Value="{StaticResource DefaultGridLineStyle}"/>
+        <Setter Property="XAxis" Value="{StaticResource XAxis}"/>
+        <Setter Property="YAxis" Value="{StaticResource YAxis}"/>
+        <Setter Property="GridLineControl" Value="{StaticResource DefaultGridLineControl}"/>
         <Setter Property="HorizontalCrossHairLineStyle" Value="{StaticResource DefaultHorizontalCrossHairLineStyle}"/>
         <Setter Property="VerticalCrossHairLineStyle" Value="{StaticResource DefaultVerticalCrossHairLineStyle}"/>
-        <Setter Property="Background" Value="WhiteSmoke"/>
+        <Setter Property="Background" Value="Chartreuse"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:SeriesChart">
@@ -176,42 +291,20 @@
                                 <ScaleTransform ScaleY="-1" />
                             </Border.RenderTransform>
 
-                            <Grid x:Name="PART_PlotAreaRoot">
-                                <local:SlimItemsControl x:Name="PART_HorizontalGridLineItemsControl" 
-                                                      Visibility="{TemplateBinding HorizontalGridLineVisiblility}" >
-                                    <local:SlimItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Line/>
-                                        </DataTemplate>
-                                    </local:SlimItemsControl.ItemTemplate>
-                                </local:SlimItemsControl>
-
-                                <local:SlimItemsControl x:Name="PART_VerticalGridLineItemsControl"
-                                                      Visibility="{TemplateBinding VerticalGridLineVisibility}">
-                                    <local:SlimItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Line/>
-                                        </DataTemplate>
-                                    </local:SlimItemsControl.ItemTemplate>
-                                </local:SlimItemsControl>
+                            <Grid x:Name="PART_PlotingCanvas" >
+                                <ContentControl x:Name="PART_GridLineHolder"/>
 
                                 <local:SlimItemsControl x:Name="PART_SeriesItemsControl" 
                                                       ItemTemplate="{TemplateBinding SeriesDataTemplate}"
                                                       ItemsSource="{TemplateBinding SeriesItemsSource}"
                                                       ItemTemplateSelector="{TemplateBinding SeriesTemplateSelector}">
-                                    <local:SlimItemsControl.Template>
-                                        <ControlTemplate TargetType="local:SlimItemsControl">
-                                            <Grid x:Name="PART_Root"/>
-                                        </ControlTemplate>
-                                    </local:SlimItemsControl.Template>
+            
                                 </local:SlimItemsControl>
 
                                 <Line x:Name="PART_HorizontalCrossHair"
-                                      Style="{TemplateBinding HorizontalCrossHairLineStyle}"
-                                      Y2="{Binding ElementName=PART_PlotAreaRoot, Path=ActualHeight}" />
+                                      Y2="{Binding ElementName=PART_PlotingCanvas, Path=ActualHeight}" />
                                 <Line x:Name="PART_VerticalCrossHair"
-                                      Style="{TemplateBinding VerticalCrossHairLineStyle}"
-                                      X2="{Binding ElementName=PART_PlotAreaRoot, Path=ActualWidth}"
+                                      X2="{Binding ElementName=PART_PlotingCanvas, Path=ActualWidth}"
                                 />
                             </Grid>
                         </Border>
@@ -223,16 +316,7 @@
     </Style>
 
 
-    <Style TargetType="{x:Type local:SlimItemsControl}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:SlimItemsControl">
+ 
 
-                    <Canvas x:Name="PART_Root"/>
-
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
 
 </ResourceDictionary>

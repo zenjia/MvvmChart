@@ -8,7 +8,7 @@
              xmlns:axis="clr-namespace:MvvmCharting.Axis;assembly=Cartesian2DChart"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    
+
     <UserControl.Resources>
         <local:BigDataViewModel x:Key="BigDataViewModel"/>
         <DataTemplate x:Key="SeriesTemplate" DataType="local:SomePointList">
@@ -16,24 +16,23 @@
                                              DependentValueProperty="Y"
                                              Stroke="CadetBlue"
                                              StrokeThickness="1.5"
-                                             Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
                                              IsScatterVisible="{Binding ShowSeriesPoints}"
                                              IsLineOrAreaVisible="{Binding ShowSeriesLine}"
                                              ItemsSource="{Binding DataList}"
-                                             ScatterTemplate="{StaticResource DefaultItemPointDataTemplate}">
+                                            >
             </mvvmCharting:PolyLineSeries>
 
         </DataTemplate>
 
- 
- 
+
+
 
     </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="Auto"/>
 
         </Grid.RowDefinitions>
 
@@ -42,19 +41,34 @@
                                   SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource BigDataViewModel}}">
 
             <mvvmCharting:SeriesChart.XAxis>
-                <axis:XAxis />
+                <axis:AxisBase />
             </mvvmCharting:SeriesChart.XAxis>
 
             <mvvmCharting:SeriesChart.YAxis>
-                <axis:YAxis />
+                <axis:AxisBase />
             </mvvmCharting:SeriesChart.YAxis>
 
         </mvvmCharting:SeriesChart>
 
 
-        <CheckBox Grid.Row="1"
-                  Content="ShowScatter" 
-                  IsChecked="{Binding Source={StaticResource BigDataViewModel}, Path=ShowSeriesPoints}"/>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <CheckBox Content="ShowScatter" 
+
+                      IsChecked="{Binding Source={StaticResource BigDataViewModel}, Path=ShowSeriesPointsGlobal, Mode=TwoWay}"/>
+
+
+            <GroupBox Margin="50,6" Padding="8">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Series Data Count:" Margin="6" VerticalAlignment="Center" />
+
+                    <ComboBox ItemsSource="{Binding Source={StaticResource BigDataViewModel}, Path=AvailableSizes}"
+                              SelectedItem="{Binding Source={StaticResource BigDataViewModel}, Path=SelectedDataSize, Mode=TwoWay}"
+                    />
+                </StackPanel>
+
+            </GroupBox>
+
+        </StackPanel>
     </Grid>
 
 

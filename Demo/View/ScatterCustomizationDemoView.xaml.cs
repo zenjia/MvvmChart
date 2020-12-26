@@ -29,8 +29,8 @@ namespace Demo
             }
 
 
-            ScatterViewModel obj = (ScatterViewModel)item;
-            SomePoint pt = (SomePoint) obj.Item;
+ 
+            SomePoint pt = (SomePoint)item;
             int i = (int)pt.t;
             int j = (int)pt.Y;
 

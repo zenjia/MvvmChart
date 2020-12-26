@@ -14,6 +14,16 @@ namespace MvvmChart.Common
             return double.IsNaN(value) || value == 0;
         }
 
+        public static bool IsZero(this double value)
+        {
+            return value == 0;
+        }
+
+        public static bool IsInvalid(this double value)
+        {
+            return value.IsNaN() || double.IsInfinity(value);
+        }
+
         public static bool NearlyEqual(this double value1, double value2, double tolerance = double.Epsilon)
         {
             if (value1.IsNaN() && value2.IsNaN())

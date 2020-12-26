@@ -27,7 +27,7 @@ namespace MvvmChart.Common
             }
             else
             {
-                throw new Cartesian2DChartException($"Type {obj?.GetType()} is not supported! Only type which implement IConvertible is supported!");
+                throw new MvvmChartException($"Type {obj?.GetType()} is not supported! Only type which implement IConvertible is supported!");
             }
 
             return returnValue;

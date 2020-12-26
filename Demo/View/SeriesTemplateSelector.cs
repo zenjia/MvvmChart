@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -28,6 +29,7 @@ namespace Demo
                 case 1:
                     return this.DataTemplate1;
                 case 2:
+                    
                     return this.DataTemplate2;
  
 

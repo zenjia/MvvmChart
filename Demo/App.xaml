@@ -9,16 +9,7 @@
         <BooleanToVisibilityConverter x:Key="t2v"/>
 
 
-        <mvvmCharting:EllipseGeometryBuilder x:Key="EllipseGeometryBuilder" RadiusX="6" RadiusY="6"/>
-        <DataTemplate x:Key="DefaultItemPointDataTemplate" 
-                      DataType="mvvmCharting:ScatterViewModel">
-            <mvvmCharting:Scatter Fill="RoyalBlue" 
-                           GeometryBuilder="{StaticResource EllipseGeometryBuilder}"
-                           Opacity="0.8"/>
-        </DataTemplate>
-
-
-        <local:DemoDataViewModel x:Key="GlobalDemoDataViewModel"/>
+       
          
     </Application.Resources>
 </Application>

@@ -67,16 +67,12 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Axis\AxisActualValues.cs" />
+    <Compile Include="Axis\AxisDrawingSettings.cs" />
     <Compile Include="Axis\AxisBase.cs" />
     <Compile Include="Axis\AxisItem\AxisItem.cs" />
-    <Compile Include="Axis\DataOffset.cs" />
+    <Compile Include="Axis\AxisItemDrawingParam.cs" />
     <Compile Include="Axis\AxisItem\DefaultDoubleToAxisLabelTextConverter.cs" />
-    <Compile Include="Axis\XAxis.cs" />
-    <Compile Include="Axis\AxisItem\XAxisItem.cs" />
-    <Compile Include="Axis\YAxis.cs" />
-    <Compile Include="Axis\AxisItem\YAxisItem.cs" />
-    <Compile Include="common\ItemsControlEx.cs" />
+    <Compile Include="Axis\AxisPlacement.cs" />
     <Compile Include="common\PointHelper.cs" />
     <Compile Include="common\SizeHelper.cs" />
     <Compile Include="common\SlimItemsControl.cs" />
@@ -85,8 +81,8 @@
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\EllipseGeometryBuilder.cs" />
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\IScatterGeometryBuilder.cs" />
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\RectangleBuilder.cs" />
+    <Compile Include="GridLine\GridLineControl.cs" />
     <Compile Include="SeriesChart\SeriesChart.cs" />
-    <Compile Include="common\NotifyTemplateAppliedPresenter.cs" />
     <Compile Include="Series\Scatter.cs" />
     <Compile Include="Series\ScatterViewModel.cs" />
     <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\BezierAreaGeometryBuilder.cs" />

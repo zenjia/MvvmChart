@@ -1,4 +1,7 @@
-﻿using System;
+﻿
+//#define DEBUG_SlimItemsControl
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -11,72 +14,93 @@ using MvvmChart.Common;
 namespace MvvmCharting
 {
 
+    /// <summary>
+    /// This is not an ItemsControl
+    /// </summary>
+    [TemplatePart(Name = "PART_Root", Type = typeof(Panel))]
     public class SlimItemsControl : Control
     {
-        private static string RangeActionsNotSupported = "RangeActionsNotSupported";
-        private static string UnexpectedCollectionChangeAction = "UnexpectedCollectionChangeAction";
         static SlimItemsControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(SlimItemsControl), new FrameworkPropertyMetadata(typeof(SlimItemsControl)));
         }
 
-        private bool _loaded;
-        public SlimItemsControl()
-        {
-            this.Loaded += this.SlimItemsControl_Loaded;
-            this.Unloaded += this.SlimItemsControl_Unloaded;
-
-           
-
-
-        }
-
-        private void SlimItemsControl_Unloaded(object sender, RoutedEventArgs e)
-        {
-            this._loaded = false;
-        }
-
-        private void SlimItemsControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            this._loaded = true;
-            ReloadAllItems();
-        }
+        private static string RangeActionsNotSupported = "RangeActionsNotSupported";
+        private static string UnexpectedCollectionChangeAction = "UnexpectedCollectionChangeAction";
 
         private Panel PART_Root;
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            this.PART_Root = VisualTreeHelper2.GetAllChildren(this).OfType<Panel>().FirstOrDefault();
+            this.PART_Root = (Panel)this.GetTemplateChild("PART_Root");
 
 
             if (this.PART_Root == null)
             {
-                throw new Cartesian2DChartException($"The Template of SlimItemsControl contains no Panel!");
+                throw new MvvmChartException($"'PART_Root' is not found!");
             }
 
-            ReloadAllItems();
+        
+            LoadAllItems();
 
 
 
         }
 
-        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+
+        public SlimItemsControl()
         {
-            base.OnPropertyChanged(e);
+  
+            this.Loaded += this.SlimItemsControl_Loaded;
 
-            if (e.Property == VisibilityProperty)
-            {
-                if (this.Visibility == Visibility.Visible)
-                {
-                    ReloadAllItems();
-                }
-            }
+ 
+
         }
 
+        
+
+        private void SlimItemsControl_Loaded(object sender, RoutedEventArgs e)
+        {
+          
+            LoadAllItems();
+        }
+
+        private IList _handledItemsSource;
+ 
+ 
+ 
 
         public event Action<object, FrameworkElement> ItemTemplateContentLoaded;
 
         private Dictionary<object, FrameworkElement> _itemsDictionary = new Dictionary<object, FrameworkElement>();
+
+        #region internal items access routines
+        public bool ContainsItem(object item)
+        {
+            return this._itemsDictionary.ContainsKey(item);
+        }
+
+        public int ItemCount => this._itemsDictionary.Count;
+
+        public FrameworkElement TryGetTemplateElementForItem(object item)
+        {
+            if (!this._itemsDictionary.ContainsKey(item))
+            {
+                return null;
+            }
+            return this._itemsDictionary[item];
+        }
+
+        public IEnumerable<FrameworkElement> GetAllTemplateElements()
+        {
+            if (this._itemsDictionary.Count != this.PART_Root.Children.Count)
+            {
+                throw new NotImplementedException();
+            }
+
+            return this._itemsDictionary.Values;
+        }
+        #endregion
 
         public IList ItemsSource
         {
@@ -96,6 +120,11 @@ namespace MvvmCharting
 
         private void OnItemsSourceChanged(IList oldValue, IList newValue)
         {
+#if DEBUG_SlimItemsControl
+            Debug.WriteLine($"{this.Name}({this.GetHashCode()})....OnItemsSourceChanged....");
+#endif
+           
+
             ReloadAllItems();
 
             if (oldValue is INotifyCollectionChanged oldItemsSource)
@@ -178,8 +207,8 @@ namespace MvvmCharting
 
         void OnCollectionChanged(NotifyCollectionChangedEventArgs args)
         {
-           
-            if (!CanLoadItem())
+
+            if (!CanAddItem())
             {
                 return;
             }
@@ -200,13 +229,12 @@ namespace MvvmCharting
 
                 case NotifyCollectionChangedAction.Replace:
 
-                    if (/*this.ItemsSource.Count != this._itemsDictionary.Count
-                        || */this.ItemsSource.Count != this.PART_Root.Children.Count)
+                    if (this.ItemsSource.Count != this.PART_Root.Children.Count)
                     {
                         throw new NotImplementedException();
-                        
+
                     }
- 
+
                     if (args.OldItems.Count != 1)
                         throw new NotSupportedException(RangeActionsNotSupported);
 
@@ -231,43 +259,73 @@ namespace MvvmCharting
 
         }
 
-         
+
         // Called when an item is added to the items collection
         void OnItemAdded(object item, int index)
         {
+
+#if DEBUG_SlimItemsControl
+            Debug.WriteLine($"{this.Name}({this.GetHashCode()})....OnItemAdded....{item}");
+#endif
+
             var treeRoot = LoadTemplateContentForItem(item);
-        
+
+            _itemsDictionary.Add(item, treeRoot);
+
             this.PART_Root.Children.Insert(index, treeRoot);
 
             this.ItemTemplateContentLoaded?.Invoke(this, treeRoot);
 
-           
+
 
         }
 
         // Called when an item is removed from the items collection
         void OnItemRemoved(object item, int itemIndex)
         {
-            //this._itemsDictionary.Remove(item);
+#if DEBUG_SlimItemsControl
+            Debug.WriteLine($"{this.Name}({this.GetHashCode()})....OnItemRemoved....{item}");
+#endif
+            _itemsDictionary.Remove(item);
             this.PART_Root.Children.RemoveAt(itemIndex);
 
         }
 
         void OnItemReplaced(object oldItem, object newItem, int index)
         {
-            var treeRoot = LoadTemplateContentForItem(newItem);
+#if DEBUG_SlimItemsControl
+            Debug.WriteLine($"{this.Name}({this.GetHashCode()})....OnItemReplaced....{oldItem}->{newItem}");
+#endif
+            FrameworkElement treeRoot;
+            if (this.ItemTemplate != null)
+            {
+#if DEBUG_SlimItemsControl
+                Debug.WriteLine($"{this.Name}({this.GetHashCode()})....OnItemReplaced2....");
+#endif
+                treeRoot = (FrameworkElement)this.PART_Root.Children[index];
+                treeRoot.DataContext = newItem;
+            }
+            else
+            {
+                treeRoot = LoadTemplateContentForItem(newItem);
+                this.PART_Root.Children.RemoveAt(index);
+                this.PART_Root.Children.Insert(index, treeRoot);
+            }
 
-            this.PART_Root.Children.RemoveAt(index);  
-            this.PART_Root.Children.Insert(index, treeRoot);
-
-            //this._itemsDictionary.Remove(oldItem);
-            //this._itemsDictionary.Add(newItem, treeRoot);
+            _itemsDictionary.Remove(oldItem);
+            _itemsDictionary.Add(newItem, treeRoot);
+            //treeRoot = LoadTemplateContentForItem(newItem);
+            //this.PART_Root.Children.RemoveAt(index);
+            //this.PART_Root.Children.Insert(index, treeRoot);
 
             this.ItemTemplateContentLoaded?.Invoke(this, treeRoot);
         }
 
         void OnItemMoved(object item, int oldIndex, int newIndex)
         {
+#if DEBUG_SlimItemsControl
+            Debug.WriteLine($"{this.Name}({this.GetHashCode()})....OnItemMoved....{item}");
+#endif
             var old = this.PART_Root.Children[oldIndex];
             int insertIndex = newIndex;
             if (oldIndex < insertIndex)
@@ -276,56 +334,99 @@ namespace MvvmCharting
             }
             this.PART_Root.Children.RemoveAt(oldIndex);
             this.PART_Root.Children.Insert(insertIndex, old);
+
         }
 
         // Called when the items collection is refreshed
         void OnRefresh()
         {
+#if DEBUG_SlimItemsControl
+            Debug.WriteLine($"{this.Name}({this.GetHashCode()})....OnRefresh....");
+#endif
+            
             ReloadAllItems();
         }
 
         private void ClearItems()
         {
-            this.PART_Root?.Children.Clear();
+#if DEBUG_SlimItemsControl
+            if (this != null && this.PART_Root.Children.Count != 0)
+            {
+                Debug.WriteLine($"{this.Name}({this.GetHashCode()})....ClearItems....ct={this.PART_Root.Children.Count}");
+            }
+#endif
+
+            this._itemsDictionary.Clear();
+
+            if (this.PART_Root != null)
+            {
+                this.PART_Root.Children.Clear();
+                this.Visibility = Visibility.Visible;
+            }
+
+            _handledItemsSource = null;
+
         }
 
-        private bool CanLoadItem()
+        private bool CanAddItem()
         {
-            return this._loaded &&
-                   this.Visibility == Visibility.Visible &&
+            return this.IsLoaded &&
+                   this.PART_Root != null &&
+                   //this.Visibility == Visibility.Visible &&
                    (this.ItemTemplate != null || this.ItemTemplateSelector != null);
         }
 
         private void ReloadAllItems()
         {
+         
+#if DEBUG_SlimItemsControl
+            Debug.WriteLine($"{this.Name}({this.GetHashCode()})....ReloadAllItems....");
+#endif
             ClearItems();
 
-            if (this.ItemsSource == null ||
-                this.ItemsSource.Count == 0)
+            LoadAllItems();
+        }
+
+        public void LoadAllItems()
+        {
+            if (this.ItemsSource == null)
             {
+             
+                return;
+            }
+
+
+            if (!CanAddItem())
+            {
+
+              
                 return;
             }
 
 
 
-            if (!CanLoadItem())
+            if (object.ReferenceEquals(this._handledItemsSource, this.ItemsSource))
             {
                 return;
             }
 
-            Debug.Assert(this.PART_Root.Children.Count==0);
-
-            if (this.ItemsSource.Count == this.PART_Root.Children.Count)
+            if (this.PART_Root.Children.Count != 0)
             {
-                return;
+                throw new MvvmChartException($"this.PART_Root.Children.Count=={this.PART_Root.Children.Count}");
             }
 
-            PART_Root.Children.Capacity = this.PART_Root.Children.Count + this.ItemsSource.Count;
+
+            this.PART_Root.Children.Capacity = this.ItemsSource.Count;
+
+
+            Debug.WriteLine($"LoadAllItems: {this.Name}..........ct = {ItemsSource.Count}....!!!!!!!!!!");
 
             for (int i = 0; i < this.ItemsSource.Count; i++)
             {
                 OnItemAdded(this.ItemsSource[i], i);
             }
+
+            this._handledItemsSource = this.ItemsSource;
         }
         #endregion
 
@@ -359,4 +460,6 @@ namespace MvvmCharting
 
 
     }
+
+
 }

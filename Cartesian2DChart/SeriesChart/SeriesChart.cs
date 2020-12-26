@@ -18,32 +18,100 @@ using MvvmCharting.Axis;
 
 namespace MvvmCharting
 {
+
+
+    public class CanvasSettingChangedEventArgs
+    {
+        public override string ToString()
+        {
+            return "aaa";
+        }
+
+        public Orientation Orientation { get; }
+        public double RenderSize { get; }
+
+        public Point Margin { get; }
+        public Point Padding { get; }
+        public Point BorderThickness { get; }
+
+        public Range PlotingDataRange { get; }
+
+        public double GetAvailablePlottingSize()
+        {
+            return this.RenderSize - (this.Margin.X + this.Margin.Y)
+                   - (this.Padding.X + this.Padding.Y) -
+                   (this.BorderThickness.X + this.BorderThickness.Y);
+        }
+
+        public CanvasSettingChangedEventArgs(Orientation orientation,
+            double renderSize,
+            Point margin,
+            Point padding,
+            Point borderThickness,
+            Range plotingDataRange)
+        {
+            this.RenderSize = renderSize;
+            this.Margin = margin;
+            this.Padding = padding;
+            this.BorderThickness = borderThickness;
+            this.PlotingDataRange = plotingDataRange;
+            this.Orientation = orientation;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as CanvasSettingChangedEventArgs;
+            if (other == null)
+            {
+                return false;
+            }
+            return other.Equals(this);
+        }
+
+        public bool Equals(CanvasSettingChangedEventArgs obj)
+        {
+            return this.RenderSize.NearlyEqual(obj.RenderSize, 0.0001) &&
+                   this.Margin == obj.Margin &&
+                   this.Padding == obj.Padding &&
+                   this.BorderThickness == obj.BorderThickness &&
+                   this.PlotingDataRange == obj.PlotingDataRange;
+        }
+
+        public static bool Validate(double length,
+            Point margin,
+            Point pading,
+            Point borderThickness,
+            Range plotingDataRange)
+        {
+            return !length.IsInvalid() &&
+                   !length.IsZero() &&
+                   !margin.IsInvalid() &&
+                   !pading.IsInvalid() &&
+                   !borderThickness.IsInvalid() &&
+                   !plotingDataRange.IsInvalid;
+
+        }
+    }
+
     public interface IAxisOwner
     {
-        Thickness Padding { get; }
-        event Action<Thickness> PaddingChanged;
-
-        Thickness BorderThickness { get; }
-        event Action<Thickness> BorderThicknessChanged;
-
-        Thickness Margin { get; }
-        event Action<Thickness> MarginChanged;
+        void OnAxisItemsCoordinateChanged(Orientation orientation, IEnumerable<double> ticks);
     }
 
     public interface IXAxisOwner : IAxisOwner
     {
-        Range PlotAreaXDataRange { get; }
 
-        event Action<Range> PlotAreaXRangeChanged;
 
-        void OnXAxisTickChanged(IEnumerable<double> tickPositions);
+        event Action<CanvasSettingChangedEventArgs> CanvasHorizontalSettingChanged;
+
+
     }
 
     public interface IYAxisOwner : IAxisOwner
     {
-        Range PlotAreaYDataRange { get; }
-        event Action<Range> PlotAreaYRangeChanged;
-        void OnYAxisTickChanged(IEnumerable<double> tickPositions);
+
+
+        event Action<CanvasSettingChangedEventArgs> CanvasVerticalSettingChanged;
     }
 
 
@@ -53,12 +121,13 @@ namespace MvvmCharting
     /// x axis & y axis, grid lines, cross hair...
     /// </summary>
     [TemplatePart(Name = "PART_Root", Type = typeof(Grid))]
-    [TemplatePart(Name = "PART_PlotAreaRoot", Type = typeof(Grid))]
-    [TemplatePart(Name = "PART_HorizontalGridLineItemsControl", Type = typeof(SlimItemsControl))]
-    [TemplatePart(Name = "PART_VerticalGridLineItemsControl", Type = typeof(SlimItemsControl))]
+    [TemplatePart(Name = "PART_PlotingCanvas", Type = typeof(Grid))]
+
     [TemplatePart(Name = "PART_SeriesItemsControl", Type = typeof(SlimItemsControl))]
     [TemplatePart(Name = "PART_HorizontalCrossHair", Type = typeof(Line))]
     [TemplatePart(Name = "PART_VerticalCrossHair", Type = typeof(Line))]
+    [TemplatePart(Name = "PART_GridLineHolder", Type = typeof(Line))]
+
     public class SeriesChart : Control, IXAxisOwner, IYAxisOwner
     {
         static SeriesChart()
@@ -67,26 +136,122 @@ namespace MvvmCharting
         }
 
         private static readonly string sPART_Root = "PART_Root";
-        private static readonly string sPART_PlotAreaRoot = "PART_PlotAreaRoot";
-        private static readonly string sPART_HorizontalGridLineItemsControl = "PART_HorizontalGridLineItemsControl";
-        private static readonly string sPART_VerticalGridLineItemsControl = "PART_VerticalGridLineItemsControl";
+        private static readonly string sPART_PlotingCanvas = "PART_PlotingCanvas";
+
         private static readonly string sPART_SeriesItemsControl = "PART_SeriesItemsControl";
         private static readonly string sPART_HorizontalCrossHair = "PART_HorizontalCrossHair";
         private static readonly string sPART_VerticalCrossHair = "PART_VerticalCrossHair";
+        private static readonly string sPART_GridLineHolder = "PART_GridLineHolder";
 
-        public event Action<Thickness> PaddingChanged;
-        public event Action<Thickness> MarginChanged;
-        public event Action<Thickness> BorderThicknessChanged;
-        public event Action<Range> PlotAreaXRangeChanged;
-        public event Action<Range> PlotAreaYRangeChanged;
+
+        public event Action<Range> PlotingXRangeChanged;
+        public event Action<Range> PlotingYRangeChanged;
+
+        public event Action<CanvasSettingChangedEventArgs> CanvasHorizontalSettingChanged;
+        public event Action<CanvasSettingChangedEventArgs> CanvasVerticalSettingChanged;
+
+        private CanvasSettingChangedEventArgs _canvasHorizontalSetting;
+        public CanvasSettingChangedEventArgs CanvasHorizontalSetting
+        {
+            get { return this._canvasHorizontalSetting; }
+            set
+            {
+                if (this._canvasHorizontalSetting != value)
+                {
+                    this._canvasHorizontalSetting = value;
+
+                    this.CanvasHorizontalSettingChanged?.Invoke(value);
+                }
+            }
+        }
+
+        private CanvasSettingChangedEventArgs _canvasVerticalSetting;
+        public CanvasSettingChangedEventArgs CanvasVerticalSetting
+        {
+            get { return this._canvasVerticalSetting; }
+            set
+            {
+                if (this._canvasVerticalSetting != value)
+                {
+                    this._canvasVerticalSetting = value;
+                    this.CanvasVerticalSettingChanged?.Invoke(value);
+                }
+            }
+        }
+        private CanvasSettingChangedEventArgs GetCanvasSettingChangedEventArgs(Orientation orientation)
+        {
+            if (this.PART_PlotingCanvas == null)
+            {
+
+                return null;
+            }
+
+            double length;
+            Point magrin, pading, borderThickness;
+            Range plotingDataRange;
+            switch (orientation)
+            {
+                case Orientation.Horizontal:
+
+                    length = this.PART_PlotingCanvas.ActualWidth;
+                    magrin = new Point(this.Margin.Left, this.Margin.Right);
+                    pading = new Point(this.Padding.Left, this.Padding.Right);
+                    borderThickness = new Point(this.BorderThickness.Left, this.BorderThickness.Right);
+                    plotingDataRange = this.PlotingXDataRange;
+                    break;
+
+
+                case Orientation.Vertical:
+                    length = this.PART_PlotingCanvas.ActualHeight;
+                    magrin = new Point(this.Margin.Top, this.Margin.Bottom);
+                    pading = new Point(this.Padding.Top, this.Padding.Bottom);
+                    borderThickness = new Point(this.BorderThickness.Top, this.BorderThickness.Bottom);
+                    plotingDataRange = this.PlotingYDataRange;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(orientation), orientation, null);
+            }
+
+            var isValid = CanvasSettingChangedEventArgs.Validate(length, magrin, pading, borderThickness, plotingDataRange);
+
+            if (isValid)
+            {
+                return new CanvasSettingChangedEventArgs(orientation, length, magrin, pading, borderThickness, plotingDataRange);
+            }
+
+            return null;
+        }
+        private void DetectCanvasSettingChanged(Orientation orientation)
+        {
+            if (!this.IsLoaded)
+            {
+                return;
+            }
+
+
+            var args = GetCanvasSettingChangedEventArgs(orientation);
+            switch (orientation)
+            {
+                case Orientation.Horizontal:
+                    this.CanvasHorizontalSetting = args;
+                    break;
+                case Orientation.Vertical:
+                    this.CanvasVerticalSetting = args;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(orientation), orientation, null);
+            }
+
+        }
 
         private Grid PART_Root;
-        private Grid PART_PlotAreaRoot;
+        private Grid PART_PlotingCanvas;
         private SlimItemsControl PART_SeriesItemsControl;
-        private SlimItemsControl PART_HorizontalGridLineItemsControl;
-        private SlimItemsControl PART_VerticalGridLineItemsControl;
+
         private Line PART_HorizontalCrossHair;
         private Line PART_VerticalCrossHair;
+
+        private ContentControl PART_GridLineHolder;
 
         private Dictionary<object, SeriesBase> _seriesDictionary = new Dictionary<object, SeriesBase>();
         public SeriesChart()
@@ -95,18 +260,13 @@ namespace MvvmCharting
         }
 
         #region overrides
+
+
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            if (this.PART_HorizontalGridLineItemsControl != null)
-            {
-                this.PART_HorizontalGridLineItemsControl.ItemTemplateContentLoaded -= HorizontalGridLineItemTemplateApplied;
-            }
 
-            if (this.PART_VerticalGridLineItemsControl != null)
-            {
-                this.PART_VerticalGridLineItemsControl.ItemTemplateContentLoaded += VerticalGridLineItemTemplateApplied;
-            }
 
             if (this.PART_SeriesItemsControl != null)
             {
@@ -116,25 +276,64 @@ namespace MvvmCharting
             this.PART_SeriesItemsControl = (SlimItemsControl)GetTemplateChild(sPART_SeriesItemsControl);
             this.PART_SeriesItemsControl.ItemTemplateContentLoaded += SeriesItemTemplateApplied;
 
-            this.PART_HorizontalGridLineItemsControl = (SlimItemsControl)GetTemplateChild(sPART_HorizontalGridLineItemsControl);
-            this.PART_VerticalGridLineItemsControl = (SlimItemsControl)GetTemplateChild(sPART_VerticalGridLineItemsControl);
-            this.PART_HorizontalGridLineItemsControl.ItemsSource = this.HorizontalGridLineOffsets;
-            this.PART_VerticalGridLineItemsControl.ItemsSource = this.VerticalGridLineOffsets;
 
-            this.PART_HorizontalGridLineItemsControl.ItemTemplateContentLoaded += HorizontalGridLineItemTemplateApplied;
-            this.PART_VerticalGridLineItemsControl.ItemTemplateContentLoaded += VerticalGridLineItemTemplateApplied;
 
             this.PART_Root = (Grid)GetTemplateChild(sPART_Root);
-            this.PART_PlotAreaRoot = (Grid)GetTemplateChild(sPART_PlotAreaRoot);
+            this.PART_PlotingCanvas = (Grid)GetTemplateChild(sPART_PlotingCanvas);
+
             OnXAxisPropertyChanged(null, this.XAxis);
             OnYAxisPropertyChanged(null, this.YAxis);
             OnPlotAreaBackgroundPropertyChanged(null, this.PlotAreaBackground);
 
             this.PART_HorizontalCrossHair = (Line)GetTemplateChild(sPART_HorizontalCrossHair);
-            this.PART_VerticalCrossHair = (Line)GetTemplateChild(sPART_VerticalCrossHair);
+            if (this.PART_HorizontalCrossHair != null)
+            {
+                this.PART_HorizontalCrossHair.SetBinding(Control.StyleProperty,
+                    new Binding(nameof(HorizontalCrossHairLineStyle)){Source = this});
+                this.PART_HorizontalCrossHair.SetBinding(Line.Y2Property,
+                    new Binding(nameof(ActualHeight)) { Source = this.PART_PlotingCanvas });
+            }
 
-            this.PART_PlotAreaRoot.MouseMove += PART_PlotAreaRoot_MouseMove;
-            this.PART_PlotAreaRoot.MouseLeave += PART_PlotAreaRoot_MouseLeave;
+            this.PART_VerticalCrossHair = (Line)GetTemplateChild(sPART_VerticalCrossHair);
+            if (this.PART_VerticalCrossHair != null)
+            {
+                this.PART_VerticalCrossHair.SetBinding(Control.StyleProperty,
+                    new Binding(nameof(VerticalCrossHairLineStyle)) { Source = this });
+                this.PART_VerticalCrossHair.SetBinding(Line.X2Property,
+                    new Binding(nameof(ActualHeight)) { Source = this.PART_PlotingCanvas });
+            }
+
+            this.PART_GridLineHolder = (ContentControl)GetTemplateChild(sPART_GridLineHolder);
+            OnGridLineControlChanged();
+
+            this.PART_PlotingCanvas.MouseMove += PartPlotingCanvasMouseMove;
+            this.PART_PlotingCanvas.MouseLeave += PartPlotingCanvasMouseLeave;
+            this.PART_PlotingCanvas.SizeChanged += PART_PlotingCanvas_SizeChanged;
+        }
+
+
+
+        private void PART_PlotingCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+
+            if (!this.IsLoaded)
+            {
+                return;
+            }
+
+
+
+
+
+            if (e.WidthChanged)
+            {
+                DetectCanvasSettingChanged(Orientation.Horizontal);
+            }
+
+            if (e.HeightChanged)
+            {
+                DetectCanvasSettingChanged(Orientation.Vertical);
+            }
         }
 
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -142,15 +341,18 @@ namespace MvvmCharting
             base.OnPropertyChanged(e);
             if (e.Property == PaddingProperty)
             {
-                this.PaddingChanged?.Invoke(this.Padding);
+                DetectCanvasSettingChanged(Orientation.Horizontal);
+                DetectCanvasSettingChanged(Orientation.Vertical);
             }
             else if (e.Property == MarginProperty)
             {
-                this.MarginChanged?.Invoke(this.Margin);
+                DetectCanvasSettingChanged(Orientation.Horizontal);
+                DetectCanvasSettingChanged(Orientation.Vertical);
             }
             else if (e.Property == BorderThicknessProperty)
             {
-                this.BorderThicknessChanged?.Invoke(this.BorderThickness);
+                DetectCanvasSettingChanged(Orientation.Horizontal);
+                DetectCanvasSettingChanged(Orientation.Vertical);
             }
         }
         #endregion
@@ -269,32 +471,32 @@ namespace MvvmCharting
         }
 
 
-        private Range _yDataRange = Range.Empty;
+        private Range _globalYDataRange = Range.Empty;
 
-        public Range YDataRange
+        public Range GlobalYDataRange
         {
-            get { return this._yDataRange; }
+            get { return this._globalYDataRange; }
             set
             {
-                if (this._yDataRange != value)
+                if (this._globalYDataRange != value)
                 {
-                    this._yDataRange = value;
+                    this._globalYDataRange = value;
 
                     UpdatePlotAreaYDataRange();
                 }
             }
         }
 
-        private Range _xDataRange = Range.Empty;
+        private Range _globalXDataRange = Range.Empty;
 
-        public Range XDataRange
+        public Range GlobalXDataRange
         {
-            get { return this._xDataRange; }
+            get { return this._globalXDataRange; }
             set
             {
-                if (this._xDataRange != value)
+                if (this._globalXDataRange != value)
                 {
-                    this._xDataRange = value;
+                    this._globalXDataRange = value;
 
                     UpdatePlotAreaXDataRange();
                 }
@@ -302,28 +504,28 @@ namespace MvvmCharting
         }
 
 
-        private void UpdateSeriesChartXRange()
+        private void OnPlotingXDataRangeChanged()
         {
             foreach (var sr in this._seriesDictionary.Values)
             {
-                sr.PlotAreaXDataRange = this.PlotAreaXDataRange;
+                sr.PlotingXDataRange = this.PlotingXDataRange;
             }
         }
 
-        private void UpdateSeriesChartYRange()
+        private void OnPlotingYDataRangeChanged()
         {
             foreach (var sr in this._seriesDictionary.Values)
             {
-                sr.PlotAreaYDataRange = this.PlotAreaYDataRange;
+                sr.PlotingYDataRange = this.PlotingYDataRange;
             }
         }
 
-        private void UpdateRange()
+        private void UpdateGlobalDataRange()
         {
             if (this._seriesDictionary.Count == 0)
             {
-                this.XDataRange = Range.Empty;
-                this.YDataRange = Range.Empty;
+                this.GlobalXDataRange = Range.Empty;
+                this.GlobalYDataRange = Range.Empty;
                 return;
             }
 
@@ -362,19 +564,19 @@ namespace MvvmCharting
 
             if (!isXDataRangeEmplty)
             {
-                this.XDataRange = new Range(minX, maxX);
+                this.GlobalXDataRange = new Range(minX, maxX);
             }
 
             if (!isYDataRangeEmplty)
             {
-                this.YDataRange = new Range(minY, maxY);
+                this.GlobalYDataRange = new Range(minY, maxY);
             }
 
 
         }
 
         private Range _plotAreaXDataRange;
-        public Range PlotAreaXDataRange
+        public Range PlotingXDataRange
         {
             get
             {
@@ -386,15 +588,16 @@ namespace MvvmCharting
                 if (this._plotAreaXDataRange != value)
                 {
                     this._plotAreaXDataRange = value;
-                    this.PlotAreaXRangeChanged?.Invoke(value);
+                    this.PlotingXRangeChanged?.Invoke(value);
+                    DetectCanvasSettingChanged(Orientation.Horizontal);
 
-                    UpdateSeriesChartXRange();
+                    OnPlotingXDataRangeChanged();
                 }
             }
         }
 
         private Range _plotAreaYDataRange;
-        public Range PlotAreaYDataRange
+        public Range PlotingYDataRange
         {
             get { return this._plotAreaYDataRange; }
             set
@@ -402,29 +605,32 @@ namespace MvvmCharting
                 if (this._plotAreaYDataRange != value)
                 {
                     this._plotAreaYDataRange = value;
-                    this.PlotAreaYRangeChanged?.Invoke(value);
-                    UpdateSeriesChartYRange();
+                    this.PlotingYRangeChanged?.Invoke(value);
+
+
+                    DetectCanvasSettingChanged(Orientation.Vertical);
+                    OnPlotingYDataRangeChanged();
                 }
             }
         }
 
         private void UpdatePlotAreaXDataRange()
         {
-            double min = !this.XMinimum.IsNaN() ? this.XMinimum : this.XDataRange.Min;
-            double max = !this.XMaximum.IsNaN() ? this.XMaximum : this.XDataRange.Max;
+            double min = !this.XMinimum.IsNaN() ? this.XMinimum : this.GlobalXDataRange.Min;
+            double max = !this.XMaximum.IsNaN() ? this.XMaximum : this.GlobalXDataRange.Max;
 
             if (min.IsNaN() && max.IsNaN())
             {
-                this.PlotAreaXDataRange = Range.Empty;
+                this.PlotingXDataRange = Range.Empty;
                 return;
             }
 
-            if (this.PlotAreaXDataRange.IsEmpty ||
-                !this.PlotAreaXDataRange.Min.NearlyEqual(min) ||
-                !this.PlotAreaXDataRange.Max.NearlyEqual(max))
+            if (this.PlotingXDataRange.IsEmpty ||
+                !this.PlotingXDataRange.Min.NearlyEqual(min) ||
+                !this.PlotingXDataRange.Max.NearlyEqual(max))
             {
 
-                this.PlotAreaXDataRange = new Range(min, max);
+                this.PlotingXDataRange = new Range(min, max);
 
 
             }
@@ -432,33 +638,33 @@ namespace MvvmCharting
 
         private void UpdatePlotAreaYDataRange()
         {
-            double min = !this.YMinimum.IsNaN() ? this.YMinimum : this.YDataRange.Min;
-            double max = !this.YMaximum.IsNaN() ? this.YMaximum : this.YDataRange.Max;
+            double min = !this.YMinimum.IsNaN() ? this.YMinimum : this.GlobalYDataRange.Min;
+            double max = !this.YMaximum.IsNaN() ? this.YMaximum : this.GlobalYDataRange.Max;
 
             if (min.IsNaN() && max.IsNaN())
             {
-                this.PlotAreaYDataRange = Range.Empty;
+                this.PlotingYDataRange = Range.Empty;
                 return;
             }
 
-            if (this.PlotAreaYDataRange.IsEmpty ||
-                this.PlotAreaYDataRange.Min != min ||
-                this.PlotAreaYDataRange.Max != max)
+            if (this.PlotingYDataRange.IsEmpty ||
+                this.PlotingYDataRange.Min != min ||
+                this.PlotingYDataRange.Max != max)
             {
 
-                this.PlotAreaYDataRange = new Range(min, max);
+                this.PlotingYDataRange = new Range(min, max);
             }
         }
 
 
         private void Sr_XRangeChanged(Range obj)
         {
-            UpdateRange();
+            UpdateGlobalDataRange();
         }
 
         private void Sr_YRangeChanged(Range obj)
         {
-            UpdateRange();
+            UpdateGlobalDataRange();
         }
 
 
@@ -474,7 +680,7 @@ namespace MvvmCharting
             var sr = root as SeriesBase;
             if (sr == null)
             {
-                throw new Cartesian2DChartException("The root element in the SeriesDataTemplate should be of type: SeriesBase!");
+                throw new MvvmChartException("The root element in the SeriesDataTemplate should be of type: SeriesBase!");
             }
 
             var item = sr.DataContext;
@@ -495,176 +701,58 @@ namespace MvvmCharting
             sr.XRangeChanged += Sr_XRangeChanged;
             sr.YRangeChanged += Sr_YRangeChanged;
 
-            UpdateRange();
+            UpdateGlobalDataRange();
 
-            UpdateSeriesChartYRange();
-            UpdateSeriesChartXRange();
+            OnPlotingYDataRangeChanged();
+            OnPlotingXDataRangeChanged();
 
         }
 
 
-        #region GridLine
 
-        private double[] _horizontalTickOffsets;
-        private double[] _verticalTickOffsets;
 
-        private void SetGridLineBindings(DependencyObject rootChild, Orientation orientation)
+        public GridLineControl GridLineControl
         {
-            if (!(rootChild is Line))
+            get { return (GridLineControl)GetValue(GridLineControlProperty); }
+            set { SetValue(GridLineControlProperty, value); }
+        }
+        public static readonly DependencyProperty GridLineControlProperty =
+            DependencyProperty.Register("GridLineControl", typeof(GridLineControl), typeof(SeriesChart), new PropertyMetadata(null, OnGridLineControlPropertyChanged));
+
+        private static void OnGridLineControlPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((SeriesChart)d).OnGridLineControlChanged();
+        }
+
+
+        private void OnGridLineControlChanged()
+        {
+
+            if (this.PART_GridLineHolder == null)
             {
-                throw new Cartesian2DChartException($"The {orientation} grid line should be of type: Line!");
+                return;
             }
+            this.PART_GridLineHolder.Content = this.GridLineControl;
 
-            Line line = (Line)rootChild;
-
-
-            Binding b = new Binding(orientation == Orientation.Horizontal ? nameof(this.PART_PlotAreaRoot.ActualWidth) : nameof(this.PART_PlotAreaRoot.ActualHeight));
-            b.Source = this.PART_PlotAreaRoot;
-            line.SetBinding(orientation == Orientation.Horizontal ? Line.X2Property : Line.Y2Property, b);
-
-            b = new Binding();
-            line.SetBinding(orientation == Orientation.Horizontal ? Line.Y1Property : Line.X1Property, b);
-
-            b = new Binding();
-            line.SetBinding(orientation == Orientation.Horizontal ? Line.Y2Property : Line.X2Property, b);
-
-            b = new Binding(orientation == Orientation.Horizontal ? nameof(this.HorizontalGridLineStyle) : nameof(this.VerticalGridLineStyle));
-            b.Source = this;
-            line.SetBinding(StyleProperty, b);
+            this.GridLineControl?.OnAxisItemCoordinateChanged(Orientation.Vertical, this.YAxis?.GetAxisItemCoordinates());
+            this.GridLineControl?.OnAxisItemCoordinateChanged(Orientation.Horizontal, this.XAxis?.GetAxisItemCoordinates());
         }
-
-        private void VerticalGridLineItemTemplateApplied(object arg1, DependencyObject rootChild)
-        {
-            SetGridLineBindings(rootChild, Orientation.Vertical);
-        }
-
-        private void HorizontalGridLineItemTemplateApplied(object arg1, DependencyObject rootChild)
-        {
-            SetGridLineBindings(rootChild, Orientation.Horizontal);
-        }
-
-
-
-
-        public Visibility HorizontalGridLineVisiblility
-        {
-            get { return (Visibility)GetValue(HorizontalGridLineVisiblilityProperty); }
-            set { SetValue(HorizontalGridLineVisiblilityProperty, value); }
-        }
-        public static readonly DependencyProperty HorizontalGridLineVisiblilityProperty =
-            DependencyProperty.Register("HorizontalGridLineVisiblility", typeof(Visibility), typeof(SeriesChart), new PropertyMetadata(Visibility.Visible));
-
-
-
-        public Visibility VerticalGridLineVisibility
-        {
-            get { return (Visibility)GetValue(VerticalGridLineVisibilityProperty); }
-            set { SetValue(VerticalGridLineVisibilityProperty, value); }
-        }
-        public static readonly DependencyProperty VerticalGridLineVisibilityProperty =
-            DependencyProperty.Register("VerticalGridLineVisibility", typeof(Visibility), typeof(SeriesChart), new PropertyMetadata(Visibility.Visible));
-
-
-
-
-        public Style HorizontalGridLineStyle
-        {
-            get { return (Style)GetValue(HorizontalGridLineStyleProperty); }
-            set { SetValue(HorizontalGridLineStyleProperty, value); }
-        }
-        public static readonly DependencyProperty HorizontalGridLineStyleProperty =
-            DependencyProperty.Register("HorizontalGridLineStyle", typeof(Style), typeof(SeriesChart), new PropertyMetadata(null));
-
-
-        public Style VerticalGridLineStyle
-        {
-            get { return (Style)GetValue(VerticalGridLineStyleProperty); }
-            set { SetValue(VerticalGridLineStyleProperty, value); }
-        }
-        public static readonly DependencyProperty VerticalGridLineStyleProperty =
-            DependencyProperty.Register("VerticalGridLineStyle", typeof(Style), typeof(SeriesChart), new PropertyMetadata(null));
-
-
-
-
-
-        public void OnXAxisTickChanged(IEnumerable<double> tickPositions)
-        {
-
-            this._verticalTickOffsets = tickPositions.ToArray();
-            UpdateVerticalGridLines();
-
-        }
-
-        public void OnYAxisTickChanged(IEnumerable<double> tickPositions)
-        {
-
-
-            this._horizontalTickOffsets = tickPositions.ToArray();
-            UpdateHorizontalGridLines();
-        }
-
-
-
-        public ObservableCollection<double> HorizontalGridLineOffsets { get; } = new ObservableCollection<double>();
-        public ObservableCollection<double> VerticalGridLineOffsets { get; } = new ObservableCollection<double>();
-
-
-        private void DoUpdateGridLines(ObservableCollection<double> target, double[] source)
-        {
-            var newCt = source.Length;
-            var oldCt = target.Count;
-            if (oldCt > newCt)
-            {
-                target.RemoveRange(newCt, oldCt - newCt);
-            }
-            else
-            {
-                for (int i = 0; i < source.Length; i++)
-                {
-                    var newValue = source[i];
-                    if (i < oldCt)
-                    {
-                        target[i] = newValue;
-                    }
-                    else
-                    {
-                        target.Add(newValue);
-                    }
-                }
-            }
-
-        }
-
-        private void UpdateHorizontalGridLines()
-        {
-
-
-
-            DoUpdateGridLines(this.HorizontalGridLineOffsets, this._horizontalTickOffsets);
-        }
-
-        private void UpdateVerticalGridLines()
-        {
-            DoUpdateGridLines(this.VerticalGridLineOffsets, this._verticalTickOffsets);
-        }
-        #endregion
 
 
         #region Axises
-        public XAxis XAxis
+        public AxisBase XAxis
         {
-            get { return (XAxis)GetValue(XAxisProperty); }
+            get { return (AxisBase)GetValue(XAxisProperty); }
             set { SetValue(XAxisProperty, value); }
         }
         public static readonly DependencyProperty XAxisProperty =
-            DependencyProperty.Register("XAxis", typeof(XAxis), typeof(SeriesChart), new PropertyMetadata(null, OnXAxisPropertyChanged));
+            DependencyProperty.Register("XAxis", typeof(AxisBase), typeof(SeriesChart), new PropertyMetadata(null, OnXAxisPropertyChanged));
 
         private static void OnXAxisPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((SeriesChart)d).OnXAxisPropertyChanged((XAxis)e.OldValue, (XAxis)e.NewValue);
+            ((SeriesChart)d).OnXAxisPropertyChanged((AxisBase)e.OldValue, (AxisBase)e.NewValue);
         }
-        private void OnXAxisPropertyChanged(XAxis oldValue, XAxis newValue)
+        private void OnXAxisPropertyChanged(AxisBase oldValue, AxisBase newValue)
         {
             if (this.PART_Root == null)
             {
@@ -673,31 +761,44 @@ namespace MvvmCharting
 
             if (oldValue != null)
             {
+
                 this.PART_Root.Children.Remove(oldValue);
                 oldValue.AxisPlacementChanged -= OnAxisPlacementChanged;
             }
 
             if (newValue != null)
             {
+                if (this.PART_Root.Children.Contains(newValue))
+                {
+                    return;
+                }
+                if (newValue.Placement == AxisPlacement.None)
+                {
+                    newValue.Placement = AxisPlacement.Bottom;
+                }
+
+                (newValue.Parent as Panel)?.Children.Remove(newValue);
+ 
                 this.PART_Root.Children.Add(newValue);
                 newValue.Owner = this;
+                newValue.Orientation = Orientation.Horizontal;
                 newValue.AxisPlacementChanged += OnAxisPlacementChanged;
                 OnAxisPlacementChanged(newValue);
             }
         }
 
-        public YAxis YAxis
+        public AxisBase YAxis
         {
-            get { return (YAxis)GetValue(YAxisProperty); }
+            get { return (AxisBase)GetValue(YAxisProperty); }
             set { SetValue(YAxisProperty, value); }
         }
         public static readonly DependencyProperty YAxisProperty =
-            DependencyProperty.Register("YAxis", typeof(YAxis), typeof(SeriesChart), new PropertyMetadata(null, OnYAxisPropertyChanged));
+            DependencyProperty.Register("YAxis", typeof(AxisBase), typeof(SeriesChart), new PropertyMetadata(null, OnYAxisPropertyChanged));
         private static void OnYAxisPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((SeriesChart)d).OnYAxisPropertyChanged((YAxis)e.OldValue, (YAxis)e.NewValue);
+            ((SeriesChart)d).OnYAxisPropertyChanged((AxisBase)e.OldValue, (AxisBase)e.NewValue);
         }
-        private void OnYAxisPropertyChanged(YAxis oldValue, YAxis newValue)
+        private void OnYAxisPropertyChanged(AxisBase oldValue, AxisBase newValue)
         {
             if (this.PART_Root == null)
             {
@@ -712,8 +813,21 @@ namespace MvvmCharting
 
             if (newValue != null)
             {
+                if (this.PART_Root.Children.Contains(newValue))
+                {
+                    return;
+                }
+
+                if (newValue.Placement == AxisPlacement.None)
+                {
+                    newValue.Placement = AxisPlacement.Left;
+                }
+
+                (newValue.Parent as Panel)?.Children.Remove(newValue);
+
                 this.PART_Root.Children.Add(newValue);
                 newValue.Owner = this;
+                newValue.Orientation = Orientation.Vertical;
                 newValue.AxisPlacementChanged += OnAxisPlacementChanged;
                 OnAxisPlacementChanged(newValue);
             }
@@ -721,37 +835,41 @@ namespace MvvmCharting
 
         private void OnAxisPlacementChanged(AxisBase obj)
         {
-            if (obj is XAxis)
+            switch ((Orientation)obj.Orientation)
             {
-                Grid.SetColumn(obj, 1);
-                switch (((XAxis)obj).XAxisPlacement)
-                {
-                    case XAxisPlacement.Bottom:
-                        Grid.SetRow(obj, 2);
-                        break;
-                    case XAxisPlacement.Top:
-                        Grid.SetRow(obj, 0);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-            else
-            {
-                Grid.SetRow(obj, 1);
+                case Orientation.Horizontal:
+                    Grid.SetColumn(obj, 1);
+                    switch (obj.Placement)
+                    {
+                        case AxisPlacement.Bottom:
+                            Grid.SetRow(obj, 2);
+                            break;
+                        case AxisPlacement.Top:
+                            Grid.SetRow(obj, 0);
+                            break;
+                        default:
+                            throw new NotSupportedException($"XAxis does not support '{obj.Placement}' placement!");
+                    }
+                    break;
+                case Orientation.Vertical:
+                    Grid.SetRow(obj, 1);
 
-                switch (((YAxis)obj).YAxisPlacement)
-                {
-                    case YAxisPlacement.Left:
-                        Grid.SetColumn(obj, 0);
-                        break;
-                    case YAxisPlacement.Right:
-                        Grid.SetColumn(obj, 2);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                    switch (obj.Placement)
+                    {
+                        case AxisPlacement.Left:
+                            Grid.SetColumn(obj, 0);
+                            break;
+                        case AxisPlacement.Right:
+                            Grid.SetColumn(obj, 2);
+                            break;
+                        default:
+                            throw new NotSupportedException($"YAxis does not support '{obj.Placement}' placement!");
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
+
         }
 
 
@@ -778,19 +896,19 @@ namespace MvvmCharting
 
         private void OnPlotAreaBackgroundPropertyChanged(UIElement oldValue, UIElement newValue)
         {
-            if (this.PART_PlotAreaRoot == null)
+            if (this.PART_PlotingCanvas == null)
             {
                 return;
             }
 
-            if (this.PART_PlotAreaRoot.Children.Contains(oldValue))
+            if (this.PART_PlotingCanvas.Children.Contains(oldValue))
             {
-                this.PART_PlotAreaRoot.Children.Remove(oldValue);
+                this.PART_PlotingCanvas.Children.Remove(oldValue);
             }
 
-            if (newValue != null && !this.PART_PlotAreaRoot.Children.Contains(newValue))
+            if (newValue != null && !this.PART_PlotingCanvas.Children.Contains(newValue))
             {
-                this.PART_PlotAreaRoot.Children.Insert(0, newValue);
+                this.PART_PlotingCanvas.Children.Insert(0, newValue);
             }
 
         }
@@ -838,7 +956,7 @@ namespace MvvmCharting
 
 
 
-        private void PART_PlotAreaRoot_MouseMove(object sender, MouseEventArgs e)
+        private void PartPlotingCanvasMouseMove(object sender, MouseEventArgs e)
         {
             bool isHorizontalCrossHairVisible = this.HorizontalCrossHairVisibility == Visibility.Visible;
             bool isVerticalCrossHairVisible = this.VerticalCrossHairVisiblity == Visibility.Visible;
@@ -849,7 +967,7 @@ namespace MvvmCharting
                 return;
             }
 
-            var mousePoint = e.GetPosition(this.PART_PlotAreaRoot);
+            var mousePoint = e.GetPosition(this.PART_PlotingCanvas);
 
             if (isHorizontalCrossHairVisible)
             {
@@ -864,7 +982,7 @@ namespace MvvmCharting
 
         }
 
-        private void PART_PlotAreaRoot_MouseLeave(object sender, MouseEventArgs e)
+        private void PartPlotingCanvasMouseLeave(object sender, MouseEventArgs e)
         {
             if (this.PART_HorizontalCrossHair.Visibility != Visibility.Collapsed)
             {
@@ -914,5 +1032,11 @@ namespace MvvmCharting
 
         }
         #endregion
+
+
+        public void OnAxisItemsCoordinateChanged(Orientation orientation, IEnumerable<double> ticks)
+        {
+            this.GridLineControl?.OnAxisItemCoordinateChanged(orientation, ticks);
+        }
     }
 }
