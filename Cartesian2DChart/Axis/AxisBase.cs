@@ -180,20 +180,20 @@ namespace MvvmCharting.Axis
         /// If the double is converted from DateTime or DateTimeOffset, then it should be
         /// convert back to DateTime or DateTimeOffset first before it can be convert to a user-formatted string
         /// </summary>
-        public IValueConverter LabelTextConverter
+        public IValueConverterNS LabelTextConverter
         {
-            get { return (IValueConverter)GetValue(LabelTextConverterProperty); }
+            get { return (IValueConverterNS)GetValue(LabelTextConverterProperty); }
             set { SetValue(LabelTextConverterProperty, value); }
         }
         public static readonly DependencyProperty LabelTextConverterProperty =
-            DependencyProperty.Register("LabelTextConverter", typeof(IValueConverter), typeof(AxisBase), new PropertyMetadata(null, OnLabelTextConverterPropertyChanged));
+            DependencyProperty.Register("LabelTextConverter", typeof(IValueConverterNS), typeof(AxisBase), new PropertyMetadata(null, OnLabelTextConverterPropertyChanged));
 
         private static void OnLabelTextConverterPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-             ((AxisBase)d).OnLabelTextConverterChanged((IValueConverter)e.OldValue, (IValueConverter)e.NewValue);
+             ((AxisBase)d).OnLabelTextConverterChanged((IValueConverterNS)e.OldValue, (IValueConverterNS)e.NewValue);
         }
 
-        private void OnLabelTextConverterChanged(IValueConverter oldVlue, IValueConverter newValue)
+        private void OnLabelTextConverterChanged(IValueConverterNS oldVlue, IValueConverterNS newValue)
         {
             foreach (var axisItem in GetAllAxisItems())
             {
@@ -259,14 +259,14 @@ namespace MvvmCharting.Axis
         {
             switch (obj.Orientation)
             {
-                case System.Windows.Controls.Orientation.Horizontal:
+                case AxisType.XAxis:
                     this.RenderSize = new Size(obj.RenderSize, this.RenderSize.Height);
                     this.Margin = new Thickness(obj.Margin.X, this.Margin.Top, obj.Margin.Y, this.Margin.Bottom);
                     this.Padding = new Thickness(obj.Padding.X, this.Padding.Top, obj.Padding.Y, this.Padding.Bottom);
                     this.BorderThickness = new Thickness(obj.BorderThickness.X, this.BorderThickness.Top, obj.BorderThickness.Y, this.BorderThickness.Bottom);
 
                     break;
-                case System.Windows.Controls.Orientation.Vertical:
+                case AxisType.YAxis:
                     this.RenderSize = new Size(this.RenderSize.Width, obj.RenderSize);
                     this.Margin = new Thickness(this.Margin.Left, obj.Margin.X, this.Margin.Right, obj.Margin.Y);
                     this.Padding = new Thickness(this.Padding.Left, obj.Padding.X, this.Padding.Right, obj.Padding.Y);

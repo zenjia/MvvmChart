@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MvvmChart.Common.Drawing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -11,7 +12,7 @@ namespace MvvmCharting
     /// </summary>
     public class BezierGeometryBuilder : ISeriesGeometryBuilder
     {        // Make an array containing Bezier curve points and control points.
-        public static Point[] MakeCurvePoints(Point[] points, double tension)
+        public static Point[] MakeCurvePoints(PointNS[] points, double tension)
         {
             if (points.Length < 2)
             {
@@ -23,20 +24,20 @@ namespace MvvmCharting
             // Make a list containing the points and
             // appropriate control points.
             List<Point> result_points = new List<Point>();
-            result_points.Add(points[0]);
+            result_points.Add(points[0].ToPoint());
 
             for (int i = 0; i < points.Length - 1; i++)
             {
                 // Get the point and its neighbors.
-                Point pt_before = points[Math.Max(i - 1, 0)];
-                Point pt = points[i];
-                Point pt_after = points[i + 1];
-                Point pt_after2 = points[Math.Min(i + 2, points.Length - 1)];
+                Point pt_before = points[Math.Max(i - 1, 0)].ToPoint();
+                Point pt = points[i].ToPoint();
+                Point pt_after = points[i + 1].ToPoint();
+                Point pt_after2 = points[Math.Min(i + 2, points.Length - 1)].ToPoint();
 
                 double dx1 = pt_after.X - pt_before.X;
                 double dy1 = pt_after.Y - pt_before.Y;
 
-                Point p1 = points[i];
+                Point p1 = points[i].ToPoint();
                 Point p4 = pt_after;
 
                 double dx = pt_after.X - pt_before.X;
@@ -127,7 +128,7 @@ namespace MvvmCharting
         public double Tension { get; set; } = 0.4;
 
         // Make a Bezier curve connecting these points.
-        public Geometry GetGeometry(Point[] points)
+        public Geometry GetGeometry(PointNS[] points)
         {
             if (points.Length < 2)
             {

@@ -1,18 +1,19 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿ 
 using MvvmChart.Common;
+using MvvmChart.Common.Axis;
+using MvvmChart.Common.Drawing;
 
 namespace MvvmCharting.Axis
 {
     public class PlottingSettings
     {
         
-        public Orientation Orientation { get; }
+        public AxisType Orientation { get; }
         public double RenderSize { get; }
 
-        public Point Margin { get; }
-        public Point Padding { get; }
-        public Point BorderThickness { get; }
+        public PointNS Margin { get; }
+        public PointNS Padding { get; }
+        public PointNS BorderThickness { get; }
 
         public Range PlotingDataRange { get; }
 
@@ -23,11 +24,11 @@ namespace MvvmCharting.Axis
                                    (this.BorderThickness.X + this.BorderThickness.Y);
         }
 
-        public PlottingSettings(Orientation orientation,
+        public PlottingSettings(AxisType orientation,
             double renderSize,
-            Point margin,
-            Point padding,
-            Point borderThickness,
+            PointNS margin,
+            PointNS padding,
+            PointNS borderThickness,
             Range plotingDataRange)
         {
             this.RenderSize = renderSize;
@@ -58,9 +59,9 @@ namespace MvvmCharting.Axis
         }
 
         public static bool Validate(double length,
-            Point margin,
-            Point pading,
-            Point borderThickness,
+            PointNS margin,
+            PointNS pading,
+            PointNS borderThickness,
             Range plotingDataRange)
         {
             return !length.IsInvalid() &&

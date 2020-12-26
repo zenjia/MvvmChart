@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -26,13 +27,8 @@ namespace MvvmCharting.Axis
         private FrameworkElement PART_Label;
         public AxisItem()
         {
-
-            Binding b = new Binding(nameof(AxisItemDrawingParam.Coordinate));
-            this.SetBinding(CoordinateProperty, b);
-
-
-            this.UpdateLabelTextBinding();
-
+            this.SetBinding(CoordinateProperty, new Binding(nameof(AxisItemDrawingParam.Coordinate)));
+            this.SetBinding(ValueProperty, new Binding(nameof(AxisItemDrawingParam.Value)));
         }
 
 
@@ -57,7 +53,7 @@ namespace MvvmCharting.Axis
         }
 
 
-
+ 
 
         public AxisPlacement Placement
         {
@@ -104,7 +100,7 @@ namespace MvvmCharting.Axis
             this.TryDoTranslateTransform();
         }
 
-        public void SetLabelTextConverter(IValueConverter newValue)
+        public void SetLabelTextConverter(IValueConverterNS newValue)
         {
             this.LabelTextConverter = newValue;
         }
@@ -114,33 +110,47 @@ namespace MvvmCharting.Axis
             this.Placement = newValue;
         }
 
-        public IValueConverter LabelTextConverter
+        public IValueConverterNS LabelTextConverter
         {
-            get { return (IValueConverter)this.GetValue(LabelTextConverterProperty); }
+            get { return (IValueConverterNS)this.GetValue(LabelTextConverterProperty); }
             set { this.SetValue(LabelTextConverterProperty, value); }
         }
         public static readonly DependencyProperty LabelTextConverterProperty =
-            DependencyProperty.Register("LabelTextConverter", typeof(IValueConverter), typeof(AxisItem), new PropertyMetadata(null, OnValueConverterPropertyChanged));
+            DependencyProperty.Register("LabelTextConverter", typeof(IValueConverterNS), typeof(AxisItem), new PropertyMetadata(null, OnValueConverterPropertyChanged));
 
         private static void OnValueConverterPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((AxisItem)d).UpdateLabelTextBinding();
+            ((AxisItem)d).UpdateLabelText();
         }
 
-        private void UpdateLabelTextBinding()
+
+        private void UpdateLabelText()
         {
-
-
-            BindingOperations.ClearBinding(this, LabelTextProperty);
-
-            Binding b = new Binding(nameof(AxisItemDrawingParam.Value));
-            if (this.LabelTextConverter != null)
+            if (this.LabelTextConverter == null || this.Value == null)
             {
-                b.Converter = this.LabelTextConverter;
+                return;
             }
-
-            this.SetBinding(LabelTextProperty, b);
+ 
+            this.LabelText = this.LabelTextConverter.ConverterTo(this.Value, CultureInfo.CurrentCulture)?.ToString() ?? string.Empty;
         }
+
+
+
+        public object Value
+        {
+            get { return (object)GetValue(ValueProperty); }
+            set { SetValue(ValueProperty, value); }
+        }
+        public static readonly DependencyProperty ValueProperty =
+            DependencyProperty.Register("Value", typeof(object), typeof(AxisItem), new PropertyMetadata(null, OnValuePropertyChanged));
+
+        private static void OnValuePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((AxisItem)d).UpdateLabelText();
+        }
+
+
+
 
 
         public string LabelText

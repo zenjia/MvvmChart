@@ -1,11 +1,11 @@
-using System.Windows;
+using MvvmChart.Common.Drawing;
 
 
 namespace MvvmCharting
 {
     public interface IPlottable_2D
     {
- 
-        Point Coordinate { get; set; }
+
+        PointNS Coordinate { get; set; }
     }
 }

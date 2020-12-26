@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using Cartesian2DChart.Axis;
 using MvvmChart.Common;
 using MvvmChart.Common.Axis;
+using MvvmChart.Common.Drawing;
 using MvvmCharting.Axis;
 
 namespace MvvmCharting
@@ -76,7 +77,7 @@ namespace MvvmCharting
                 }
             }
         }
-        private PlottingSettings GetCanvasSettingChangedEventArgs(Orientation orientation)
+        private PlottingSettings GetCanvasSettingChangedEventArgs(AxisType orientation)
         {
             if (this.PART_PlotitngCanvas == null)
             {
@@ -85,25 +86,25 @@ namespace MvvmCharting
             }
 
             double length;
-            Point magrin, pading, borderThickness;
+            PointNS magrin, pading, borderThickness;
             Range plotingDataRange;
             switch (orientation)
             {
-                case Orientation.Horizontal:
+                case AxisType.XAxis:
 
                     length = this.PART_PlotitngCanvas.ActualWidth;
-                    magrin = new Point(this.Margin.Left, this.Margin.Right);
-                    pading = new Point(this.Padding.Left, this.Padding.Right);
-                    borderThickness = new Point(this.BorderThickness.Left, this.BorderThickness.Right);
+                    magrin = new PointNS(this.Margin.Left, this.Margin.Right);
+                    pading = new PointNS(this.Padding.Left, this.Padding.Right);
+                    borderThickness = new PointNS(this.BorderThickness.Left, this.BorderThickness.Right);
                     plotingDataRange = this.PlotingXDataRange;
                     break;
 
 
-                case Orientation.Vertical:
+                case AxisType.YAxis:
                     length = this.PART_PlotitngCanvas.ActualHeight;
-                    magrin = new Point(this.Margin.Top, this.Margin.Bottom);
-                    pading = new Point(this.Padding.Top, this.Padding.Bottom);
-                    borderThickness = new Point(this.BorderThickness.Top, this.BorderThickness.Bottom);
+                    magrin = new PointNS(this.Margin.Top, this.Margin.Bottom);
+                    pading = new PointNS(this.Padding.Top, this.Padding.Bottom);
+                    borderThickness = new PointNS(this.BorderThickness.Top, this.BorderThickness.Bottom);
                     plotingDataRange = this.PlotingYDataRange;
                     break;
                 default:
@@ -119,7 +120,7 @@ namespace MvvmCharting
 
             return null;
         }
-        private void DetectCanvasSettingChanged(Orientation orientation)
+        private void DetectCanvasSettingChanged(AxisType orientation)
         {
             if (!this.IsLoaded)
             {
@@ -130,10 +131,10 @@ namespace MvvmCharting
             var args = GetCanvasSettingChangedEventArgs(orientation);
             switch (orientation)
             {
-                case Orientation.Horizontal:
+                case AxisType.XAxis:
                     this.PlottingHorizontalSetting = args;
                     break;
-                case Orientation.Vertical:
+                case AxisType.YAxis:
                     this.PlottingVerticalSetting = args;
                     break;
                 default:
@@ -246,12 +247,12 @@ namespace MvvmCharting
 
             if (e.WidthChanged)
             {
-                DetectCanvasSettingChanged(Orientation.Horizontal);
+                DetectCanvasSettingChanged(AxisType.XAxis);
             }
 
             if (e.HeightChanged)
             {
-                DetectCanvasSettingChanged(Orientation.Vertical);
+                DetectCanvasSettingChanged(AxisType.YAxis);
             }
         }
 
@@ -260,18 +261,18 @@ namespace MvvmCharting
             base.OnPropertyChanged(e);
             if (e.Property == PaddingProperty)
             {
-                DetectCanvasSettingChanged(Orientation.Horizontal);
-                DetectCanvasSettingChanged(Orientation.Vertical);
+                DetectCanvasSettingChanged(AxisType.XAxis);
+                DetectCanvasSettingChanged(AxisType.YAxis);
             }
             else if (e.Property == MarginProperty)
             {
-                DetectCanvasSettingChanged(Orientation.Horizontal);
-                DetectCanvasSettingChanged(Orientation.Vertical);
+                DetectCanvasSettingChanged(AxisType.XAxis);
+                DetectCanvasSettingChanged(AxisType.YAxis);
             }
             else if (e.Property == BorderThicknessProperty)
             {
-                DetectCanvasSettingChanged(Orientation.Horizontal);
-                DetectCanvasSettingChanged(Orientation.Vertical);
+                DetectCanvasSettingChanged(AxisType.XAxis);
+                DetectCanvasSettingChanged(AxisType.YAxis);
             }
         }
         #endregion
@@ -519,7 +520,7 @@ namespace MvvmCharting
                 {
                     this._plotAreaXDataRange = value;
                     this.PlotingXRangeChanged?.Invoke(value);
-                    DetectCanvasSettingChanged(Orientation.Horizontal);
+                    DetectCanvasSettingChanged(AxisType.XAxis);
 
                     OnPlotingXDataRangeChanged();
                 }
@@ -538,7 +539,7 @@ namespace MvvmCharting
                     this.PlotingYRangeChanged?.Invoke(value);
 
 
-                    DetectCanvasSettingChanged(Orientation.Vertical);
+                    DetectCanvasSettingChanged(AxisType.YAxis);
                     OnPlotingYDataRangeChanged();
                 }
             }

@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using MvvmChart.Common.Drawing;
 
 namespace MvvmCharting
 {
@@ -52,19 +53,19 @@ namespace MvvmCharting
 
 
 
-        public Point Coordinate
+        public PointNS Coordinate
         {
-            get { return (Point)GetValue(CoordinateProperty); }
+            get { return (PointNS)GetValue(CoordinateProperty); }
             set { SetValue(CoordinateProperty, value); }
         }
         public static readonly DependencyProperty CoordinateProperty =
-            DependencyProperty.Register("Coordinate", typeof(Point), typeof(Scatter2), new PropertyMetadata(default(Point), OnCoordinatePropertyChanged));
+            DependencyProperty.Register("Coordinate", typeof(PointNS), typeof(Scatter2), new PropertyMetadata(PointNSHelper.EmptyPoint, OnCoordinatePropertyChanged));
 
         private static void OnCoordinatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((Scatter2)d).OnCoordinateChanged((Point)e.NewValue);
+            ((Scatter2)d).OnCoordinateChanged((PointNS)e.NewValue);
         }
-        private void OnCoordinateChanged(Point newValue)
+        private void OnCoordinateChanged(PointNS newValue)
         {
             UpdateAdjustedCoordinate();
 
@@ -78,7 +79,7 @@ namespace MvvmCharting
                 return;
             }
 
-            var offset = GetOffsetForSizeChangedOverride(this.RenderSize);
+            var offset = GetOffsetForSizeChangedOverride();
 
             if (offset.IsEmpty())
             {
@@ -113,10 +114,10 @@ namespace MvvmCharting
         }
 
 
-        public Point GetOffsetForSizeChangedOverride(Size newSize)
+        public PointNS GetOffsetForSizeChangedOverride()
         {
 
-            return new Point(-newSize.Width / 2, -newSize.Height / 2);
+            return new PointNS(-ActualWidth / 2, -ActualHeight / 2);
         }
     }
 }

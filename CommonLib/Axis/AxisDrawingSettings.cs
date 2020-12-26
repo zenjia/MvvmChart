@@ -3,7 +3,7 @@ using MvvmChart.Common;
 
 namespace MvvmCharting.Axis
 {
-    internal class AxisDrawingSettings
+    public class AxisDrawingSettings
     {
         public override string ToString()
         {

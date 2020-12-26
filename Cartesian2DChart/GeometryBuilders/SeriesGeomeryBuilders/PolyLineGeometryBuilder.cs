@@ -1,16 +1,23 @@
 ﻿using System.Windows;
 using System.Windows.Media;
+using MvvmChart.Common.Drawing;
 
 namespace MvvmCharting
 {
     public class PolyLineGeometryBuilder : ISeriesGeometryBuilder
     {
-        internal static Geometry CreateGeometry(Point[] points, bool isClosed = false)
+        internal static Geometry CreateGeometry(PointNS[] points, bool isClosed = false)
         {
             PathGeometry path_geometry = new PathGeometry();
 
             PolyLineSegment polyLineSegment = new PolyLineSegment();
-            polyLineSegment.Points = new PointCollection(points);
+            var pointCollection = new PointCollection();
+            for (int i = 0; i < points.Length; i++)
+            {
+                pointCollection.Add(new Point(points[i].X, points[i].Y));
+            }
+
+            polyLineSegment.Points = pointCollection;
 
 
             PathFigure figure = new PathFigure();
@@ -43,7 +50,7 @@ namespace MvvmCharting
             return path_geometry;
         }
 
-        public Geometry GetGeometry(Point[] points)
+        public Geometry GetGeometry(PointNS[] points)
         {
             return CreateGeometry(points);
 

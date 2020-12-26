@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Controls;
 using MvvmChart.Common.Axis;
 using MvvmCharting.Axis;
 

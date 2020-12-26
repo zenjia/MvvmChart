@@ -1,12 +1,13 @@
 ﻿using System.Windows;
 using System.Windows.Media;
+using MvvmChart.Common.Drawing;
 
 namespace MvvmCharting
 {
     public class BezierAreaGeometryBuilder : ISeriesGeometryBuilder
     {
         public double Tension { get; set; } = 0.4;
-        public Geometry GetGeometry(Point[] points)
+        public Geometry GetGeometry(PointNS[] points)
         {
             if (points.Length < 2)
             {

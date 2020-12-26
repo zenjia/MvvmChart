@@ -67,15 +67,8 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Axis\AxisDrawingSettings.cs" />
     <Compile Include="Axis\AxisBase.cs" />
     <Compile Include="Axis\AxisItem\AxisItem.cs" />
-    <Compile Include="Axis\AxisItemDrawingParam.cs" />
-    <Compile Include="Axis\AxisItem\DefaultDoubleToAxisLabelTextConverter.cs" />
-    <Compile Include="Axis\AxisItem\IAxisItem.cs" />
-    <Compile Include="Axis\IAxis.cs" />
-    <Compile Include="common\IPlottable_1D.cs" />
-    <Compile Include="Axis\AxisPlacement.cs" />
     <Compile Include="common\PointHelper.cs" />
     <Compile Include="common\SizeHelper.cs" />
     <Compile Include="common\SlimItemsControl.cs" />
@@ -84,17 +77,10 @@
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\EllipseGeometryBuilder.cs" />
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\IScatterGeometryBuilder.cs" />
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\RectangleBuilder.cs" />
+    <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\ISeriesGeometryBuilder.cs" />
     <Compile Include="GridLine\GridLineControl.cs" />
-    <Compile Include="common\IPlottable_2D.cs" />
-    <Compile Include="Axis\PlottingSettings.cs" />
-    <Compile Include="Axis\IAxisOwner.cs" />
-    <Compile Include="Axis\IXAxisOwner.cs" />
-    <Compile Include="Axis\IYAxisOwner.cs" />
-    <Compile Include="GridLine\IGridLineControl.cs" />
-    <Compile Include="Series\ISeries.cs" />
     <Compile Include="Series\Scatter\Scatter2.cs" />
     <Compile Include="SeriesChart\SeriesChart.cs" />
-    <Compile Include="Series\Scatter\IScatter.cs" />
     <Compile Include="Series\Scatter\Scatter.cs" />
     <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\BezierAreaGeometryBuilder.cs" />
     <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\BezierPathBuilder.cs" />
@@ -102,7 +88,6 @@
     <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\PolyLineGeometryBuilder.cs" />
     <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\StepLineAreaGeometryBuilder.cs" />
     <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\StepLineGeometryBuilder.cs" />
-    <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\ISeriesGeometryBuilder.cs" />
     <Compile Include="Series\PathSeries.cs" />
     <Compile Include="Series\SpecificScatters\RoundScatter.cs" />
     <Compile Include="Series\SpecificSeries\PolyLineAreaSeries.cs" />

@@ -1,4 +1,5 @@
-﻿using System.Windows.Data;
+﻿ 
+using MvvmChart.Common;
 
 namespace MvvmCharting.Axis
 {
@@ -14,6 +15,6 @@ namespace MvvmCharting.Axis
         /// Accept change of Axis <see cref="LabelTextConverter"/>
         /// </summary>
         /// <param name="newValue"></param>
-        void SetLabelTextConverter(IValueConverter newValue);
+        void SetLabelTextConverter(IValueConverterNS newValue);
     }
 }

@@ -1,11 +1,11 @@
-using System.Windows;
+using MvvmChart.Common.Drawing;
 
 namespace MvvmCharting
 {
     public interface IScatter: IPlottable_2D
     {
    
-        Point GetOffsetForSizeChangedOverride(Size newSize);
+        PointNS GetOffsetForSizeChangedOverride();
 
         object DataContext { get; }
     }

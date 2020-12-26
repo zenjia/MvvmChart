@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using MvvmChart.Common;
+using MvvmChart.Common.Drawing;
 
 namespace MvvmCharting
 {
@@ -256,7 +257,7 @@ namespace MvvmCharting
             {
                 if (this._coordinateCache == null)
                 {
-                    this._coordinateCache = new Point[newValue.Count];
+                    this._coordinateCache = new PointNS[newValue.Count];
                 }
                 else
                 {
@@ -422,18 +423,18 @@ namespace MvvmCharting
 
         }
 
-        private Point GetPlotCoordinateForItem(object item)
+        private PointNS GetPlotCoordinateForItem(object item)
         {
             var itemValuePoint = GetPointFromItem(item);
-            var pt = new Point((itemValuePoint.X - this.PlottingXDataRange.Min) * this.xPixelPerUnit,
+            var pt = new PointNS((itemValuePoint.X - this.PlottingXDataRange.Min) * this.xPixelPerUnit,
                 (itemValuePoint.Y - this.PlottingYDataRange.Min) * this.yPixelPerUnit);
 
             return pt;
         }
 
-        protected Point[] _coordinateCache;
+        protected PointNS[] _coordinateCache;
 
-        protected Point[] GetCoordinates()
+        protected PointNS[] GetCoordinates()
         {
             return this._coordinateCache;
         }
