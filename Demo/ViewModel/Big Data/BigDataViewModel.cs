@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using MvvmChart.Common;
 using MvvmCharting;
 
@@ -43,6 +44,23 @@ namespace Demo
         }
 
 
+        public ObservableCollection<string> AvailableScatterTemplates { get; }
+
+
+        private string _selectedScatterTemplateType;
+        public string SelectedScatterTemplateType
+        {
+            get { return this._selectedScatterTemplateType; }
+            set
+            {
+                SetProperty(ref this._selectedScatterTemplateType, value);
+                foreach (var list in this.ItemsSourceList)
+                {
+                    list.SelectedScatterTemplateType = value;
+                }
+            }
+        }
+
         private int _selectedDataSize = 1000;
         public int SelectedDataSize
         {
@@ -59,11 +77,14 @@ namespace Demo
 
         private void UpdateScatterVisible()
         {
-
-            foreach (var sr in this.ItemsSourceList)
+            if (this.ItemsSourceList != null)
             {
-                sr.ShowSeriesPoints = this.ShowSeriesPointsGlobal;
+                foreach (var sr in this.ItemsSourceList)
+                {
+                    sr.ShowSeriesPoints = this.ShowSeriesPointsGlobal;
+                }
             }
+
         }
 
 
@@ -87,7 +108,15 @@ namespace Demo
 
         public BigDataViewModel()
         {
+            this.AvailableScatterTemplates = new ObservableCollection<string>()
+            {
+                "ScatterTemplate",
+                "Scatter2Template"
+            };
+
             this.ItemsSourceList = new ObservableCollection<SomePointList>();
+
+            this.SelectedScatterTemplateType = this.AvailableScatterTemplates.First();
 
             this.AvailableSizes = new ObservableCollection<int>()
             {

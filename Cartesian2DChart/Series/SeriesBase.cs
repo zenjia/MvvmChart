@@ -378,8 +378,6 @@ namespace MvvmCharting
             }
         }
 
-        private readonly Dictionary<object, Scatter> _scatterCache = new Dictionary<object, Scatter>();
-   
 
         protected void HandleItemsSourceCollectionChange(IList oldValue, IList newValue)
         {
@@ -469,7 +467,7 @@ namespace MvvmCharting
                
                 if (fe != null)
                 {
-                    var scatter = (Scatter)fe;
+                    var scatter = (IScatter)fe;
                     scatter.Coordinate = pt;
                 }
 
@@ -556,6 +554,7 @@ namespace MvvmCharting
 
         private void OnScatterTemplatePropertyChanged()
         {
+
             if (this.PART_ScatterItemsControl != null)
             {
                 this.PART_ScatterItemsControl.ItemTemplate = this.ScatterTemplate;
@@ -587,14 +586,14 @@ namespace MvvmCharting
 
         private void ScatterItemsControlScatterGenerated(object sender, DependencyObject root)
         {
-            var scatter = (Scatter)root;
+            var scatter = (IScatter)root;
             if (scatter == null)
             {
-                throw new MvvmChartException("The root element in the ScatterTemplate should be of type: 'Scatter'.");
+                throw new MvvmChartException("The root element in the ScatterTemplate must implement IScatter interface.");
             }
 
             var item = scatter.DataContext;
-           // this._scatterCache.Add(item, scatter);
+ 
 
             if (!this.xPixelPerUnit.IsNaN() && !this.yPixelPerUnit.IsNaN())
             {

@@ -473,16 +473,16 @@ namespace MvvmCharting.Axis
 
         private void AxisItemsControlItemTemplateApplied(object sender, DependencyObject root)
         {
-            if (!(root is AxisItem axisItem))
+            if (!(root is AxisItemItem axisItem))
             {
-                throw new MvvmChartUnexpectedTypeException($"The root item of ItemTemplate of an axis must be based on '{typeof(AxisItem)}'!");
+                throw new MvvmChartUnexpectedTypeException($"The root item of ItemTemplate of an axis must be based on '{typeof(AxisItemItem)}'!");
             }
 
             Binding b = new Binding(nameof(this.LabelTextConverter)) { Source = this };
-            axisItem.SetBinding(AxisItem.LabelTextConverterProperty, b);
+            axisItem.SetBinding(AxisItemItem.LabelTextConverterProperty, b);
 
             b = new Binding(nameof(this.Placement)) { Source = this };
-            axisItem.SetBinding(AxisItem.PlacementProperty, b);
+            axisItem.SetBinding(AxisItemItem.PlacementProperty, b);
         }
 
 

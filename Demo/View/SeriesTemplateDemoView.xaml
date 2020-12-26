@@ -10,6 +10,26 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <local:DemoDataViewModel x:Key="DemoDataViewModel"/>
+        <mvvmCharting:EllipseGeometryBuilder x:Key="EllipseGeometryBuilder" RadiusX="6" RadiusY="6"/>
+        <DataTemplate x:Key="ScatterDataTemplate">
+            <mvvmCharting:Scatter Fill="RoyalBlue" 
+                                  GeometryBuilder="{StaticResource EllipseGeometryBuilder}"
+                                  Opacity="0.6">
+
+            </mvvmCharting:Scatter>
+        </DataTemplate>
+
+        <DataTemplate x:Key="Scatter2DataTemplate">
+            <mvvmCharting:Scatter2 >
+
+
+            </mvvmCharting:Scatter2>
+        </DataTemplate>
+
+        <local:IndexToScatterTemplateConverter x:Key="IndexToScatterTemplateConverter"
+                                               ScatterTemplate="{StaticResource ScatterDataTemplate}"
+                                               Scatter2Template="{StaticResource Scatter2DataTemplate}"/>
+
 
         <DataTemplate x:Key="SeriesTemplate1" DataType="local:SomePointList">
             <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
@@ -19,19 +39,41 @@
                                          Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
                                          IsScatterVisible="{Binding ShowSeriesPoints}"
                                          IsLineOrAreaVisible="{Binding ShowSeriesLine}"
-                                         ItemsSource="{Binding DataList}">
-  
+                                         ItemsSource="{Binding DataList}"
+                                         ScatterTemplate="{Binding SelectedScatterTemplateType, Converter={StaticResource IndexToScatterTemplateConverter}}">
+
             </mvvmCharting:PolyLineSeries>
         </DataTemplate>
     </UserControl.Resources>
 
-    <mvvmCharting:SeriesChart Background="Bisque"
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+
+        <mvvmCharting:SeriesChart Background="Bisque"
                               HorizontalCrossHairVisibility="Collapsed"
                               VerticalCrossHairVisiblity="Collapsed"
                               SeriesDataTemplate="{StaticResource SeriesTemplate1}"
                               SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource DemoDataViewModel}}">
 
- 
+        </mvvmCharting:SeriesChart>
 
-    </mvvmCharting:SeriesChart>
+
+        <GroupBox Grid.Row="1" Margin="20" Padding="9">
+            <StackPanel>
+                <TextBlock VerticalAlignment="Center" Margin="6" Text="Scatter template: "/>
+
+                <ComboBox Width="160"
+                          Margin="6"
+                          HorizontalAlignment="Left"
+                          ItemsSource="{Binding Source={StaticResource DemoDataViewModel}, Path=AvailableScatterTemplates}"
+                          SelectedItem="{Binding Source={StaticResource DemoDataViewModel}, Path=SelectedScatterTemplateType, Mode=TwoWay}"></ComboBox>
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+
+   
 </UserControl>

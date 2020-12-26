@@ -350,7 +350,7 @@ namespace MvvmCharting
         private void ClearItems()
         {
 #if DEBUG_SlimItemsControl
-            if (this != null && this.PART_Root.Children.Count != 0)
+            if (this.PART_Root != null && this.PART_Root.Children.Count != 0)
             {
                 Debug.WriteLine($"{this.Name}({this.GetHashCode()})....ClearItems....ct={this.PART_Root.Children.Count}");
             }
@@ -358,11 +358,7 @@ namespace MvvmCharting
 
             this._itemsDictionary.Clear();
 
-            if (this.PART_Root != null)
-            {
-                this.PART_Root.Children.Clear();
-                this.Visibility = Visibility.Visible;
-            }
+            this.PART_Root?.Children.Clear();
 
             _handledItemsSource = null;
 

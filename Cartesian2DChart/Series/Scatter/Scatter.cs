@@ -10,16 +10,14 @@ using Path = System.Windows.Shapes.Path;
 
 namespace MvvmCharting
 {
-
-
     /// <summary>
     /// This is used to display a point(dot) for an Item on the plotting area.
     /// On a Series, items scatters can be displayed on the line(curve).
-    /// Each scatter represents an item, indicating there is an item point in
-    /// this position.
+    /// Each scatter represents an item, indicating the position of the item in
+    /// the series.
     /// </summary>
     [ContentProperty(nameof(Data))]
-    public class Scatter : Shape
+    public class Scatter : Shape, IScatter
     {
 
         /// <summary>
@@ -162,7 +160,7 @@ namespace MvvmCharting
         }
 
 
-        protected virtual Point GetOffsetForSizeChangedOverride(Size newSize)
+        public virtual Point GetOffsetForSizeChangedOverride(Size newSize)
         {
             return new Point(-newSize.Width / 2, -newSize.Height / 2);
         }

@@ -9,6 +9,14 @@ namespace Demo
     {
         public int Index { get;  }
 
+        private string _selectedScatterTemplateType;
+        public string SelectedScatterTemplateType
+        {
+            get { return this._selectedScatterTemplateType; }
+            set { SetProperty(ref this._selectedScatterTemplateType, value); }
+        }
+
+
         public ObservableCollection<SomePoint> DataList { get; }
 
         private bool _isVisible=true;
@@ -39,7 +47,7 @@ namespace Demo
         {
             this.Index = index;
             this.DataList = new ObservableCollection<SomePoint>();
-          
+
         }
     }
 }

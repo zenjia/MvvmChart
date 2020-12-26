@@ -56,6 +56,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="View\IndexToScatterTemplateConverter.cs" />
     <Compile Include="View\ScatterCustomizationDemoView.xaml.cs">
       <DependentUpon>ScatterCustomizationDemoView.xaml</DependentUpon>
     </Compile>

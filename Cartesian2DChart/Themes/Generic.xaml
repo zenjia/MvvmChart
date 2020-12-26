@@ -1,4 +1,4 @@
-﻿<ResourceDictionary
+<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:MvvmCharting"
@@ -75,12 +75,12 @@
 
     <axis:DefaultDoubleToAxisLabelTextConverter x:Key="DefaultDoubleToAxisLabelTextConverter"/>
 
-    <Style TargetType="axis:AxisItem">
+    <Style TargetType="axis:AxisItemItem">
         <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="axis:AxisItem">
+                <ControlTemplate TargetType="axis:AxisItemItem">
                     <Grid x:Name="PART_Root" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -163,7 +163,7 @@
 
 
     <DataTemplate x:Key="DefualtAxisItemDataTemplate" DataType="axis:AxisItemDrawingParam">
-        <axis:AxisItem/>
+        <axis:AxisItemItem/>
     </DataTemplate>
 
 
@@ -319,4 +319,19 @@
  
 
 
+
+    <Style TargetType="local:Scatter2">
+        <Setter Property="Fill" Value="DeepSkyBlue"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:Scatter2">
+                    <Path Fill="{TemplateBinding Fill}">
+                        <Path.Data>
+                            <EllipseGeometry RadiusX="7" RadiusY="7"/>
+                        </Path.Data>
+                    </Path>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

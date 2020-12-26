@@ -44,9 +44,35 @@ namespace Demo
             }
         }
 
+        public ObservableCollection<string> AvailableScatterTemplates { get; }
+
+
+        private string _selectedScatterTemplateType;
+        public string SelectedScatterTemplateType
+        {
+            get { return this._selectedScatterTemplateType; }
+            set
+            {
+                SetProperty(ref this._selectedScatterTemplateType, value);
+                foreach (var list in this.ItemsSourceList)
+                {
+                    list.SelectedScatterTemplateType = value;
+                }
+            }
+        }
         public DemoDataViewModel()
         {
+            this.AvailableScatterTemplates = new ObservableCollection<string>()
+            {
+                "ScatterTemplate",
+                "Scatter2Template"
+            };
+
+           
+
             this.ItemsSourceList = new ObservableCollection<SomePointList>();
+
+            this.SelectedScatterTemplateType = this.AvailableScatterTemplates.First();
 
             var first = new SomePointList(0);
             for (int i = 0; i < 30; i++)
