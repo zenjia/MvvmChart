@@ -11,10 +11,10 @@ MvvmChart is a simple, MVVM support and highly customizable chart control for WP
 * Currently suport **WPF**(.NET Core & **UWP** support will be added soon).
 
 ## Screenshots
-![PolyLineSeries, StepLineSeries& SplineSeries without item point](https://github.com/zenjia/MvvmChart/blob/master/Demo/Images/withoutdot2.PNG)
-![PolyLineSeries, StepLineSeries& SplineSeries with item point](https://github.com/zenjia/MvvmChart/blob/master/Demo/Images/withdot2.PNG)
-![PolyLineAreaSeries without item point](https://github.com/zenjia/MvvmChart/blob/master/Demo/Images/areaWithoutDot.PNG)
-![PolyLineAreaSeries with item point](https://github.com/zenjia/MvvmChart/blob/master/Demo/Images/areaWithDot.PNG)
+![PolyLineSeries, StepLineSeries& SplineSeries without item point](https://github.com/zenjia/MvvmChart/blob/master/Images/withoutdot2.PNG)
+![PolyLineSeries, StepLineSeries& SplineSeries with item point](https://github.com/zenjia/MvvmChart/blob/master/Images/withdot2.PNG)
+![PolyLineAreaSeries without item point](https://github.com/zenjia/MvvmChart/blob/master/Images/areaWithoutDot.PNG)
+![PolyLineAreaSeries with item point](https://github.com/zenjia/MvvmChart/blob/master/Images/areaWithDot.PNG)
 
 ## How to use
 ### Quick start:
@@ -96,7 +96,7 @@ and set the converter to the LabelTextConverter property of Axis:
 ```
 Here is a screenshort from the DateTimeOffset XAxis demo:
 
-![DateTimeOffset XAxis demo](https://github.com/zenjia/MvvmChart/blob/master/Demo/Images/DateTimeDemo.PNG)
+![DateTimeOffset XAxis demo](https://github.com/zenjia/MvvmChart/blob/master/Images/DateTimeDemo.PNG)
 
 ### Advance usages:
 #### Change the default ScatterTemplate
