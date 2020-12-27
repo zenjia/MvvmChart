@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MvvmChart.Common.Drawing
+namespace MvvmCharting.Drawing
 {
     /// <summary>
     /// SizeNS is the .Net Standard version of WPF or UWP Point type

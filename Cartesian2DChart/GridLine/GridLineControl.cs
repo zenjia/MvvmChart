@@ -6,10 +6,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Shapes;
-using MvvmChart.Common;
-using MvvmChart.Common.Axis;
+using MvvmCharting.Axis;
+using MvvmCharting.Common;
+using MvvmCharting.GridLine;
 
-namespace MvvmCharting
+namespace MvvmCharting.WpfFX
 {
     [TemplatePart(Name = "PART_HorizontalGridLineItemsControl", Type = typeof(SlimItemsControl))]
     [TemplatePart(Name = "PART_VerticalGridLineItemsControl", Type = typeof(SlimItemsControl))]
@@ -251,11 +252,11 @@ namespace MvvmCharting
 
             switch (orientation)
             {
-                case AxisType.YAxis:
+                case AxisType.Y:
                     this._horizontalTickOffsets = ticks.ToArray();
                     UpdateHorizontalGridLines();
                     break;
-                case AxisType.XAxis:
+                case AxisType.X:
                     this._verticalTickOffsets = ticks.ToArray();
                     UpdateVerticalGridLines();
                     break;

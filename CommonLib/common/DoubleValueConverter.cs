@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace MvvmChart.Common
+namespace MvvmCharting.Common
 {
     /// <summary>
     /// Convert object to double or vice versa

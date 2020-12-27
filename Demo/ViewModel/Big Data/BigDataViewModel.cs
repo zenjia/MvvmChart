@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using MvvmChart.Common;
+using MvvmCharting.Common;
 using MvvmCharting;
 
 namespace Demo

@@ -4,8 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Demo"
-             xmlns:mvvmCharting="clr-namespace:MvvmCharting;assembly=Cartesian2DChart"
-             xmlns:axis="clr-namespace:MvvmCharting.Axis;assembly=Cartesian2DChart"
+             xmlns:mvvmCharting="clr-namespace:MvvmCharting.WpfFX;assembly=MvvmChartWpfFX"
+             xmlns:axis="clr-namespace:MvvmCharting.WpfFX.Axis;assembly=MvvmChartWpfFX"
+
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -48,6 +49,7 @@
         </DataTemplate>
 
 
+        <BooleanToVisibilityConverter x:Key="b2v"/>
 
 
     </UserControl.Resources>
@@ -64,11 +66,11 @@
                                   SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource BigDataViewModel}}">
 
             <mvvmCharting:SeriesChart.XAxis>
-                <axis:AxisBase />
+                <axis:LinearAxis />
             </mvvmCharting:SeriesChart.XAxis>
 
             <mvvmCharting:SeriesChart.YAxis>
-                <axis:AxisBase />
+                <axis:LinearAxis />
             </mvvmCharting:SeriesChart.YAxis>
 
         </mvvmCharting:SeriesChart>
@@ -76,20 +78,21 @@
 
 
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
+        <StackPanel Grid.Row="1" Orientation="Horizontal"
+                    DataContext="{Binding Source={StaticResource BigDataViewModel}}">
             <CheckBox Content="ShowScatter" 
                       VerticalAlignment="Center"
-                      IsChecked="{Binding Source={StaticResource BigDataViewModel}, Path=ShowSeriesPointsGlobal, Mode=TwoWay}"/>
+                      IsChecked="{Binding Path=ShowSeriesPointsGlobal, Mode=TwoWay}"/>
 
-            <GroupBox  Margin="20" Padding="9">
+            <GroupBox Margin="20" Padding="9" Visibility="{Binding ShowSeriesPointsGlobal, Converter={StaticResource b2v}}">
                 <StackPanel>
                     <TextBlock Margin="6" Text="Scatter template: "/>
 
                     <ComboBox Width="160"
                           Margin="6"
                           HorizontalAlignment="Left"
-                          ItemsSource="{Binding Source={StaticResource BigDataViewModel}, Path=AvailableScatterTemplates}"
-                          SelectedItem="{Binding Source={StaticResource BigDataViewModel}, Path=SelectedScatterTemplateType, Mode=TwoWay}"></ComboBox>
+                          ItemsSource="{Binding AvailableScatterTemplates}"
+                          SelectedItem="{Binding SelectedScatterTemplateType, Mode=TwoWay}"/>
                 </StackPanel>
             </GroupBox>
 
@@ -100,8 +103,8 @@
 
                     <ComboBox Margin="6"
                               HorizontalAlignment="Left"
-                              ItemsSource="{Binding Source={StaticResource BigDataViewModel}, Path=AvailableSizes}"
-                              SelectedItem="{Binding Source={StaticResource BigDataViewModel}, Path=SelectedDataSize, Mode=TwoWay}"
+                              ItemsSource="{Binding AvailableSizes}"
+                              SelectedItem="{Binding SelectedDataSize, Mode=TwoWay}"
                     />
                 </StackPanel>
 

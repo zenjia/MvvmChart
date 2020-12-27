@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Demo"
-             xmlns:mvvmCharting="clr-namespace:MvvmCharting;assembly=Cartesian2DChart"
-             xmlns:axis="clr-namespace:MvvmCharting.Axis;assembly=Cartesian2DChart"
+             xmlns:mvvmCharting="clr-namespace:MvvmCharting.WpfFX;assembly=MvvmChartWpfFX"
+
              mc:Ignorable="d" 
              d:DesignHeight="450" 
              d:DesignWidth="800">

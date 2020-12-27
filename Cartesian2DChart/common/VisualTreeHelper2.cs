@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Media;
 
-namespace MvvmCharting
+namespace MvvmCharting.WpfFX
 {
     public class VisualTreeHelper2
     {

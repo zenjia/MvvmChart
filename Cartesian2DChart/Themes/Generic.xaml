@@ -1,8 +1,9 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:MvvmCharting"
-    xmlns:axis="clr-namespace:MvvmCharting.Axis">
+    xmlns:local="clr-namespace:MvvmCharting.WpfFX"
+    xmlns:axis1="clr-namespace:MvvmCharting.Axis;assembly=CommonLib"
+    xmlns:axis="clr-namespace:MvvmCharting.WpfFX.Axis">
 
     <Style TargetType="{x:Type local:SlimItemsControl}">
         <Setter Property="Template">
@@ -71,8 +72,6 @@
         </Setter>
     </Style>
 
-
-    <axis:DefaultDoubleToAxisLabelTextConverter x:Key="DefaultDoubleToAxisLabelTextConverter"/>
 
     <Style TargetType="axis:AxisItem">
         <Setter Property="VerticalAlignment" Value="Top"/>
@@ -160,14 +159,11 @@
 
 
 
-    <DataTemplate x:Key="DefualtAxisItemDataTemplate" DataType="axis:AxisItemDrawingParam">
+    <DataTemplate x:Key="DefualtAxisItemDataTemplate" DataType="axis1:AxisItemDrawingParam">
         <axis:AxisItem/>
     </DataTemplate>
 
-
-
     <Style TargetType="axis:AxisBase">
-        <Setter Property="LabelTextConverter" Value="{StaticResource DefaultDoubleToAxisLabelTextConverter}"/>
         <Setter Property="ItemTemplate" Value="{StaticResource DefualtAxisItemDataTemplate}"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -182,23 +178,30 @@
             </Setter.Value>
         </Setter>
     </Style>
+ 
+    <axis1:DefaultDoubleToAxisLabelTextConverter x:Key="DefaultDoubleToAxisLabelTextConverter"/>
+    <Style TargetType="axis:LinearAxis" BasedOn="{StaticResource {x:Type axis:AxisBase}}">
+        <Setter Property="LabelTextConverter" Value="{StaticResource DefaultDoubleToAxisLabelTextConverter}"/>
+    </Style>
 
+    <axis1:DefaultObjectToAxisLabelTextConverter x:Key="DefaultObjectToAxisLabelTextConverter"/>
+    <Style TargetType="axis:CategoryAxis" BasedOn="{StaticResource {x:Type axis:AxisBase}}">
+        <Setter Property="LabelTextConverter" Value="{StaticResource DefaultObjectToAxisLabelTextConverter}"/>
+    </Style>
 
+    <axis:LinearAxis x:Key="LinearXAxis" 
+                     x:Shared="False"
+                     Orientation="X"
+                     Placement="Bottom">
 
+    </axis:LinearAxis>
 
-    <axis:AxisBase x:Key="XAxis" 
-                   x:Shared="False"
-                   Orientation="XAxis"
-                   Placement="Bottom">
+    <axis:LinearAxis x:Key="LinearYAxis" 
+                     x:Shared="False"
+                     Orientation="Y" 
+                     Placement="Left">
 
-    </axis:AxisBase>
-
-    <axis:AxisBase x:Key="YAxis" 
-                   x:Shared="False"
-                   Orientation="YAxis" 
-                   Placement="Left">
-
-    </axis:AxisBase>
+    </axis:LinearAxis>
 
     <Style x:Key="DefaultGridLineStyle" TargetType="Line">
         <Setter Property="Stroke" Value="SkyBlue"/>
@@ -253,8 +256,8 @@
     </Style>
 
     <Style TargetType="local:SeriesChart">
-        <Setter Property="XAxis" Value="{StaticResource XAxis}"/>
-        <Setter Property="YAxis" Value="{StaticResource YAxis}"/>
+        <Setter Property="XAxis" Value="{StaticResource LinearXAxis}"/>
+        <Setter Property="YAxis" Value="{StaticResource LinearYAxis}"/>
         <Setter Property="GridLineControl" Value="{StaticResource DefaultGridLineControl}"/>
         <Setter Property="HorizontalCrossHairLineStyle" Value="{StaticResource DefaultHorizontalCrossHairLineStyle}"/>
         <Setter Property="VerticalCrossHairLineStyle" Value="{StaticResource DefaultVerticalCrossHairLineStyle}"/>

@@ -1,8 +1,8 @@
-﻿using System.Windows;
-using System.Windows.Media;
-using MvvmChart.Common.Drawing;
+﻿using System.Windows.Media;
+using MvvmCharting.Drawing;
+using MvvmCharting.Series;
 
-namespace MvvmCharting
+namespace MvvmCharting.WpfFX
 {
     public class PolylineAreaGeometryBuilder : ISeriesGeometryBuilder
     {
@@ -18,7 +18,7 @@ namespace MvvmCharting
             return PolyLineGeometryBuilder.CreateGeometry(arr, true);
         }
 
-        public Geometry GetGeometry(PointNS[] points)
+        public object GetGeometry(PointNS[] points)
         {
             return CreateGeometry(points);
         }

@@ -4,9 +4,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using MvvmChart.Common;
+using MvvmCharting.Axis;
+using MvvmCharting.Common;
 
-namespace MvvmCharting.Axis
+namespace MvvmCharting.WpfFX.Axis
 {
     /// <summary>
     /// The item of an Axis indicates the coordinate, typically including a label and a tick.
@@ -27,8 +28,8 @@ namespace MvvmCharting.Axis
         private FrameworkElement PART_Label;
         public AxisItem()
         {
-            this.SetBinding(CoordinateProperty, new Binding(nameof(AxisItemDrawingParam.Coordinate)));
-            this.SetBinding(ValueProperty, new Binding(nameof(AxisItemDrawingParam.Value)));
+            this.SetBinding(CoordinateProperty, new Binding(nameof(IAxisItemDrawingBaseParams.Coordinate)));
+            this.SetBinding(ValueProperty, new Binding(nameof(IAxisItemDrawingBaseParams.Value)));
         }
 
 

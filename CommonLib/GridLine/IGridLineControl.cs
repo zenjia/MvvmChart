@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
  
-using MvvmChart.Common.Axis;
+using MvvmCharting.Axis;
 
-namespace MvvmCharting
+namespace MvvmCharting.GridLine
 {
     public interface IGridLineControl
     {

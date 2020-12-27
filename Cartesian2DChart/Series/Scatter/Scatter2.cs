@@ -2,9 +2,10 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using MvvmChart.Common.Drawing;
+using MvvmCharting.Drawing;
+using MvvmCharting.Series;
 
-namespace MvvmCharting
+namespace MvvmCharting.WpfFX
 {
    
     public class Scatter2 : Control, IScatter
@@ -116,8 +117,8 @@ namespace MvvmCharting
 
         public PointNS GetOffsetForSizeChangedOverride()
         {
-
-            return new PointNS(-ActualWidth / 2, -ActualHeight / 2);
+            //
+            return new PointNS(/*-ActualWidth / 2, -ActualHeight / 2*/);
         }
     }
 }

@@ -1,14 +1,15 @@
 ﻿using System.Windows;
 using System.Windows.Media;
+using MvvmCharting.Series;
 
-namespace MvvmCharting
+namespace MvvmCharting.WpfFX
 {
     public class EllipseGeometryBuilder : IScatterGeometryBuilder
     {
         public double RadiusX { get; set; }
         public double RadiusY { get; set; }
  
-        public Geometry GetGeometry()
+        public object GetGeometry()
         {
             return new EllipseGeometry(new Point(RadiusX, RadiusY), RadiusX, RadiusY);
         }

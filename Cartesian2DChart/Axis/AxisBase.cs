@@ -5,20 +5,16 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using Cartesian2DChart.Axis;
-using MvvmChart.Common;
-using MvvmChart.Common.Axis;
+using MvvmCharting.Axis;
+using MvvmCharting.Common;
 
-namespace MvvmCharting.Axis
+namespace MvvmCharting.WpfFX.Axis
 {
     /// <summary>
-    /// The base class for XAxis and YAxis.
-    /// It is basically a numeric, linear axis, and can't handle category data type.
-    /// It can handle DateTime data type by converting it to double type and back using System.Convert.
-    /// Also, user can provide their own customized converters to customize Text of the labels of axis.
+    /// The base class for <see cref="LinearAxis"/> and <see cref="CategoryAxis"/>.
     /// </summary>
     [TemplatePart(Name = "PART_AxisItemsControl", Type = typeof(SlimItemsControl))]
-    public class AxisBase : Control, IAxis
+    public abstract class AxisBase : Control, IAxisNS
     {
         static AxisBase()
         {
@@ -46,7 +42,7 @@ namespace MvvmCharting.Axis
                 this.PART_AxisItemsControl.ElementGenerated += AxisItemsControlItemTemplateApplied;
 
                 this.PART_AxisItemsControl.SetBinding(SlimItemsControl.ItemTemplateProperty,
-                    new Binding(nameof(this.ItemTemplate)) {Source = this});
+                    new Binding(nameof(this.ItemTemplate)) { Source = this });
                 this.PART_AxisItemsControl.SetBinding(SlimItemsControl.ItemTemplateSelectorProperty,
                     new Binding(nameof(this.ItemTemplateSelector)) { Source = this });
 
@@ -59,11 +55,9 @@ namespace MvvmCharting.Axis
 
 
 
-        public AxisBase()
+        protected AxisBase()
         {
-            this.ItemDrawingParams = new ObservableCollection<AxisItemDrawingParam>();
-
-
+            this.ItemDrawingParams = new ObservableCollection<IAxisItemDrawingBaseParams>();
 
         }
 
@@ -85,7 +79,7 @@ namespace MvvmCharting.Axis
 
         private IEnumerable<IAxisItem> GetAllAxisItems()
         {
-            if (this.PART_AxisItemsControl==null)
+            if (this.PART_AxisItemsControl == null)
             {
                 return Enumerable.Empty<IAxisItem>();
             }
@@ -105,18 +99,7 @@ namespace MvvmCharting.Axis
 
 
 
-        public double TickInterval
-        {
-            get { return (double)GetValue(TickIntervalProperty); }
-            set { SetValue(TickIntervalProperty, value); }
-        }
-        public static readonly DependencyProperty TickIntervalProperty =
-            DependencyProperty.Register("TickInterval", typeof(double), typeof(AxisBase), new PropertyMetadata(double.NaN, OnTickIntervalPropertyChanged));
 
-        private static void OnTickIntervalPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((AxisBase)d).UpdateAxisDrawingSettings(); ;
-        }
 
 
         public int TickCount
@@ -133,26 +116,6 @@ namespace MvvmCharting.Axis
         }
 
 
-
-
-        public IList<double> ExplicitTicks
-        {
-            get { return (IList<double>)GetValue(ExplicitTicksProperty); }
-            set { SetValue(ExplicitTicksProperty, value); }
-        }
-        public static readonly DependencyProperty ExplicitTicksProperty =
-            DependencyProperty.Register("ExplicitTicks", typeof(IList<double>), typeof(AxisBase), new PropertyMetadata(null, OnExplicitTicksPropertyChanged));
-
-        private static void OnExplicitTicksPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((AxisBase)d).OnExplicitTicksChanged((IList<double>)e.OldValue, (IList<double>)e.NewValue);
-        }
-
-        private void OnExplicitTicksChanged(IList<double> oldValue, IList<double> newValue)
-        {
-            TryLoadAxisItemDrawingParams();
-        }
-
         public DataTemplate ItemTemplate
         {
             get { return (DataTemplate)GetValue(ItemTemplateProperty); }
@@ -161,7 +124,6 @@ namespace MvvmCharting.Axis
 
         public static readonly DependencyProperty ItemTemplateProperty =
             ItemsControl.ItemTemplateProperty.AddOwner(typeof(AxisBase));
-
 
 
         public DataTemplateSelector ItemTemplateSelector
@@ -190,16 +152,18 @@ namespace MvvmCharting.Axis
 
         private static void OnLabelTextConverterPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-             ((AxisBase)d).OnLabelTextConverterChanged((IValueConverterNS)e.OldValue, (IValueConverterNS)e.NewValue);
+            ((AxisBase)d).OnLabelTextConverterChanged((IValueConverterNS)e.OldValue, (IValueConverterNS)e.NewValue);
         }
 
-        private void OnLabelTextConverterChanged(IValueConverterNS oldVlue, IValueConverterNS newValue)
+        private void OnLabelTextConverterChanged(IValueConverterNS oldValue, IValueConverterNS newValue)
         {
+            
             foreach (var axisItem in GetAllAxisItems())
             {
                 axisItem.SetLabelTextConverter(this.LabelTextConverter);
             }
         }
+
 
         private IAxisOwner _owner;
         public IAxisOwner Owner
@@ -207,7 +171,7 @@ namespace MvvmCharting.Axis
             get { return this._owner; }
             set
             {
-                
+
                 if (this._owner != value)
                 {
                     this._owner = value;
@@ -242,10 +206,10 @@ namespace MvvmCharting.Axis
 
             switch (this.Orientation)
             {
-                case AxisType.XAxis:
+                case AxisType.X:
                     ((IXAxisOwner)this.Owner).CanvasHorizontalSettingChanged += AxisBase_CanvasSettingChanged;
                     break;
-                case AxisType.YAxis:
+                case AxisType.Y:
                     ((IYAxisOwner)this.Owner).CanvasVerticalSettingChanged += AxisBase_CanvasSettingChanged;
                     break;
                 default:
@@ -255,18 +219,18 @@ namespace MvvmCharting.Axis
             UpdateAxisDrawingSettings();
         }
 
-        private void AxisBase_CanvasSettingChanged(PlottingSettings obj)
+        private void AxisBase_CanvasSettingChanged(IPlottingSettingsBase obj)
         {
             switch (obj.Orientation)
             {
-                case AxisType.XAxis:
+                case AxisType.X:
                     this.RenderSize = new Size(obj.RenderSize, this.RenderSize.Height);
                     this.Margin = new Thickness(obj.Margin.X, this.Margin.Top, obj.Margin.Y, this.Margin.Bottom);
                     this.Padding = new Thickness(obj.Padding.X, this.Padding.Top, obj.Padding.Y, this.Padding.Bottom);
                     this.BorderThickness = new Thickness(obj.BorderThickness.X, this.BorderThickness.Top, obj.BorderThickness.Y, this.BorderThickness.Bottom);
 
                     break;
-                case AxisType.YAxis:
+                case AxisType.Y:
                     this.RenderSize = new Size(this.RenderSize.Width, obj.RenderSize);
                     this.Margin = new Thickness(this.Margin.Left, obj.Margin.X, this.Margin.Right, obj.Margin.Y);
                     this.Padding = new Thickness(this.Padding.Left, obj.Padding.X, this.Padding.Right, obj.Padding.Y);
@@ -281,8 +245,8 @@ namespace MvvmCharting.Axis
 
         }
 
-        private PlottingSettings _plottingSetting;
-        protected PlottingSettings PlottingSetting
+        private IPlottingSettingsBase _plottingSetting;
+        protected IPlottingSettingsBase PlottingSetting
         {
             get { return this._plottingSetting; }
 
@@ -297,8 +261,8 @@ namespace MvvmCharting.Axis
         }
 
 
-        private AxisDrawingSettings _drawingSettings;
-        internal AxisDrawingSettings DrawingSettings
+        private IAxisDrawingSettingsBase _drawingSettings;
+        internal IAxisDrawingSettingsBase DrawingSettings
         {
             get { return this._drawingSettings; }
             set
@@ -316,51 +280,83 @@ namespace MvvmCharting.Axis
         }
 
 
-        public ObservableCollection<AxisItemDrawingParam> ItemDrawingParams { get; }
+        public ObservableCollection<IAxisItemDrawingBaseParams> ItemDrawingParams { get; }
 
 
 
-        private void UpdateAxisDrawingSettings()
+        protected abstract void UpdateAxisDrawingSettings();
+
+
+        public abstract IEnumerable<double> GetAxisItemCoordinates();
+
+
+        private void OnAxisItemCoordinateChanged()
         {
-            if (/*!this.IsLoaded ||*/
-                this.PlottingSetting == null)
+
+            var coordinates = GetAxisItemCoordinates();
+
+
+            this.Owner.OnAxisItemsCoordinateChanged(this.Orientation, coordinates);
+
+
+
+
+
+        }
+
+        protected IAxisDrawingSettingsBase _currentDrawingSettings;
+
+        protected abstract bool DoLoadAxisItemDrawingParams();
+
+        public bool TryLoadAxisItemDrawingParams()
+        {
+            if (this.PART_AxisItemsControl == null)
             {
-                return;
+                return false;
             }
 
+            bool succeed = DoLoadAxisItemDrawingParams();
 
-            var range = this.PlottingSetting.PlotingDataRange;
-            var length = this.PlottingSetting.GetAvailablePlottingSize();
-            if (range.IsInvalid || length.IsNaNOrZero())
+            if (!succeed)
+            {
+                return false;
+            }
+
+            UpdateAxisItemsCoordinate();
+
+            return true;
+        }
+
+        protected abstract void DoUpdateAxisItemsCoordinate();
+
+        private void UpdateAxisItemsCoordinate()
+        {
+
+            if (!this.DrawingSettings.CanUpdateAxisItemsCoordinate())
             {
                 throw new NotImplementedException();
             }
 
-            var axisDrawingSettings = new AxisDrawingSettings(this.TickCount, this.TickInterval, range, length);
-            this.DrawingSettings = axisDrawingSettings;
+            DoUpdateAxisItemsCoordinate();
+
+            OnAxisItemCoordinateChanged();
         }
 
 
-
-
-
-
-
-
-
-        private IList<double> GetItemDataValues(double startValue, double tickInterval, int tickCount)
+        private void AxisItemsControlItemTemplateApplied(object sender, DependencyObject root)
         {
-            var chartRange = this.PlottingSetting.PlotingDataRange;
+            if (!(root is IAxisItem axisItem))
+            {
+                throw new MvvmChartUnexpectedTypeException($"The root item of ItemTemplate of an axis must be based on '{typeof(AxisItem)}'!");
+            }
 
-            var arr = Enumerable.Range(0, tickCount)
-                .Select(i => startValue + i * tickInterval)
-                .Where(x => chartRange.IsInRange(x))
-                .ToArray();
+            axisItem.SetLabelTextConverter(this.LabelTextConverter);
+            axisItem.SetAxisPlacement(this.Placement);
 
-            return arr;
         }
 
-        private void UpdateItemDrawingParams(IList<double> source)
+
+        protected void UpdateItemDrawingParams(IList<object> source)
         {
 
             var oldCt = this.ItemDrawingParams.Count;
@@ -375,12 +371,12 @@ namespace MvvmCharting.Axis
                 var newValue = source[i];
                 if (i < oldCt)
                 {
-                    AxisItemDrawingParam item = this.ItemDrawingParams[i];
+                    var item = this.ItemDrawingParams[i];
                     item.Value = newValue;
                 }
                 else
                 {
-                    AxisItemDrawingParam item = new AxisItemDrawingParam();
+                    IAxisItemDrawingBaseParams item = new AxisItemDrawingParam();
                     item.Value = newValue;
                     this.ItemDrawingParams.Add(item);
                 }
@@ -391,131 +387,9 @@ namespace MvvmCharting.Axis
 
         }
 
-        public IEnumerable<double> GetAxisItemCoordinates()
-        {
-            if (this.PlottingSetting == null)
-            {
-                return null;
-            }
-            var range = this.PlottingSetting.PlotingDataRange;
-            var coordinates = this.ItemDrawingParams.Where(x => range.IsInRange(x.Value)).Select(x => x.Coordinate);
-
-            return coordinates;
-        }
-
-        private void OnAxisItemCoordinateChanged()
-        {
-
-            var coordinates = GetAxisItemCoordinates();
 
 
-            this.Owner.OnAxisItemsCoordinateChanged(this.Orientation, coordinates);
-
-
-           
- 
-
-        }
-
-        private AxisDrawingSettings _currentDrawingSettings;
-
-        public bool TryLoadAxisItemDrawingParams()
-        {
-            if (this.PART_AxisItemsControl == null)
-            {
-                return false;
-            }
-
-
-            IList<double> dataValues;
-            if (this.ExplicitTicks != null)
-            {
-                dataValues = this.ExplicitTicks;
-                this._currentDrawingSettings = null;
-            }
-            else
-            {
-                AxisDrawingSettings drawingSettings = this.DrawingSettings;
-                if (drawingSettings == null || !drawingSettings.CanUpdateAxisItems())
-                {
-                    return false;
-                }
-
-                if (drawingSettings.Equals(this._currentDrawingSettings))
-                {
-                    return false;
-                }
-
-                this._currentDrawingSettings = drawingSettings;
-
-                dataValues = GetItemDataValues(drawingSettings.PlotingDataRange.Min, drawingSettings.ActualTickInterval, drawingSettings.ActualTickCount);
-
-
-            }
-
-
-            UpdateItemDrawingParams(dataValues);
-
-         
-            UpdateAxisItemsCoordinate();
-
-
-            return true;
-        }
-
-
-        private void UpdateAxisItemsCoordinate()
-        {
-
-            if (!this.DrawingSettings.CanUpdateAxisItemsCoordinate())
-            {
-                throw new NotImplementedException();
-            }
-
-
-            var span = this.DrawingSettings.PlotingDataRange.Span;
-            var length = this.DrawingSettings.PlotingLength;
-            var uLen = length / span;
-
-            var len = (this.Orientation == AxisType.YAxis) ? this.ActualHeight: this
-                .ActualWidth;
-
-  
-            foreach (var item in this.ItemDrawingParams)
-            {
-                var coordinate = (item.Value - this.DrawingSettings.PlotingDataRange.Min) * uLen;
-                if (this.Orientation == AxisType.YAxis)
-                {
-                    coordinate = length - coordinate;
-                }
-
-                item.Coordinate = coordinate;
-
- 
-            }
-
-
-            OnAxisItemCoordinateChanged();
-        }
- 
-
-        private void AxisItemsControlItemTemplateApplied(object sender, DependencyObject root)
-        {
-            if (!(root is IAxisItem axisItem))
-            {
-                throw new MvvmChartUnexpectedTypeException($"The root item of ItemTemplate of an axis must be based on '{typeof(AxisItem)}'!");
-            }
-
-            axisItem.SetLabelTextConverter(this.LabelTextConverter);
-            axisItem.SetAxisPlacement(this.Placement);
- 
-        }
-
-
-
-
-
-        public event Action<IAxis> AxisPlacementChanged;
+        public event Action<IAxisNS> AxisPlacementChanged;
 
 
 

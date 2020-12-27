@@ -1,6 +1,7 @@
 ﻿using System;
+using MvvmCharting.Common;
 
-namespace MvvmChart.Common.Drawing
+namespace MvvmCharting.Drawing
 {
     public static class PointNSHelper
     {

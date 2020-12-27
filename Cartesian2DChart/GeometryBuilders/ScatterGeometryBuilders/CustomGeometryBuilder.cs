@@ -1,6 +1,7 @@
 ﻿using System.Windows.Media;
+using MvvmCharting.Series;
 
-namespace MvvmCharting
+namespace MvvmCharting.WpfFX
 {
     /// <summary>
     /// Customizable GeometryBuilder which can accept a mini-language string,
@@ -26,7 +27,7 @@ namespace MvvmCharting
             }
         }
 
-        public Geometry GetGeometry()
+        public object GetGeometry()
         {
             return this._cachedGeometry;
         }

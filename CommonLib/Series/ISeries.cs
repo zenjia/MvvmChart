@@ -1,7 +1,7 @@
 ﻿using System;
-using MvvmChart.Common;
+using MvvmCharting.Common;
 
-namespace MvvmCharting
+namespace MvvmCharting.Series
 {
     /// <summary>
     /// This is the interface that a series should be implement before

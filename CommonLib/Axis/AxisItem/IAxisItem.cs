@@ -1,5 +1,5 @@
 ﻿ 
-using MvvmChart.Common;
+using MvvmCharting.Common;
 
 namespace MvvmCharting.Axis
 {

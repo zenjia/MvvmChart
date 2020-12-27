@@ -1,9 +1,9 @@
-﻿namespace MvvmChart.Common.Axis
+﻿namespace MvvmCharting.Axis
 {
     public enum AxisType
     {
         None,
-        XAxis,
-        YAxis
+        X,
+        Y
     }
 }

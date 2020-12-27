@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{02960B4D-ACC3-4B6D-93D6-E578F33655E0}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Demo</RootNamespace>
-    <AssemblyName>Demo</AssemblyName>
+    <RootNamespace>Demo.WpfFX</RootNamespace>
+    <AssemblyName>DemoWpfFX</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -147,9 +147,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Cartesian2DChart\Cartesian2DChart.csproj">
+    <ProjectReference Include="..\Cartesian2DChart\MvvmChartWpfFX.csproj">
       <Project>{28c40709-2e83-4a1f-be8a-eba5ab886012}</Project>
-      <Name>Cartesian2DChart</Name>
+      <Name>MvvmChartWpfFX</Name>
     </ProjectReference>
     <ProjectReference Include="..\CommonLib\CommonLib.csproj">
       <Project>{2ac79084-def9-4164-8ace-bcb735047d96}</Project>

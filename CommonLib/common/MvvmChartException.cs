@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MvvmChart.Common
+namespace MvvmCharting.Common
 {
     public class MvvmChartException : Exception
     {

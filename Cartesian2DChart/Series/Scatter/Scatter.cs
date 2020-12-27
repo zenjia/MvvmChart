@@ -2,10 +2,11 @@
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using MvvmChart.Common.Drawing;
+using MvvmCharting.Drawing;
+using MvvmCharting.Series;
 using Path = System.Windows.Shapes.Path;
 
-namespace MvvmCharting
+namespace MvvmCharting.WpfFX
 {
     /// <summary>
     /// This is used to display a point(dot) for an Item on the plotting area.
@@ -70,7 +71,7 @@ namespace MvvmCharting
             }
 
 
-            this.Data = this.GeometryBuilder?.GetGeometry();
+            this.Data = (Geometry) this.GeometryBuilder?.GetGeometry();
 
 
 

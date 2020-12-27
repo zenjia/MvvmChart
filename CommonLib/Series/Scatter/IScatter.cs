@@ -1,6 +1,7 @@
-using MvvmChart.Common.Drawing;
+using MvvmCharting.Common;
+using MvvmCharting.Drawing;
 
-namespace MvvmCharting
+namespace MvvmCharting.Series
 {
     public interface IScatter: IPlottable_2D
     {

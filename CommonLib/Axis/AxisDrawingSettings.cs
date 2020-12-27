@@ -1,20 +1,43 @@
 ﻿using System;
-using MvvmChart.Common;
+using MvvmCharting.Common;
 
 namespace MvvmCharting.Axis
 {
-    public class AxisDrawingSettings
+    public interface IAxisDrawingSettingsBase
+    {
+        double PlottingLength { get; }
+
+         double ActualTickInterval { get; }
+
+         int ActualTickCount { get; }
+
+         bool CanUpdateAxisItems();
+
+         bool CanUpdateAxisItemsCoordinate();
+    }
+
+    public interface ILinearAxisDrawingSettings: IAxisDrawingSettingsBase
+    {
+        Range PlottingDataRange { get; }
+    }
+
+    public interface ICategoryAxisDrawingSettings : IAxisDrawingSettingsBase
+    {
+        
+    }
+
+    public class AxisDrawingSettings: ILinearAxisDrawingSettings
     {
         public override string ToString()
         {
-            return string.Format($"Input values: PlotingDataRange={this.PlotingDataRange}, PlotingDataRange.Span={PlotingDataRange.Span}, PlotingLength={this.PlotingLength}" + Environment.NewLine
-                                                                                                                                                                        + $"Calculated values: ActualTickInterval={ActualTickInterval}, ActualTickCount={ActualTickCount}");
+            return string.Format($"Input values: PlottingDataRange={this.PlottingDataRange}, PlottingDataRange.Span={this.PlottingDataRange.Span}, PlottingLength={this.PlottingLength}" + Environment.NewLine
+                                                                                                                                                                                         + $"Calculated values: ActualTickInterval={ActualTickInterval}, ActualTickCount={ActualTickCount}");
         }
 
         #region input values
-        public Range PlotingDataRange { get; }
+        public Range PlottingDataRange { get; }
 
-        public double PlotingLength { get; }
+        public double PlottingLength { get; }
         #endregion
 
         #region generated values
@@ -25,7 +48,7 @@ namespace MvvmCharting.Axis
 
         #endregion
 
-        public AxisDrawingSettings(int tickCount, double tickInterval, Range range, double plotingLength)
+        public AxisDrawingSettings(int tickCount, double tickInterval, Range range, double plottingLength)
         {
 
             if (tickCount<0 || tickCount>ushort.MaxValue)
@@ -35,14 +58,14 @@ namespace MvvmCharting.Axis
 
  
 
-            this.PlotingDataRange = range;
+            this.PlottingDataRange = range;
 
  
-            this.PlotingLength = plotingLength;
+            this.PlottingLength = plottingLength;
 
             //calculated state:
-            this.ActualTickInterval = !tickInterval.IsNaN() ? tickInterval : this.PlotingDataRange.Span / tickCount;
-            this.ActualTickCount = (int)Math.Floor(this.PlotingDataRange.Span / this.ActualTickInterval) + 1;
+            this.ActualTickInterval = !tickInterval.IsNaN() ? tickInterval : this.PlottingDataRange.Span / tickCount;
+            this.ActualTickCount = (int)Math.Floor(this.PlottingDataRange.Span / this.ActualTickInterval) + 1;
         }
 
 
@@ -54,8 +77,8 @@ namespace MvvmCharting.Axis
                 return false;
             }
 
-            return this.PlotingLength.NearlyEqual(other.PlotingLength, 0.0001) && 
-                   this.PlotingDataRange==other.PlotingDataRange &&
+            return this.PlottingLength.NearlyEqual(other.PlottingLength, 0.0001) && 
+                   this.PlottingDataRange==other.PlottingDataRange &&
                    this.ActualTickCount == other.ActualTickCount &&
                    this.ActualTickInterval == other.ActualTickInterval;
         }
@@ -63,12 +86,12 @@ namespace MvvmCharting.Axis
         public bool CanUpdateAxisItems()
         {
  
-            return !this.PlotingLength.IsNaNOrZero() && !this.ActualTickInterval.IsNaNOrZero();
+            return !this.PlottingLength.IsNaNOrZero() && !this.ActualTickInterval.IsNaNOrZero();
         }
 
         public bool CanUpdateAxisItemsCoordinate()
         {
-            return !this.PlotingLength.IsNaNOrZero() && !this.PlotingDataRange.Span.IsNaNOrZero();
+            return !this.PlottingLength.IsNaNOrZero() && !this.PlottingDataRange.Span.IsNaNOrZero();
         }
  
     }

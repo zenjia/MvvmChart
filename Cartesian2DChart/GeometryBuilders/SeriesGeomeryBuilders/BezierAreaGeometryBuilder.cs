@@ -1,13 +1,13 @@
-﻿using System.Windows;
-using System.Windows.Media;
-using MvvmChart.Common.Drawing;
+﻿using System.Windows.Media;
+using MvvmCharting.Drawing;
+using MvvmCharting.Series;
 
-namespace MvvmCharting
+namespace MvvmCharting.WpfFX
 {
     public class BezierAreaGeometryBuilder : ISeriesGeometryBuilder
     {
         public double Tension { get; set; } = 0.4;
-        public Geometry GetGeometry(PointNS[] points)
+        public object GetGeometry(PointNS[] points)
         {
             if (points.Length < 2)
             {

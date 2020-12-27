@@ -1,13 +1,14 @@
 ﻿using System.Windows;
 using System.Windows.Media;
-using MvvmChart.Common.Drawing;
+using MvvmCharting.Drawing;
+using MvvmCharting.Series;
 
-namespace MvvmCharting
+namespace MvvmCharting.WpfFX
 {
     public class StepLineGeometryBuilder : ISeriesGeometryBuilder
     {
         
-        public Geometry GetGeometry(PointNS[] points)
+        public object GetGeometry(PointNS[] points)
         {
             PointCollection pc = new PointCollection();
             foreach (var pt in points)

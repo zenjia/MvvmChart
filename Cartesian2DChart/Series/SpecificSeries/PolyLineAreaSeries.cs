@@ -1,4 +1,4 @@
-﻿namespace MvvmCharting
+﻿namespace MvvmCharting.WpfFX
 {
     public class PolyLineAreaSeries : PathSeries
     {

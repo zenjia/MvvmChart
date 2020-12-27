@@ -1,7 +1,7 @@
 ﻿using System.Windows;
-using MvvmChart.Common;
+using MvvmCharting.Common;
 
-namespace MvvmCharting
+namespace MvvmCharting.WpfFX
 {
     public static class SizeHelper
     {

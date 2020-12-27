@@ -1,8 +1,8 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
+using MvvmCharting.Series;
 
-namespace MvvmCharting
+namespace MvvmCharting.WpfFX
 {
     /// <summary>
     /// PathSeries just use a Path to draw the series.
@@ -74,7 +74,7 @@ namespace MvvmCharting
             
             var coordinates = this.GetCoordinates();  
           
-            this.PathData = this.GeometryBuilder.GetGeometry(coordinates);
+            this.PathData = (Geometry) this.GeometryBuilder.GetGeometry(coordinates);
 
         }
     }

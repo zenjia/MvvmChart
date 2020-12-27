@@ -1,12 +1,11 @@
-﻿using System.Windows;
-using System.Windows.Media;
-using MvvmChart.Common.Drawing;
+﻿using MvvmCharting.Drawing;
+using MvvmCharting.Series;
 
-namespace MvvmCharting
+namespace MvvmCharting.WpfFX
 {
     public class StepLineAreaGeometryBuilder : ISeriesGeometryBuilder
     {
-        public Geometry GetGeometry(PointNS[] points)
+        public object GetGeometry(PointNS[] points)
         {
             PointNS[] arr = new PointNS[points.Length + 2 + (points.Length - 1)];
             arr[0] = new PointNS(points[0].X, 0);

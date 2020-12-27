@@ -1,7 +1,8 @@
-﻿namespace MvvmChart.Common.Drawing
+﻿namespace MvvmCharting.Drawing
 {
     /// <summary>
     /// Represents an x- and y-coordinate pair in two-dimensional space.
+    /// This is the .NET Standard version of WPF/UWP Point type.
     /// </summary>
     public struct PointNS 
     {

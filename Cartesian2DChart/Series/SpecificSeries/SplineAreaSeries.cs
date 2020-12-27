@@ -1,4 +1,4 @@
-﻿namespace MvvmCharting
+﻿namespace MvvmCharting.WpfFX
 {
     /// <summary>
     /// A handy class to draw a closed spline path.

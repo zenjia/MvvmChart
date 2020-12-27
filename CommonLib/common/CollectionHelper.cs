@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace MvvmChart.Common
+namespace MvvmCharting.Common
 {
     public static class CollectionHelper
     {

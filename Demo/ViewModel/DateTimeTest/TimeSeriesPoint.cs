@@ -1,5 +1,5 @@
 ﻿using System;
-using MvvmChart.Common;
+using MvvmCharting.Common;
 using MvvmCharting;
 
 namespace Demo

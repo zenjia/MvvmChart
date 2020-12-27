@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
-using MvvmChart.Common;
+using MvvmCharting.Common;
 using MvvmCharting;
 
 namespace Demo

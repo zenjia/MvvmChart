@@ -1,4 +1,4 @@
-﻿namespace MvvmChart.Common
+﻿namespace MvvmCharting.Common
 {
 
     public struct Range

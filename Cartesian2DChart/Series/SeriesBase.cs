@@ -5,10 +5,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using MvvmChart.Common;
-using MvvmChart.Common.Drawing;
+using MvvmCharting.Common;
+using MvvmCharting.Drawing;
+using MvvmCharting.Series;
 
-namespace MvvmCharting
+namespace MvvmCharting.WpfFX
 {
     /// <summary>
     /// The base class for all series. It implements <see cref="ISeries"/> so it

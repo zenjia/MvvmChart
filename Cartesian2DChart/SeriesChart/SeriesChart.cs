@@ -8,13 +8,13 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Shapes;
-using Cartesian2DChart.Axis;
-using MvvmChart.Common;
-using MvvmChart.Common.Axis;
-using MvvmChart.Common.Drawing;
+using MvvmCharting.Common;
 using MvvmCharting.Axis;
+using MvvmCharting.Drawing;
+using MvvmCharting.GridLine;
+using MvvmCharting.Series;
 
-namespace MvvmCharting
+namespace MvvmCharting.WpfFX
 {
     /// <summary>
     /// A Cartesian 2D Chart, which can displays a list of series(with item points).
@@ -90,7 +90,7 @@ namespace MvvmCharting
             Range plotingDataRange;
             switch (orientation)
             {
-                case AxisType.XAxis:
+                case AxisType.X:
 
                     length = this.PART_PlotitngCanvas.ActualWidth;
                     magrin = new PointNS(this.Margin.Left, this.Margin.Right);
@@ -100,7 +100,7 @@ namespace MvvmCharting
                     break;
 
 
-                case AxisType.YAxis:
+                case AxisType.Y:
                     length = this.PART_PlotitngCanvas.ActualHeight;
                     magrin = new PointNS(this.Margin.Top, this.Margin.Bottom);
                     pading = new PointNS(this.Padding.Top, this.Padding.Bottom);
@@ -131,10 +131,10 @@ namespace MvvmCharting
             var args = GetCanvasSettingChangedEventArgs(orientation);
             switch (orientation)
             {
-                case AxisType.XAxis:
+                case AxisType.X:
                     this.PlottingHorizontalSetting = args;
                     break;
-                case AxisType.YAxis:
+                case AxisType.Y:
                     this.PlottingVerticalSetting = args;
                     break;
                 default:
@@ -247,12 +247,12 @@ namespace MvvmCharting
 
             if (e.WidthChanged)
             {
-                DetectCanvasSettingChanged(AxisType.XAxis);
+                DetectCanvasSettingChanged(AxisType.X);
             }
 
             if (e.HeightChanged)
             {
-                DetectCanvasSettingChanged(AxisType.YAxis);
+                DetectCanvasSettingChanged(AxisType.Y);
             }
         }
 
@@ -261,18 +261,18 @@ namespace MvvmCharting
             base.OnPropertyChanged(e);
             if (e.Property == PaddingProperty)
             {
-                DetectCanvasSettingChanged(AxisType.XAxis);
-                DetectCanvasSettingChanged(AxisType.YAxis);
+                DetectCanvasSettingChanged(AxisType.X);
+                DetectCanvasSettingChanged(AxisType.Y);
             }
             else if (e.Property == MarginProperty)
             {
-                DetectCanvasSettingChanged(AxisType.XAxis);
-                DetectCanvasSettingChanged(AxisType.YAxis);
+                DetectCanvasSettingChanged(AxisType.X);
+                DetectCanvasSettingChanged(AxisType.Y);
             }
             else if (e.Property == BorderThicknessProperty)
             {
-                DetectCanvasSettingChanged(AxisType.XAxis);
-                DetectCanvasSettingChanged(AxisType.YAxis);
+                DetectCanvasSettingChanged(AxisType.X);
+                DetectCanvasSettingChanged(AxisType.Y);
             }
         }
         #endregion
@@ -520,7 +520,7 @@ namespace MvvmCharting
                 {
                     this._plotAreaXDataRange = value;
                     this.PlotingXRangeChanged?.Invoke(value);
-                    DetectCanvasSettingChanged(AxisType.XAxis);
+                    DetectCanvasSettingChanged(AxisType.X);
 
                     OnPlotingXDataRangeChanged();
                 }
@@ -539,7 +539,7 @@ namespace MvvmCharting
                     this.PlotingYRangeChanged?.Invoke(value);
 
 
-                    DetectCanvasSettingChanged(AxisType.YAxis);
+                    DetectCanvasSettingChanged(AxisType.Y);
                     OnPlotingYDataRangeChanged();
                 }
             }
@@ -614,20 +614,6 @@ namespace MvvmCharting
                 throw new MvvmChartException("The root element in the SeriesDataTemplate should implement ISeries!");
             }
 
-            //var item = sr.DataContext;
-
-            ////If the ItemTemplate or ItemTemplateSelector of an ItemsControl is replaced, then its
-            ////ItemContainer will re-apply its Template(i.e. ItemTemplate), which will regenerate
-            ////the TemplateChild of its ItemContainer. We should check this and remove the old.
-            //if (this._seriesDictionary.ContainsKey(item))
-            //{
-            //    var old = this._seriesDictionary[item];
-            //    old.XRangeChanged -= Sr_XRangeChanged;
-            //    old.YRangeChanged -= Sr_YRangeChanged;
-            //    this._seriesDictionary.Remove(item);
-            //}
-
-            //this._seriesDictionary.Add(item, sr);
 
             sr.XRangeChanged += Sr_XRangeChanged;
             sr.YRangeChanged += Sr_YRangeChanged;
@@ -665,25 +651,25 @@ namespace MvvmCharting
             }
             this.PART_GridLineHolder.Content = this.GridLineControl;
 
-            this.GridLineControl?.OnAxisItemCoordinateChanged(AxisType.YAxis, this.YAxis?.GetAxisItemCoordinates());
-            this.GridLineControl?.OnAxisItemCoordinateChanged(AxisType.XAxis, this.XAxis?.GetAxisItemCoordinates());
+            this.GridLineControl?.OnAxisItemCoordinateChanged(AxisType.Y, this.YAxis?.GetAxisItemCoordinates());
+            this.GridLineControl?.OnAxisItemCoordinateChanged(AxisType.X, this.XAxis?.GetAxisItemCoordinates());
         }
 
 
         #region Axises
-        public IAxis XAxis
+        public IAxisNS XAxis
         {
-            get { return (IAxis)GetValue(XAxisProperty); }
+            get { return (IAxisNS)GetValue(XAxisProperty); }
             set { SetValue(XAxisProperty, value); }
         }
         public static readonly DependencyProperty XAxisProperty =
-            DependencyProperty.Register("XAxis", typeof(IAxis), typeof(SeriesChart), new PropertyMetadata(null, OnXAxisPropertyChanged));
+            DependencyProperty.Register("XAxis", typeof(IAxisNS), typeof(SeriesChart), new PropertyMetadata(null, OnXAxisPropertyChanged));
 
         private static void OnXAxisPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((SeriesChart)d).OnXAxisPropertyChanged((IAxis)e.OldValue, (IAxis)e.NewValue);
+            ((SeriesChart)d).OnXAxisPropertyChanged((IAxisNS)e.OldValue, (IAxisNS)e.NewValue);
         }
-        private void OnXAxisPropertyChanged(IAxis oldValue, IAxis newValue)
+        private void OnXAxisPropertyChanged(IAxisNS oldValue, IAxisNS newValue)
         {
             if (this.PART_Root == null)
             {
@@ -710,24 +696,24 @@ namespace MvvmCharting
  
                 this.PART_Root.Children.Add(newValue as UIElement);
                 newValue.Owner = this;
-                newValue.Orientation = AxisType.XAxis;
+                newValue.Orientation = AxisType.X;
                 newValue.AxisPlacementChanged += OnAxisPlacementChanged;
                 OnAxisPlacementChanged(newValue);
             }
         }
 
-        public IAxis YAxis
+        public IAxisNS YAxis
         {
-            get { return (IAxis)GetValue(YAxisProperty); }
+            get { return (IAxisNS)GetValue(YAxisProperty); }
             set { SetValue(YAxisProperty, value); }
         }
         public static readonly DependencyProperty YAxisProperty =
-            DependencyProperty.Register("YAxis", typeof(IAxis), typeof(SeriesChart), new PropertyMetadata(null, OnYAxisPropertyChanged));
+            DependencyProperty.Register("YAxis", typeof(IAxisNS), typeof(SeriesChart), new PropertyMetadata(null, OnYAxisPropertyChanged));
         private static void OnYAxisPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((SeriesChart)d).OnYAxisPropertyChanged((IAxis)e.OldValue, (IAxis)e.NewValue);
+            ((SeriesChart)d).OnYAxisPropertyChanged((IAxisNS)e.OldValue, (IAxisNS)e.NewValue);
         }
-        private void OnYAxisPropertyChanged(IAxis oldValue, IAxis newValue)
+        private void OnYAxisPropertyChanged(IAxisNS oldValue, IAxisNS newValue)
         {
             if (this.PART_Root == null)
             {
@@ -755,18 +741,18 @@ namespace MvvmCharting
  
                 this.PART_Root.Children.Add(newValue as UIElement);
                 newValue.Owner = this;
-                newValue.Orientation = AxisType.YAxis;
+                newValue.Orientation = AxisType.Y;
                 newValue.AxisPlacementChanged += OnAxisPlacementChanged;
                 OnAxisPlacementChanged(newValue);
             }
         }
 
-        private void OnAxisPlacementChanged(IAxis obj)
+        private void OnAxisPlacementChanged(IAxisNS obj)
         {
             var axis = obj as UIElement;
             switch (obj.Orientation)
             {
-                case AxisType.XAxis:
+                case AxisType.X:
                     Grid.SetColumn(axis, 1);
                     switch (obj.Placement)
                     {
@@ -780,7 +766,7 @@ namespace MvvmCharting
                             throw new NotSupportedException($"XAxis does not support '{obj.Placement}' placement!");
                     }
                     break;
-                case AxisType.YAxis:
+                case AxisType.Y:
                     Grid.SetRow(axis, 1);
 
                     switch (obj.Placement)

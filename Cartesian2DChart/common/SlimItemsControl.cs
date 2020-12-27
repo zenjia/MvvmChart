@@ -8,9 +8,9 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using MvvmChart.Common;
+using MvvmCharting.Common;
 
-namespace MvvmCharting
+namespace MvvmCharting.WpfFX
 {
 
     /// <summary>

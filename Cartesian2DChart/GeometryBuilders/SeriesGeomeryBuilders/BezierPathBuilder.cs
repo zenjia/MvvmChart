@@ -1,11 +1,12 @@
-﻿using MvvmChart.Common.Drawing;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using MvvmCharting.Drawing;
+using MvvmCharting.Series;
 
-namespace MvvmCharting
+namespace MvvmCharting.WpfFX
 {
     /// <summary>
     /// Source: http://csharphelper.com/blog/2019/04/draw-a-smooth-curve-in-wpf-and-c/
@@ -128,7 +129,7 @@ namespace MvvmCharting
         public double Tension { get; set; } = 0.4;
 
         // Make a Bezier curve connecting these points.
-        public Geometry GetGeometry(PointNS[] points)
+        public object GetGeometry(PointNS[] points)
         {
             if (points.Length < 2)
             {

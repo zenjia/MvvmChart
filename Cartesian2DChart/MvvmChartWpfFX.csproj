@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{28C40709-2E83-4A1F-BE8A-EBA5AB886012}</ProjectGuid>
     <OutputType>library</OutputType>
-    <RootNamespace>MvvmCharting</RootNamespace>
-    <AssemblyName>Cartesian2DChart</AssemblyName>
+    <RootNamespace>MvvmCharting.WpfFX</RootNamespace>
+    <AssemblyName>MvvmChartWpfFX</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -69,15 +69,15 @@
   <ItemGroup>
     <Compile Include="Axis\AxisBase.cs" />
     <Compile Include="Axis\AxisItem\AxisItem.cs" />
+    <Compile Include="Axis\CategoryAxis.cs" />
+    <Compile Include="Axis\LinearAxis.cs" />
     <Compile Include="common\PointHelper.cs" />
     <Compile Include="common\SizeHelper.cs" />
     <Compile Include="common\SlimItemsControl.cs" />
     <Compile Include="common\VisualTreeHelper2.cs" />
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\CustomGeometryBuilder.cs" />
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\EllipseGeometryBuilder.cs" />
-    <Compile Include="GeometryBuilders\ScatterGeometryBuilders\IScatterGeometryBuilder.cs" />
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\RectangleBuilder.cs" />
-    <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\ISeriesGeometryBuilder.cs" />
     <Compile Include="GridLine\GridLineControl.cs" />
     <Compile Include="Series\Scatter\Scatter2.cs" />
     <Compile Include="SeriesChart\SeriesChart.cs" />

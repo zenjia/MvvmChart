@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows;
-using MvvmChart.Common;
-using MvvmChart.Common.Drawing;
+using MvvmCharting.Common;
+using MvvmCharting.Drawing;
 
-namespace MvvmCharting
+namespace MvvmCharting.WpfFX
 {
     public static class PointHelper
     {
@@ -20,7 +20,6 @@ namespace MvvmCharting
 
         public static Point ToPoint(this PointNS source)
         {
-    
             return new Point(source.X, source.Y);
         }
 
