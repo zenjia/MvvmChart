@@ -147,11 +147,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Cartesian2DChart\MvvmChartWpfFX.csproj">
+    <ProjectReference Include="..\MvvmChartWpfFX\MvvmChartWpfFX.csproj">
       <Project>{28c40709-2e83-4a1f-be8a-eba5ab886012}</Project>
       <Name>MvvmChartWpfFX</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CommonLib\CommonLib.csproj">
+    <ProjectReference Include="..\..\..\CommonLib\CommonLib.csproj">
       <Project>{2ac79084-def9-4164-8ace-bcb735047d96}</Project>
       <Name>CommonLib</Name>
     </ProjectReference>
