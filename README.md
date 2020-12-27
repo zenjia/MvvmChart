@@ -1,14 +1,14 @@
 # MvvmChart
-MvvmChart is a simple, MVVM support and highly customizable chart control for WPF(and UWP soon).</br>
+MvvmChart is an extremely lightweighted, MVVM support and highly customizable chart control for WPF(including DotNet.Core, and UWP).</br>
 ![](https://img.shields.io/badge/license-MIT-green)![](https://img.shields.io/badge/support-WPF-brightgreen)
 
 ## Features
-* Extremely **lightweighted**;
+* Extremely **lightweighted**(The whole codebase is only 4000 lines);
 * Perfect **MVVM** support(probably the most important feature of MvvmChart);
-* Currently support 3 line series types(PolylineSeries, StepLineSeres, SplineSeries) and 3 area series types(PolylineAreaSeries, StepLineAreaSeries, SplineAreaSeries), both with or without item points(Scatter);
-* Suppert various Axis placement(for XAxis: Top&Bottom, for YAxis: Left&Right), GridLine, CrossHair...（No support for Legends currrently）
-* Highly customizable: Almost everything can be customized through **Binding** or by dynamically changing **Styles**. And one of the most highlighted features: user can completely change the visual of **Series**(or **Scatters**) just by implementing the **ISeriesGeometryBuilder**(or **IScatterGeometryBuilder** for Scatter) and binding them to PathSeries.**GeometryBuilder**(or Scatter.**GeometryBuilder** for Scatter);
-* Currently suport **WPF**(.NET Core & **UWP** support will be added soon).
+* Suppert DateTime&DateTimeOffset. By default providing 3 line series types(PolylineSeries, StepLineSeres, SplineSeries) and 3 area series types(PolylineAreaSeries, StepLineAreaSeries, SplineAreaSeries), both with or without item points(Scatters);
+* Suppert various axis placement(for x-axis: Top&Bottom, for y-axis: Left&Right), GridLine, CrossHair...（No support for Legends currrently）
+* Highly customizable: Almost everything can be customized through **Binding** or by dynamically changing **Styles** or **Template**. And one of the most highlighted features: user can completely change the shape of **Series**(or **Scatters**) just by implementing the **ISeriesGeometryBuilder**(or **IScatterGeometryBuilder** for Scatter) and binding them to PathSeries.**GeometryBuilder**(or Scatter.**GeometryBuilder** for Scatter);
+* Suport **WPF**(and .NET Core, **UWP** support will be added soon).
 
 ## Screenshots
 ![PolyLineSeries, StepLineSeries& SplineSeries without item point](https://github.com/zenjia/MvvmChart/blob/master/Images/withoutdot2.PNG)
@@ -47,22 +47,14 @@ MvvmChart is a simple, MVVM support and highly customizable chart control for WP
     <mvvmCharting:SeriesChart Background="Bisque"
                               SeriesDataTemplate="{StaticResource SeriesTemplate1}"
                               SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource GlobalDemoDataViewModel}}">
-
-        <mvvmCharting:SeriesChart.XAxis>
-            <axis:XAxis />
-        </mvvmCharting:SeriesChart.XAxis>
-
-        <mvvmCharting:SeriesChart.YAxis>
-            <axis:YAxis />
-        </mvvmCharting:SeriesChart.YAxis>
-
     </mvvmCharting:SeriesChart>
 ```
+</br>
 ### Use with DateTime/DateTimeOffset data:
-MvvmChart supports DateTime/DateTimeOffset type data. When it sees the type of data is the DateTime/DateTimeOffset, it will automatically convert it to double using **DoubleValueConverter.ObjectToDouble()** method. But when displaying the axis label text, it will be the user's responsibility to write a ValueConverter to convert it back and format it to a string. In order to convert the value back correctly, the user can use  **DoubleValueConverter.DoubleToDateTime()**(for DateTime type) or **DoubleValueConverter.DoubleToDateTimeOffset()** (for DateTimeOffset type) method. </br>
+MvvmChart supports DateTime/DateTimeOffset type data. When it sees the type of data is the DateTime/DateTimeOffset, it will automatically convert it to double using **DoubleValueConverter.ObjectToDouble()** method. But when displaying the axis label text, it will be the user's responsibility to write a converter to convert it back and format it to a string. In order to convert the value back correctly, the user can use  **DoubleValueConverter.DoubleToDateTime()**(for DateTime type) or **DoubleValueConverter.DoubleToDateTimeOffset()** (for DateTimeOffset type) method. </br>
 For example:
 ```c#
-    public class DoubleToDateTimeStringConverter : IValueConverter
+    public class DoubleToDateTimeStringConverter : IValueConverterNS
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -88,9 +80,6 @@ and set the converter to the LabelTextConverter property of Axis:
             <axis:XAxis LabelTextConverter="{StaticResource DoubleToDateTimeStringConverter}"/>
         </mvvmCharting:SeriesChart.XAxis>
 
-        <mvvmCharting:SeriesChart.YAxis>
-            <axis:YAxis/>
-        </mvvmCharting:SeriesChart.YAxis>
 
     </mvvmCharting:SeriesChart>
 ```
@@ -137,7 +126,7 @@ And reference the new DataTemplate in SeriesBase.ScatterTemplate property:
         </DataTemplate>
 ```
 
-or
+or</br>
 2.Set the Data propery of Scatter to a new Geometry in xaml directly.
 
 ```xaml
@@ -159,5 +148,6 @@ or
 ```
 
 ![Scatter customization demo screen shot](https://img2020.cnblogs.com/blog/2238515/202012/2238515-20201223140833298-1559993859.png)
-（To see more samples, just download the source code, and run the **demo** app(more samples will be added continually). Enjoy!）
+
+To see more samples, just download the source code, and run the Demo app(more samples will be added continually). Enjoy!
 
