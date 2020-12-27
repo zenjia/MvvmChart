@@ -6,7 +6,7 @@ namespace MvvmCharting.Axis
     {
 
 
-        event Action<PlottingSettings> CanvasHorizontalSettingChanged;
+        event Action<PlottingSettings> HorizontalSettingChanged;
 
 
     }

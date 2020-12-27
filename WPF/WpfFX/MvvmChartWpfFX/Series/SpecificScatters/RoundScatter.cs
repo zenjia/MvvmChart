@@ -1,5 +1,8 @@
 ﻿namespace MvvmCharting.WpfFX
 {
+    /// <summary>
+    /// a specific Scatter type
+    /// </summary>
     public class RoundScatter: Scatter
     {
         public double Radios { get; set; } = 6.0;

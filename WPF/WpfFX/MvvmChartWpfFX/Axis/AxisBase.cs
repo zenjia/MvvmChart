@@ -108,7 +108,7 @@ namespace MvvmCharting.WpfFX.Axis
             set { SetValue(TickCountProperty, value); }
         }
         public static readonly DependencyProperty TickCountProperty =
-            DependencyProperty.Register("TickCount", typeof(int), typeof(AxisBase), new PropertyMetadata(5, OnTickCountPropertyChanged));
+            DependencyProperty.Register("TickCount", typeof(int), typeof(AxisBase), new PropertyMetadata(10, OnTickCountPropertyChanged));
 
         private static void OnTickCountPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -181,6 +181,11 @@ namespace MvvmCharting.WpfFX.Axis
             }
         }
 
+
+
+  
+
+
         private AxisType _orientation;
         public AxisType Orientation
         {
@@ -207,10 +212,10 @@ namespace MvvmCharting.WpfFX.Axis
             switch (this.Orientation)
             {
                 case AxisType.X:
-                    ((IXAxisOwner)this.Owner).CanvasHorizontalSettingChanged += AxisBase_CanvasSettingChanged;
+                    ((IXAxisOwner)this.Owner).HorizontalSettingChanged += AxisBase_CanvasSettingChanged;
                     break;
                 case AxisType.Y:
-                    ((IYAxisOwner)this.Owner).CanvasVerticalSettingChanged += AxisBase_CanvasSettingChanged;
+                    ((IYAxisOwner)this.Owner).VerticalSettingChanged += AxisBase_CanvasSettingChanged;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

@@ -48,8 +48,7 @@
 
         </DataTemplate>
 
-
-        <BooleanToVisibilityConverter x:Key="b2v"/>
+ 
 
 
     </UserControl.Resources>
@@ -64,15 +63,6 @@
         <mvvmCharting:SeriesChart Background="Bisque"
                                   SeriesDataTemplate="{StaticResource SeriesTemplate}"
                                   SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource BigDataViewModel}}">
-
-            <mvvmCharting:SeriesChart.XAxis>
-                <axis:LinearAxis />
-            </mvvmCharting:SeriesChart.XAxis>
-
-            <mvvmCharting:SeriesChart.YAxis>
-                <axis:LinearAxis />
-            </mvvmCharting:SeriesChart.YAxis>
-
         </mvvmCharting:SeriesChart>
 
 
@@ -84,7 +74,9 @@
                       VerticalAlignment="Center"
                       IsChecked="{Binding Path=ShowSeriesPointsGlobal, Mode=TwoWay}"/>
 
-            <GroupBox Margin="20" Padding="9" Visibility="{Binding ShowSeriesPointsGlobal, Converter={StaticResource b2v}}">
+            <GroupBox Margin="20" 
+                      Padding="9" 
+                      Visibility="{Binding ShowSeriesPointsGlobal, Converter={StaticResource t2v}}">
                 <StackPanel>
                     <TextBlock Margin="6" Text="Scatter template: "/>
 
@@ -96,7 +88,6 @@
                 </StackPanel>
             </GroupBox>
 
-
             <GroupBox Margin="20" Padding="9">
                 <StackPanel >
                     <TextBlock Text="Series Data Count:" Margin="6" />
@@ -104,8 +95,7 @@
                     <ComboBox Margin="6"
                               HorizontalAlignment="Left"
                               ItemsSource="{Binding AvailableSizes}"
-                              SelectedItem="{Binding SelectedDataSize, Mode=TwoWay}"
-                    />
+                              SelectedItem="{Binding SelectedDataSize, Mode=TwoWay}"/>
                 </StackPanel>
 
             </GroupBox>

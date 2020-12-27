@@ -17,12 +17,14 @@
         </Setter>
     </Style>
 
-    <local:EllipseGeometryBuilder x:Key="EllipseGeometryBuilder" RadiusX="6" RadiusY="6"/>
+    <local:EllipseGeometryBuilder x:Key="DefaultEllipseGeometryBuilder" 
+                                  RadiusX="6" 
+                                  RadiusY="6"/>
 
     <DataTemplate x:Key="DefaultScatterTemplate">
         <local:Scatter Fill="RoyalBlue" 
                               x:Name="Scatter"
-                              GeometryBuilder="{StaticResource EllipseGeometryBuilder}"
+                              GeometryBuilder="{StaticResource DefaultEllipseGeometryBuilder}"
                               Opacity="0.6">
             <!--
             <local:Scatter.Style>
@@ -53,7 +55,7 @@
     </DataTemplate>
 
 
-    <BooleanToVisibilityConverter x:Key="b2v"/>
+    <BooleanToVisibilityConverter x:Key="t2v"/>
 
     <local:BezierGeometryBuilder x:Key="BezierGeometryBuilder"/>
 
@@ -160,7 +162,7 @@
 
 
     <DataTemplate x:Key="DefualtAxisItemDataTemplate" DataType="axis1:AxisItemDrawingParam">
-        <axis:AxisItem/>
+        <axis:AxisItem FontWeight="Bold"/>
     </DataTemplate>
 
     <Style TargetType="axis:AxisBase">
@@ -192,6 +194,7 @@
     <axis:LinearAxis x:Key="LinearXAxis" 
                      x:Shared="False"
                      Orientation="X"
+                     TickCount="7"
                      Placement="Bottom">
 
     </axis:LinearAxis>
@@ -199,6 +202,7 @@
     <axis:LinearAxis x:Key="LinearYAxis" 
                      x:Shared="False"
                      Orientation="Y" 
+                     TickCount="10"
                      Placement="Left">
 
     </axis:LinearAxis>
@@ -261,7 +265,7 @@
         <Setter Property="GridLineControl" Value="{StaticResource DefaultGridLineControl}"/>
         <Setter Property="HorizontalCrossHairLineStyle" Value="{StaticResource DefaultHorizontalCrossHairLineStyle}"/>
         <Setter Property="VerticalCrossHairLineStyle" Value="{StaticResource DefaultVerticalCrossHairLineStyle}"/>
-        <Setter Property="Background" Value="Chartreuse"/>
+        <Setter Property="Background" Value="Bisque"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:SeriesChart">
@@ -279,19 +283,20 @@
 
                         <Border Grid.Row="1"
                                 Grid.Column="1"
-                                RenderTransformOrigin="0.5, 0.5"
                                 Padding="{TemplateBinding Padding}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 Background="{TemplateBinding Background}">
-                            <Border.RenderTransform>
-                                <ScaleTransform ScaleY="-1" />
-                            </Border.RenderTransform>
 
                             <Grid x:Name="PART_PlottingCanvas" >
                                 <ContentControl x:Name="PART_GridLineHolder"/>
 
-                                <local:SlimItemsControl x:Name="PART_SeriesItemsControl" />
+                                <local:SlimItemsControl x:Name="PART_SeriesItemsControl"  
+                                                        RenderTransformOrigin="0.5, 0.5">
+                                    <local:SlimItemsControl.RenderTransform>
+                                        <ScaleTransform ScaleY="-1" />
+                                    </local:SlimItemsControl.RenderTransform>
+                                </local:SlimItemsControl>
 
                                 <Line x:Name="PART_HorizontalCrossHair" />
                                 <Line x:Name="PART_VerticalCrossHair"/>

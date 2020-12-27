@@ -22,10 +22,14 @@ namespace MvvmCharting.WpfFX
 
         private static readonly string sPART_Path = "PART_Path";
         private static readonly string sPART_ScatterItemsControl = "PART_DataPointItemsControl";
+
+        public event Action<Range> XRangeChanged;
+        public event Action<Range> YRangeChanged;
+
         private SlimItemsControl PART_ScatterItemsControl;
         protected Path PART_Path { get; private set; }
 
-        public SeriesBase()
+        protected SeriesBase()
         {
             this.HorizontalAlignment = HorizontalAlignment.Stretch;
         }
@@ -55,13 +59,8 @@ namespace MvvmCharting.WpfFX
             if (this.PART_ScatterItemsControl != null)
             {
                 this.PART_ScatterItemsControl.ElementGenerated += ScatterItemsControlScatterGenerated;
-
-
                 this.PART_ScatterItemsControl.Visibility = this.IsScatterVisible ? Visibility.Visible : Visibility.Collapsed;
-
-
                 this.PART_ScatterItemsControl.ItemsSource = this.ItemsSource;
-
                 this.PART_ScatterItemsControl.ItemTemplateSelector = this.ScatterTemplateSelector;
                 this.PART_ScatterItemsControl.ItemTemplate = this.ScatterTemplate;
 
@@ -81,9 +80,28 @@ namespace MvvmCharting.WpfFX
         }
         #endregion
 
+        private void ScatterItemsControlScatterGenerated(object sender, DependencyObject root)
+        {
+            var scatter = (IScatter)root;
+            if (scatter == null)
+            {
+                throw new MvvmChartException("The root element in the ScatterTemplate must implement IScatter interface.");
+            }
 
-        public event Action<Range> XRangeChanged;
-        public event Action<Range> YRangeChanged;
+            var item = scatter.DataContext;
+
+
+            if (!this.xPixelPerUnit.IsNaN() && !this.yPixelPerUnit.IsNaN())
+            {
+                scatter.Coordinate = GetPlotCoordinateForItem(item);
+
+            }
+
+
+
+
+        }
+
 
         #region IndependentValueProperty & DependentValueProperty properties
         public string IndependentValueProperty
@@ -219,7 +237,11 @@ namespace MvvmCharting.WpfFX
 
         #endregion
 
-        #region ItemsSource property
+        #region ItemsSource property and handlers
+        /// <summary>
+        /// Represents the data for a series.
+        /// Currently can only handle numerical(& DateTime, DataTimeOffset) data
+        /// </summary>
         public IList ItemsSource
         {
             get { return (IList)GetValue(ItemsSourceProperty); }
@@ -233,8 +255,6 @@ namespace MvvmCharting.WpfFX
             SeriesBase c = (SeriesBase)d;
 
             c.OnItemsSourceChanged((IList)e.OldValue, (IList)e.NewValue);
-
-
 
         }
 
@@ -276,12 +296,6 @@ namespace MvvmCharting.WpfFX
 
         }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void ItemsSource_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Move)
@@ -296,6 +310,64 @@ namespace MvvmCharting.WpfFX
 
             HandleItemsSourceCollectionChange(e.OldItems, e.NewItems);
         }
+
+        private void HandleItemsSourceCollectionChange(IList oldValue, IList newValue)
+        {
+
+
+            UpdateSeriesRange();
+            UpdateScattersCoordinate();
+            UpdatePathData();
+
+
+        }
+
+        private void UpdateSeriesRange()
+        {
+            if (this.ItemsSource == null ||
+                this.ItemsSource.Count == 0)
+            {
+                this.XDataRange = Range.Empty;
+                this.YDataRange = Range.Empty;
+
+                return;
+            }
+
+
+            double minX = double.MaxValue, minY = double.MaxValue,
+                maxX = double.MinValue, maxY = double.MinValue;
+
+            foreach (var item in this.ItemsSource)
+            {
+                var pt = GetPointFromItem(item);
+
+                var x = pt.X;
+                var y = pt.Y;
+
+
+                minX = Math.Min(minX, x);
+                maxX = Math.Max(maxX, x);
+
+                minY = Math.Min(minY, y);
+                maxY = Math.Max(maxY, y);
+
+            }
+
+            this.XDataRange = new Range(minX, maxX);
+            this.YDataRange = new Range(minY, maxY);
+        }
+
+
+        private Point GetPointFromItem(object item)
+        {
+            var t = item.GetType();
+            var x = t.GetProperty(this.IndependentValueProperty).GetValue(item);
+            var y = t.GetProperty(this.DependentValueProperty).GetValue(item);
+
+            var pt = new Point(DoubleValueConverter.ObjectToDouble(x), DoubleValueConverter.ObjectToDouble(y));
+            return pt;
+        }
+
         #endregion
 
         #region ItemTemplate & ItemTemplateSelector properties
@@ -348,6 +420,9 @@ namespace MvvmCharting.WpfFX
 
 
         private Range _yDataRange = Range.Empty;
+        /// <summary>
+        /// The min & max of the dependent value
+        /// </summary>
         public Range YDataRange
         {
             get { return this._yDataRange; }
@@ -365,6 +440,9 @@ namespace MvvmCharting.WpfFX
         }
 
         private Range _xDataRange = Range.Empty;
+        /// <summary>
+        /// The min & max of the dependent value
+        /// </summary>
         public Range XDataRange
         {
             get { return this._xDataRange; }
@@ -381,30 +459,36 @@ namespace MvvmCharting.WpfFX
         }
 
 
-        private Range _plotingXDataRange = Range.Empty;
+        private Range _plottingXDataRange = Range.Empty;
+        /// <summary>
+        /// The final X value range used to plot the chart
+        /// </summary>
         public Range PlottingXDataRange
         {
-            get { return this._plotingXDataRange; }
+            get { return this._plottingXDataRange; }
             set
             {
-                if (this._plotingXDataRange != value)
+                if (this._plottingXDataRange != value)
                 {
-                    this._plotingXDataRange = value;
+                    this._plottingXDataRange = value;
 
                     UpdateScattersCoordinate();
                 }
             }
         }
 
-        private Range _plotingYDataRange = Range.Empty;
+        private Range _plottingYDataRange = Range.Empty;
+        /// <summary>
+        /// The final Y value range used to plot the chart
+        /// </summary>
         public Range PlottingYDataRange
         {
-            get { return this._plotingYDataRange; }
+            get { return this._plottingYDataRange; }
             set
             {
-                if (this._plotingYDataRange != value)
+                if (this._plottingYDataRange != value)
                 {
-                    this._plotingYDataRange = value;
+                    this._plottingYDataRange = value;
 
                     UpdateScattersCoordinate();
 
@@ -413,33 +497,8 @@ namespace MvvmCharting.WpfFX
         }
 
 
-        private void HandleItemsSourceCollectionChange(IList oldValue, IList newValue)
-        {
 
-
-            UpdateSeriesRange();
-            UpdateScattersCoordinate();
-            UpdatePathData();
-
-
-        }
-
-        private PointNS GetPlotCoordinateForItem(object item)
-        {
-            var itemValuePoint = GetPointFromItem(item);
-            var pt = new PointNS((itemValuePoint.X - this.PlottingXDataRange.Min) * this.xPixelPerUnit,
-                (itemValuePoint.Y - this.PlottingYDataRange.Min) * this.yPixelPerUnit);
-
-            return pt;
-        }
-
-        protected PointNS[] _coordinateCache;
-
-        protected PointNS[] GetCoordinates()
-        {
-            return this._coordinateCache;
-        }
-
+        #region Coordinates calculating
         private double xPixelPerUnit;
         private double yPixelPerUnit;
 
@@ -460,6 +519,15 @@ namespace MvvmCharting.WpfFX
             this.xPixelPerUnit = this.RenderSize.Width / this.PlottingXDataRange.Span;
             this.yPixelPerUnit = this.RenderSize.Height / this.PlottingYDataRange.Span;
 
+        }
+
+        private PointNS GetPlotCoordinateForItem(object item)
+        {
+            var itemValuePoint = GetPointFromItem(item);
+            var pt = new PointNS((itemValuePoint.X - this.PlottingXDataRange.Min) * this.xPixelPerUnit,
+                (itemValuePoint.Y - this.PlottingYDataRange.Min) * this.yPixelPerUnit);
+
+            return pt;
         }
 
         private void UpdateScattersCoordinate()
@@ -507,76 +575,24 @@ namespace MvvmCharting.WpfFX
             UpdatePathData();
         }
 
+        private PointNS[] _coordinateCache;
 
+        protected PointNS[] GetCoordinates()
+        {
+            return this._coordinateCache;
+        }
+        #endregion
+
+
+        /// <summary>
+        /// Update the Data of path(line or area). This should be called after
+        /// coordinates is calculated and <see cref="_coordinateCache"/> is updated
+        /// </summary>
         protected abstract void UpdatePathData();
 
-        private Point GetPointFromItem(object item)
-        {
-            var t = item.GetType();
-            var x = t.GetProperty(this.IndependentValueProperty).GetValue(item);
-            var y = t.GetProperty(this.DependentValueProperty).GetValue(item);
-
-            var pt = new Point(DoubleValueConverter.ObjectToDouble(x), DoubleValueConverter.ObjectToDouble(y));
-            return pt;
-
-        }
-
-        private void UpdateSeriesRange()
-        {
-            if (this.ItemsSource == null ||
-                this.ItemsSource.Count == 0)
-            {
-                this.XDataRange = Range.Empty;
-                this.YDataRange = Range.Empty;
-
-                return;
-            }
 
 
-            double minX = double.MaxValue, minY = double.MaxValue,
-                maxX = double.MinValue, maxY = double.MinValue;
-
-            foreach (var item in this.ItemsSource)
-            {
-                var pt = GetPointFromItem(item);
-
-                var x = pt.X;
-                var y = pt.Y;
-
-
-                minX = Math.Min(minX, x);
-                maxX = Math.Max(maxX, x);
-
-                minY = Math.Min(minY, y);
-                maxY = Math.Max(maxY, y);
-
-            }
-
-            this.XDataRange = new Range(minX, maxX);
-            this.YDataRange = new Range(minY, maxY);
-        }
-
-        private void ScatterItemsControlScatterGenerated(object sender, DependencyObject root)
-        {
-            var scatter = (IScatter)root;
-            if (scatter == null)
-            {
-                throw new MvvmChartException("The root element in the ScatterTemplate must implement IScatter interface.");
-            }
-
-            var item = scatter.DataContext;
-
-
-            if (!this.xPixelPerUnit.IsNaN() && !this.yPixelPerUnit.IsNaN())
-            {
-                scatter.Coordinate = GetPlotCoordinateForItem(item);
-
-            }
-
-
-
-
-        }
+      
     }
 
 

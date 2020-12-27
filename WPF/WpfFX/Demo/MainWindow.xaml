@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Demo"
         mc:Ignorable="d"
-        Title="Demo" Height="750" Width="900">
+        WindowState="Maximized"
+        Height="800" Width="1000"
+        Title="This a MvvmChart Demo for WPF(.NET Framework)" >
 
 
 

@@ -8,6 +8,7 @@ namespace Demo
 {
     public class DemoDataViewModel : BindableBase
     {
+
         public ObservableCollection<SomePointList> ItemsSourceList { get; }
 
         private bool _showSeriesLine = true;

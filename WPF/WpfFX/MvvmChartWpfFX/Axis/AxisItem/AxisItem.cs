@@ -10,7 +10,7 @@ using MvvmCharting.Common;
 namespace MvvmCharting.WpfFX.Axis
 {
     /// <summary>
-    /// The item of an Axis indicates the coordinate, typically including a label and a tick.
+    /// Represents an item of an axis, typically including a label and a tick.
     /// </summary>
     [TemplatePart(Name = "PART_Tick", Type = typeof(FrameworkElement))]
     [TemplatePart(Name = "PART_Label", Type = typeof(TextBlock))]

@@ -17,6 +17,31 @@ namespace MvvmCharting.WpfFX
     [ContentProperty(nameof(Data))]
     public class Scatter : Shape, IScatter
     {
+        #region overrides
+        protected override Geometry DefiningGeometry
+        {
+            get
+            {
+                return this.Data ?? Geometry.Empty;
+            }
+        }
+
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            base.OnRenderSizeChanged(sizeInfo);
+            UpdateAdjustedCoordinate();
+        }
+        #endregion
+
+        public Scatter()
+        {
+
+            this.HorizontalAlignment = HorizontalAlignment.Left;
+            this.VerticalAlignment = VerticalAlignment.Top;
+
+            UpdateScatterGeometry();
+        }
+
 
         /// <summary>
         /// Gets or sets a <see cref="T:System.Windows.Media.Geometry" /> that specifies the shape to be drawn.
@@ -37,16 +62,7 @@ namespace MvvmCharting.WpfFX
             Path.DataProperty.AddOwner(typeof(Scatter), new FrameworkPropertyMetadata(null,
                 FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
 
-        protected override Geometry DefiningGeometry
-        {
-            get
-            {
-                
-                return this.Data ?? Geometry.Empty;
-            }
-        }
 
-        
 
         public IScatterGeometryBuilder GeometryBuilder
         {
@@ -55,8 +71,6 @@ namespace MvvmCharting.WpfFX
         }
         public static readonly DependencyProperty GeometryBuilderProperty =
             DependencyProperty.Register("GeometryBuilder", typeof(IScatterGeometryBuilder), typeof(Scatter), new PropertyMetadata(null, OnGeometryBuilderPropertyChanged));
-
-
 
         private static void OnGeometryBuilderPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -77,24 +91,7 @@ namespace MvvmCharting.WpfFX
 
         }
 
-        public Scatter()
-        {
 
-            this.HorizontalAlignment = HorizontalAlignment.Left;
-            this.VerticalAlignment = VerticalAlignment.Top;
-
-            UpdateScatterGeometry();
-        }
-
-
-
-        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
-        {
-            base.OnRenderSizeChanged(sizeInfo);
-            UpdateAdjustedCoordinate();
-        }
-
-        
         public PointNS Coordinate
         {
             get { return (PointNS)GetValue(CoordinateProperty); }
@@ -110,12 +107,17 @@ namespace MvvmCharting.WpfFX
         private void OnCoordinateChanged(PointNS newValue)
         {
             UpdateAdjustedCoordinate();
-
-             
-
         }
 
-
+        /// <summary>
+        /// When the render size of a Scatter is changed, we should
+        /// adjust it coordinates by some offset.
+        /// </summary>
+        /// <returns></returns>
+        public virtual PointNS GetOffsetForSizeChangedOverride()
+        {
+            return new PointNS(-ActualWidth / 2, -ActualHeight / 2);
+        }
 
         private void UpdateAdjustedCoordinate()
         {
@@ -158,11 +160,7 @@ namespace MvvmCharting.WpfFX
             }
         }
 
-
-        public virtual PointNS GetOffsetForSizeChangedOverride()
-        {
-            return new PointNS(-ActualWidth / 2, -ActualHeight / 2);
-        }
+       
     }
 
 

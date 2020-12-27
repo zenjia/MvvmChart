@@ -8,6 +8,10 @@ using MvvmCharting.Series;
 namespace MvvmCharting.WpfFX
 {
    
+    /// <summary>
+    /// Another Scatter type, which inherited from Control, so it's template can be changed.
+    /// This will be more easy to style, but it has some performance loss compare to <see cref="Scatter"/> 
+    /// </summary>
     public class Scatter2 : Control, IScatter
     {
         static Scatter2()

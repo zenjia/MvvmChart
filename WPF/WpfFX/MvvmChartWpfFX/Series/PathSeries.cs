@@ -70,12 +70,9 @@ namespace MvvmCharting.WpfFX
                 return;
             }
 
- 
-            
             var coordinates = this.GetCoordinates();  
           
             this.PathData = (Geometry) this.GeometryBuilder.GetGeometry(coordinates);
-
         }
     }
 }
