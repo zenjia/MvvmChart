@@ -10,19 +10,19 @@
     <UserControl.Resources>
         <local:DemoDataViewModel x:Key="DemoDataViewModel"/>
         <mvvmCharting:EllipseGeometryBuilder x:Key="EllipseGeometryBuilder" RadiusX="6" RadiusY="6"/>
-        <DataTemplate x:Key="ScatterDataTemplate">
-            <mvvmCharting:Scatter Fill="RoyalBlue" 
+        <DataTemplate x:Key="Scatter2DataTemplate">
+            <mvvmCharting:Scatter2 Fill="OrangeRed" 
                                   GeometryBuilder="{StaticResource EllipseGeometryBuilder}"
                                   Opacity="0.6">
 
-            </mvvmCharting:Scatter>
+            </mvvmCharting:Scatter2>
         </DataTemplate>
 
-        <DataTemplate x:Key="Scatter2DataTemplate">
-            <mvvmCharting:Scatter2 >
+        <DataTemplate x:Key="ScatterDataTemplate">
+            <mvvmCharting:Scatter >
 
 
-            </mvvmCharting:Scatter2>
+            </mvvmCharting:Scatter>
         </DataTemplate>
 
         <local:IndexToScatterTemplateConverter x:Key="IndexToScatterTemplateConverter"

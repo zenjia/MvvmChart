@@ -1,22 +1,28 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using MvvmCharting.Drawing;
 using MvvmCharting.Series;
+using Path = System.Windows.Shapes.Path;
 
 namespace MvvmCharting.WpfFX
 {
-   
     /// <summary>
-    /// Another Scatter type, which inherited from Control, so it's template can be changed.
-    /// This will be more easy to style, but it has some performance loss compare to <see cref="Scatter"/> 
+    /// Yet another Scatter type, which inherited from Shape directly.
+    /// It is effectively just a path, so it is lightweight and has better performance
+    /// compare to <see cref="Scatter"/> 
     /// </summary>
-    public class Scatter2 : Control, IScatter
+    [ContentProperty(nameof(Data))]
+    public class Scatter2 : Shape, IScatter
     {
-        static Scatter2()
+        #region overrides
+        protected override Geometry DefiningGeometry
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(Scatter2), new FrameworkPropertyMetadata(typeof(Scatter2)));
+            get
+            {
+                return this.Data ?? Geometry.Empty;
+            }
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
@@ -24,38 +30,65 @@ namespace MvvmCharting.WpfFX
             base.OnRenderSizeChanged(sizeInfo);
             UpdateAdjustedCoordinate();
         }
+        #endregion
 
         public Scatter2()
         {
+
             this.HorizontalAlignment = HorizontalAlignment.Left;
             this.VerticalAlignment = VerticalAlignment.Top;
+
+            UpdateScatterGeometry();
         }
 
 
-        public Brush Stroke
+        /// <summary>
+        /// Gets or sets a <see cref="T:System.Windows.Media.Geometry" /> that specifies the shape to be drawn.
+        /// </summary>
+        /// <returns>A description of the shape to be drawn. </returns>
+        public Geometry Data
         {
-            get { return (Brush)GetValue(StrokeProperty); }
-            set { SetValue(StrokeProperty, value); }
+            get
+            {
+                return (Geometry)this.GetValue(Scatter2.DataProperty);
+            }
+            set
+            {
+                this.SetValue(Scatter2.DataProperty, (object)value);
+            }
         }
-        public static readonly DependencyProperty StrokeProperty =
-            Shape.StrokeProperty.AddOwner(typeof(Scatter2));
+        public static readonly DependencyProperty DataProperty =
+            Path.DataProperty.AddOwner(typeof(Scatter2), new FrameworkPropertyMetadata(null,
+                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
 
-        public double StrokeThickness
+
+
+        public IScatterGeometryBuilder GeometryBuilder
         {
-            get { return (double)GetValue(StrokeThicknessProperty); }
-            set { SetValue(StrokeThicknessProperty, value); }
+            get { return (IScatterGeometryBuilder)GetValue(GeometryBuilderProperty); }
+            set { SetValue(GeometryBuilderProperty, value); }
         }
-        public static readonly DependencyProperty StrokeThicknessProperty =
-            Shape.StrokeThicknessProperty.AddOwner(typeof(Scatter2));
+        public static readonly DependencyProperty GeometryBuilderProperty =
+            DependencyProperty.Register("GeometryBuilder", typeof(IScatterGeometryBuilder), typeof(Scatter2), new PropertyMetadata(null, OnGeometryBuilderPropertyChanged));
 
-        public Brush Fill
+        private static void OnGeometryBuilderPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            get { return (Brush)GetValue(FillProperty); }
-            set { SetValue(FillProperty, value); }
+            ((Scatter2)d).UpdateScatterGeometry();
         }
-        public static readonly DependencyProperty FillProperty =
-            Shape.FillProperty.AddOwner(typeof(Scatter2));
+         
+        private void UpdateScatterGeometry()
+        {
+            if (this.GeometryBuilder == null)
+            {
+                return;
+            }
 
+
+            this.Data = (Geometry) this.GeometryBuilder?.GetGeometry();
+
+
+
+        }
 
 
         public PointNS Coordinate
@@ -73,9 +106,17 @@ namespace MvvmCharting.WpfFX
         private void OnCoordinateChanged(PointNS newValue)
         {
             UpdateAdjustedCoordinate();
-
         }
 
+        /// <summary>
+        /// When the render size of a Scatter is changed, we should
+        /// adjust it coordinates by some offset.
+        /// </summary>
+        /// <returns></returns>
+        public virtual PointNS GetOffsetForSizeChangedOverride()
+        {
+            return new PointNS(-ActualWidth / 2, -ActualHeight / 2);
+        }
 
         private void UpdateAdjustedCoordinate()
         {
@@ -94,7 +135,7 @@ namespace MvvmCharting.WpfFX
             var x = this.Coordinate.X + offset.X;
             var y = this.Coordinate.Y + offset.Y;
 
-
+          
             //if (!double.IsInfinity(x))
             //{
             //    Canvas.SetLeft(this, x);
@@ -118,11 +159,10 @@ namespace MvvmCharting.WpfFX
             }
         }
 
-
-        public PointNS GetOffsetForSizeChangedOverride()
-        {
-            //
-            return new PointNS(/*-ActualWidth / 2, -ActualHeight / 2*/);
-        }
+       
     }
+
+
+
+
 }

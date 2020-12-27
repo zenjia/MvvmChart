@@ -18,7 +18,7 @@ using MvvmCharting.Series;
 namespace MvvmCharting.WpfFX
 {
     /// <summary>
-    /// A Cartesian 2D Chart, which can displays a list of series(with <see cref="Scatter"/>s).
+    /// A Cartesian 2D Chart, which can displays a list of series(with <see cref="Scatter2"/>s).
     /// This is the host for almost everything: series plotting area,
     /// x axis & y axis, grid lines, cross hair...
     /// </summary>

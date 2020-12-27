@@ -24,7 +24,7 @@
                                              >
                 <mvvmCharting:PolyLineSeries.ScatterTemplate>
                     <DataTemplate>
-                        <mvvmCharting:RoundScatter  Fill="Red"/>
+                        <mvvmCharting:Scatter  Fill="Red"/>
                     </DataTemplate>
                 </mvvmCharting:PolyLineSeries.ScatterTemplate>
             </mvvmCharting:PolyLineSeries>

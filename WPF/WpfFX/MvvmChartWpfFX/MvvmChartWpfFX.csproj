@@ -79,9 +79,9 @@
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\EllipseGeometryBuilder.cs" />
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\RectangleBuilder.cs" />
     <Compile Include="GridLine\GridLineControl.cs" />
-    <Compile Include="Series\Scatter\Scatter2.cs" />
-    <Compile Include="SeriesChart\SeriesChart.cs" />
     <Compile Include="Series\Scatter\Scatter.cs" />
+    <Compile Include="SeriesChart\SeriesChart.cs" />
+    <Compile Include="Series\Scatter\Scatter2.cs" />
     <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\BezierAreaGeometryBuilder.cs" />
     <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\BezierPathBuilder.cs" />
     <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\PolylineAreaGeometryBuilder.cs" />
@@ -89,7 +89,7 @@
     <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\StepLineAreaGeometryBuilder.cs" />
     <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\StepLineGeometryBuilder.cs" />
     <Compile Include="Series\PathSeries.cs" />
-    <Compile Include="Series\SpecificScatters\RoundScatter.cs" />
+    <Compile Include="Series\SpecificScatters\RoundScatter2.cs" />
     <Compile Include="Series\SpecificSeries\PolyLineAreaSeries.cs" />
     <Compile Include="Series\SpecificSeries\PolyLineSeries.cs" />
     <Compile Include="Series\SpecificSeries\SplineAreaSeries.cs" />

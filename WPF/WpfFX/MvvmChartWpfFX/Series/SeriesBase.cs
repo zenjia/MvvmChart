@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using MvvmCharting.Common;
@@ -43,9 +45,7 @@ namespace MvvmCharting.WpfFX
             if (this.PART_Path != null)
             {
                 this.PART_Path.Visibility = this.IsLineOrAreaVisible ? Visibility.Visible : Visibility.Collapsed;
-                this.PART_Path.Stroke = this.Stroke;
-                this.PART_Path.StrokeThickness = this.StrokeThickness;
-                this.PART_Path.Fill = this.Fill;
+ 
             }
 
 
@@ -175,20 +175,9 @@ namespace MvvmCharting.WpfFX
             set { SetValue(StrokeProperty, value); }
         }
         public static readonly DependencyProperty StrokeProperty =
-            Shape.StrokeProperty.AddOwner(typeof(SeriesBase), new PropertyMetadata(OnStrokePropertyChanged));
+            Shape.StrokeProperty.AddOwner(typeof(SeriesBase));
 
-        private static void OnStrokePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((SeriesBase)d).OnStrokeChanged();
-        }
 
-        private void OnStrokeChanged()
-        {
-            if (this.PART_Path != null)
-            {
-                this.PART_Path.Stroke = this.Stroke;
-            }
-        }
 
         public double StrokeThickness
         {
@@ -197,23 +186,9 @@ namespace MvvmCharting.WpfFX
         }
 
         public static readonly DependencyProperty StrokeThicknessProperty =
-            Shape.StrokeThicknessProperty.AddOwner(typeof(SeriesBase), new PropertyMetadata(1.0, OnStrokeThicknessPropertyChanged));
+            Shape.StrokeThicknessProperty.AddOwner(typeof(SeriesBase), new PropertyMetadata(1.0));
 
-        private static void OnStrokeThicknessPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-
-            ((SeriesBase)d).OnStrokeThicknessChanged();
-        }
-
-        private void OnStrokeThicknessChanged()
-        {
-            if (this.PART_Path != null)
-            {
-                this.PART_Path.StrokeThickness = this.StrokeThickness;
-            }
-
-
-        }
+ 
 
         public Brush Fill
         {
@@ -221,19 +196,9 @@ namespace MvvmCharting.WpfFX
             set { SetValue(FillProperty, value); }
         }
         public static readonly DependencyProperty FillProperty =
-            Shape.FillProperty.AddOwner(typeof(SeriesBase), new PropertyMetadata(OnFillPropertyChanged));
+            Shape.FillProperty.AddOwner(typeof(SeriesBase));
 
-        private static void OnFillPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((SeriesBase)d).OnFillChanged();
-        }
-        private void OnFillChanged()
-        {
-            if (this.PART_Path != null)
-            {
-                this.PART_Path.Fill = this.Fill;
-            }
-        }
+ 
 
         #endregion
 

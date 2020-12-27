@@ -14,20 +14,23 @@
         <local:BigDataViewModel x:Key="BigDataViewModel"/>
 
         <mvvmCharting:EllipseGeometryBuilder x:Key="EllipseGeometryBuilder" RadiusX="6" RadiusY="6"/>
+
         <DataTemplate x:Key="ScatterDataTemplate">
-            <mvvmCharting:Scatter Fill="RoyalBlue" 
-                                  GeometryBuilder="{StaticResource EllipseGeometryBuilder}"
-                                  Opacity="0.6">
+            <mvvmCharting:Scatter >
+
 
             </mvvmCharting:Scatter>
         </DataTemplate>
 
         <DataTemplate x:Key="Scatter2DataTemplate">
-            <mvvmCharting:Scatter2 >
-
+            <mvvmCharting:Scatter2 Fill="RoyalBlue" 
+                                  GeometryBuilder="{StaticResource EllipseGeometryBuilder}"
+                                  Opacity="0.6">
 
             </mvvmCharting:Scatter2>
         </DataTemplate>
+
+
 
         <local:IndexToScatterTemplateConverter x:Key="IndexToScatterTemplateConverter"
                                                ScatterTemplate="{StaticResource ScatterDataTemplate}"

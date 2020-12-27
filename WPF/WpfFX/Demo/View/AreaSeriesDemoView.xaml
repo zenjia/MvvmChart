@@ -21,7 +21,7 @@
                                              ItemsSource="{Binding DataList}">
                 <mvvmCharting:PolyLineAreaSeries.ScatterTemplate>
                     <DataTemplate>
-                        <mvvmCharting:RoundScatter Fill="Red" 
+                        <mvvmCharting:Scatter Fill="Red" 
                                                       Opacity="0.5"/>
                     </DataTemplate>
                 </mvvmCharting:PolyLineAreaSeries.ScatterTemplate>

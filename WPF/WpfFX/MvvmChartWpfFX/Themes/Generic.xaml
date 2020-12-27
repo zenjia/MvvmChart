@@ -22,37 +22,40 @@
                                   RadiusY="6"/>
 
     <DataTemplate x:Key="DefaultScatterTemplate">
-        <local:Scatter Fill="RoyalBlue" 
-                              x:Name="Scatter"
-                              GeometryBuilder="{StaticResource DefaultEllipseGeometryBuilder}"
-                              Opacity="0.6">
-            <!--
-            <local:Scatter.Style>
-                <Style TargetType="local:Scatter">
-                    <Style.Triggers>
+        <local:Scatter Opacity="0.6"/>
+    </DataTemplate>
+
+    <Style TargetType="local:Scatter">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Fill" Value="DarkOrange"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:Scatter">
+                    <Path x:Name="PART_Path" 
+                          RenderTransformOrigin="0.5,0.5"
+                          Fill="{TemplateBinding Fill}">
+                        <Path.Data>
+                            <EllipseGeometry RadiusX="7" RadiusY="7"/>
+                        </Path.Data>
+                        <Path.ToolTip>
+                            <TextBlock Text="{Binding }"/>
+                        </Path.ToolTip>
+                    </Path>
+
+                    <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="LayoutTransform">
+                            <Setter TargetName="PART_Path" Property="RenderTransform">
                                 <Setter.Value>
-                                    <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2" ScaleY="2"/>
+                                    <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                                 </Setter.Value>
                             </Setter>
+                            <Setter TargetName="PART_Path" Property="Fill" Value="{x:Static Brushes.RoyalBlue}"/>
                         </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </local:Scatter.Style>-->
-        </local:Scatter>
-
-        <!--
-        <DataTemplate.Triggers>
-            <Trigger SourceName="Scatter" Property="IsMouseOver" Value="True">
-                <Setter TargetName="Scatter" Property="LayoutTransform">
-                    <Setter.Value>
-                        <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2" ScaleY="2"/>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-        </DataTemplate.Triggers>-->
-    </DataTemplate>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 
     <BooleanToVisibilityConverter x:Key="t2v"/>
@@ -60,15 +63,29 @@
     <local:BezierGeometryBuilder x:Key="BezierGeometryBuilder"/>
 
     <Style TargetType="local:PathSeries">
+        <Setter Property="Stroke" Value="CadetBlue"/>
         <Setter Property="ScatterTemplate" Value="{StaticResource DefaultScatterTemplate}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:PathSeries">
                     <Grid>
-                        <Path x:Name="PART_Path"/>
+                        <Path x:Name="PART_Path" 
+                              Fill="{TemplateBinding Fill}"
+                              Stroke="{TemplateBinding Stroke}" 
+                              StrokeThickness="{TemplateBinding StrokeThickness}">
+                            <Path.ToolTip>
+                                <TextBlock Text="{Binding}"/>
+                            </Path.ToolTip>
+                        </Path>
 
                         <local:SlimItemsControl x:Name="PART_DataPointItemsControl"/>
                     </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger SourceName="PART_Path" Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PART_Path" Property="StrokeThickness" Value="4"/>
+                            <Setter TargetName="PART_Path" Property="Stroke" Value="{x:Static Brushes.YellowGreen}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -76,12 +93,13 @@
 
 
     <Style TargetType="axis:AxisItem">
+        <Setter Property="Background" Value="Transparent"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="axis:AxisItem">
-                    <Grid x:Name="PART_Root" >
+                    <Grid x:Name="PART_Root" RenderTransformOrigin="0.5,0.5">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
@@ -106,6 +124,16 @@
                     </Grid>
 
                     <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PART_Root" Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+                                </Setter.Value>
+                            </Setter>
+
+                            <Setter Property="Foreground" Value="Maroon"/>
+                            <Setter Property="FontWeight"  Value="Bold"/>
+                        </Trigger>
                         <Trigger Property="Placement" Value="Top">
                             <Setter Property="VerticalAlignment" Value="Bottom"/>
 
@@ -251,11 +279,13 @@
 
     <Style x:Key="DefaultHorizontalCrossHairLineStyle" TargetType="Line">
         <Setter Property="Stroke" Value="Maroon"/>
+        <Setter Property="IsHitTestVisible" Value="False"/>
         <Setter Property="StrokeThickness" Value="0.5"/>
     </Style>
 
     <Style x:Key="DefaultVerticalCrossHairLineStyle" TargetType="Line">
         <Setter Property="Stroke" Value="Maroon"/>
+        <Setter Property="IsHitTestVisible" Value="False"/>
         <Setter Property="StrokeThickness" Value="0.5"/>
     </Style>
 
@@ -314,18 +344,5 @@
 
 
 
-    <Style TargetType="local:Scatter2">
-        <Setter Property="Fill" Value="DarkOrange"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:Scatter2">
-                    <Path Fill="{TemplateBinding Fill}">
-                        <Path.Data>
-                            <EllipseGeometry RadiusX="7" RadiusY="7"/>
-                        </Path.Data>
-                    </Path>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+   
 </ResourceDictionary>
