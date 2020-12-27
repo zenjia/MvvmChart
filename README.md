@@ -52,7 +52,8 @@ MvvmChart is an extremely lightweighted, MVVM support and highly customizable ch
 </br>
 ### Use with DateTime/DateTimeOffset data:
 MvvmChart supports DateTime/DateTimeOffset type data. When it sees the type of data is the DateTime/DateTimeOffset, it will automatically convert it to double using **DoubleValueConverter.ObjectToDouble()** method. But when displaying the axis label text, it will be the user's responsibility to write a converter to convert it back and format it to a string. In order to convert the value back correctly, the user can use  **DoubleValueConverter.DoubleToDateTime()**(for DateTime type) or **DoubleValueConverter.DoubleToDateTimeOffset()** (for DateTimeOffset type) method. </br>
-For example:
+For example:</br>
+
 ```c#
     public class DoubleToDateTimeStringConverter : IValueConverterNS
     {
