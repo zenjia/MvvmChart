@@ -15,7 +15,7 @@ namespace MvvmCharting.WpfFX
 {
     /// <summary>
     /// The base class for all series. It implements <see cref="ISeries"/> so it
-    /// can be put at the root of the SeriesTemplate of a <see cref="SeriesChart"/>
+    /// can be put at the root of the SeriesTemplate of a <see cref="Chart"/>
     /// </summary>
     [TemplatePart(Name = "PART_DataPointItemsControl", Type = typeof(SlimItemsControl))]
     [TemplatePart(Name = "PART_Path", Type = typeof(Path))]
@@ -309,20 +309,20 @@ namespace MvvmCharting.WpfFX
         {
 
 
-            UpdateSeriesRange();
+            UpdateValueRange();
             UpdateScattersCoordinate();
             UpdatePathData();
 
 
         }
 
-        private void UpdateSeriesRange()
+        public void UpdateValueRange()
         {
             if (this.ItemsSource == null ||
                 this.ItemsSource.Count == 0)
             {
-                this.XDataRange = Range.Empty;
-                this.YDataRange = Range.Empty;
+                this.XValueRange = Range.Empty;
+                this.YValueRange = Range.Empty;
 
                 return;
             }
@@ -347,8 +347,8 @@ namespace MvvmCharting.WpfFX
 
             }
 
-            this.XDataRange = new Range(minX, maxX);
-            this.YDataRange = new Range(minY, maxY);
+            this.XValueRange = new Range(minX, maxX);
+            this.YValueRange = new Range(minY, maxY);
         }
 
 
@@ -413,39 +413,39 @@ namespace MvvmCharting.WpfFX
 
 
 
-        private Range _yDataRange = Range.Empty;
+        private Range _yValueRange = Range.Empty;
         /// <summary>
         /// The min & max of the dependent value
         /// </summary>
-        public Range YDataRange
+        public Range YValueRange
         {
-            get { return this._yDataRange; }
+            get { return this._yValueRange; }
             private set
             {
-                if (this._yDataRange != value)
+                if (this._yValueRange != value)
                 {
-                    this._yDataRange = value;
+                    this._yValueRange = value;
 
-                    this.YRangeChanged?.Invoke(this.YDataRange);
+                    this.YRangeChanged?.Invoke(this.YValueRange);
 
                 }
 
             }
         }
 
-        private Range _xDataRange = Range.Empty;
+        private Range _xValueRange = Range.Empty;
         /// <summary>
         /// The min & max of the dependent value
         /// </summary>
-        public Range XDataRange
+        public Range XValueRange
         {
-            get { return this._xDataRange; }
+            get { return this._xValueRange; }
             private set
             {
-                if (this._xDataRange != value)
+                if (this._xValueRange != value)
                 {
-                    this._xDataRange = value;
-                    this.XRangeChanged?.Invoke(this.XDataRange);
+                    this._xValueRange = value;
+                    this.XRangeChanged?.Invoke(this.XValueRange);
 
 
                 }

@@ -105,13 +105,13 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <mvvmCharting:SeriesChart Background="Bisque"
+        <mvvmCharting:Chart Background="Bisque"
                               SeriesTemplateSelector="{StaticResource SeriesTemplateSelector}"
                               SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource DemoDataViewModel}}">
 
  
 
-        </mvvmCharting:SeriesChart>
+        </mvvmCharting:Chart>
 
         <GroupBox Header="Options" 
                   Grid.Row="1"

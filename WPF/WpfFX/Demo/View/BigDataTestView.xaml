@@ -63,10 +63,10 @@
 
         </Grid.RowDefinitions>
 
-        <mvvmCharting:SeriesChart Background="Bisque"
-                                  SeriesDataTemplate="{StaticResource SeriesTemplate}"
+        <mvvmCharting:Chart Background="Bisque"
+                                  SeriesTemplate="{StaticResource SeriesTemplate}"
                                   SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource BigDataViewModel}}">
-        </mvvmCharting:SeriesChart>
+        </mvvmCharting:Chart>
 
 
 

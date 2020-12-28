@@ -41,6 +41,7 @@
                                          DependentValueProperty="Y"
                                          Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
                                          StrokeThickness="1.5"
+                                         IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
                                          Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
                                          IsScatterVisible="{Binding ShowSeriesPoints}"
                                          IsLineOrAreaVisible="{Binding ShowSeriesLine}"
@@ -55,6 +56,7 @@
                                          DependentValueProperty="Y"
                                          Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
                                          StrokeThickness="1.5"
+                                         IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
                                          Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
                                          IsScatterVisible="{Binding ShowSeriesPoints}"
                                          IsLineOrAreaVisible="{Binding ShowSeriesLine}"
@@ -68,6 +70,7 @@
                                        DependentValueProperty="Y"
                                        Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
                                        StrokeThickness="1.5"
+                                       IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
                                        Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
                                        IsScatterVisible="{Binding ShowSeriesPoints}"
                                        IsLineOrAreaVisible="{Binding ShowSeriesLine}"
@@ -91,30 +94,32 @@
         </Grid.RowDefinitions>
 
 
-        <mvvmCharting:SeriesChart Background="Bisque"
+        <mvvmCharting:Chart Background="Bisque"
                                   GridLineControlVisibility="{Binding ShowGridLine, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
                                   LegendVisibility="{Binding ShowLegend, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
                                   SeriesTemplateSelector="{StaticResource SeriesTemplateSelector}"
                                   SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource DemoDataViewModel}}">
-            <mvvmCharting:SeriesChart.XAxis>
+            <mvvmCharting:Chart.XAxis>
                 <axis:LinearAxis Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedXPlacement}"/>
-            </mvvmCharting:SeriesChart.XAxis>
-            <mvvmCharting:SeriesChart.YAxis>
+            </mvvmCharting:Chart.XAxis>
+            <mvvmCharting:Chart.YAxis>
                 <axis:LinearAxis Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedYPlacement}"/>
-            </mvvmCharting:SeriesChart.YAxis>
+            </mvvmCharting:Chart.YAxis>
 
-            <mvvmCharting:SeriesChart.LegendItemTemplate>
-                <DataTemplate>
-                    <mvvmCharting:LegendItemControl IndicatorBrush="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"/>
+            <mvvmCharting:Chart.LegendItemTemplate>
+                <DataTemplate DataType="local:SomePointList">
+                    <mvvmCharting:LegendItemControl 
+                        IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
+                        IndicatorBrush="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"/>
                 </DataTemplate>
-            </mvvmCharting:SeriesChart.LegendItemTemplate>
+            </mvvmCharting:Chart.LegendItemTemplate>
 
-            <mvvmCharting:SeriesChart.BackgroundImage>
+            <mvvmCharting:Chart.BackgroundImage>
                 <Image Source="../image/Caribbean1.jpg" 
                        Stretch="Fill" 
                        Visibility="{Binding ShowBackgroundImage, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"/>
-            </mvvmCharting:SeriesChart.BackgroundImage>
-        </mvvmCharting:SeriesChart>
+            </mvvmCharting:Chart.BackgroundImage>
+        </mvvmCharting:Chart>
 
         
         <StackPanel Grid.Row="1" 

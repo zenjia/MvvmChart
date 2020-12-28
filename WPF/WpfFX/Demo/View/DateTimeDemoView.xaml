@@ -30,14 +30,14 @@
 
     </UserControl.Resources>
 
-    <mvvmCharting:SeriesChart SeriesDataTemplate="{StaticResource SeriesTemplate}"
+    <mvvmCharting:Chart SeriesTemplate="{StaticResource SeriesTemplate}"
                               SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource TimeSeriesViewModel}}">
 
-        <mvvmCharting:SeriesChart.XAxis>
+        <mvvmCharting:Chart.XAxis>
             <axis:LinearAxis LabelTextConverter="{StaticResource DoubleToDateTimeStringConverter}"/>
-        </mvvmCharting:SeriesChart.XAxis>
+        </mvvmCharting:Chart.XAxis>
 
  
 
-    </mvvmCharting:SeriesChart>
+    </mvvmCharting:Chart>
 </UserControl>

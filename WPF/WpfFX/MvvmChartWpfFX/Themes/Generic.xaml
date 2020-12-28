@@ -8,10 +8,12 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/SlimItemsControl/SlimItemsControlStyle.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/SeriesChart/SeriesChartStyle.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/Legend/LegendStyle.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/Axis/AxisStyle.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/GridLine/GridLineStyle.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/Series/SeriesStyle.xaml"/>
+
     </ResourceDictionary.MergedDictionaries>
 
     <axis:LinearAxis x:Key="DefaultLinearXAxis" 
@@ -43,23 +45,19 @@
     <local:LegendControl x:Key="DefaultLegendControl" 
                          x:Shared="False"/>
 
-    <DataTemplate x:Key="DefaultLegendItemTemplate">
-        <local:LegendItemControl/>
-    </DataTemplate>
 
-    <Style TargetType="local:SeriesChart">
+    <Style TargetType="local:Chart">
         <Setter Property="XAxis" Value="{StaticResource DefaultLinearXAxis}"/>
         <Setter Property="YAxis" Value="{StaticResource DefaultLinearYAxis}"/>
         <Setter Property="Legend" Value="{StaticResource DefaultLegendControl}"/>
         <Setter Property="GridLineControl" Value="{StaticResource DefaultGridLineControl}"/>
         <Setter Property="LegendItemTemplate" Value="{StaticResource DefaultLegendItemTemplate}"/>
-
         <Setter Property="HorizontalCrossHairLineStyle" Value="{StaticResource DefaultHorizontalCrossHairLineStyle}"/>
         <Setter Property="VerticalCrossHairLineStyle" Value="{StaticResource DefaultVerticalCrossHairLineStyle}"/>
         <Setter Property="Background" Value="Bisque"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:SeriesChart">
+                <ControlTemplate TargetType="local:Chart">
                     <Grid x:Name="PART_Root">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -83,12 +81,15 @@
                                 <ContentControl x:Name="PART_GridLineHolder"
                                                 Visibility="{TemplateBinding GridLineControlVisibility}"/>
 
+                                <local:SeriesChart x:Name="PART_SeriesChart"/>
+
+                                <!--
                                 <local:SlimItemsControl x:Name="PART_SeriesItemsControl"  
                                                         RenderTransformOrigin="0.5, 0.5">
                                     <local:SlimItemsControl.RenderTransform>
                                         <ScaleTransform ScaleY="-1" />
                                     </local:SlimItemsControl.RenderTransform>
-                                </local:SlimItemsControl>
+                                </local:SlimItemsControl>-->
 
                                 <Line x:Name="PART_HorizontalCrossHair" />
                                 <Line x:Name="PART_VerticalCrossHair"/>
@@ -103,6 +104,8 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+
 
 
 

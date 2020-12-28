@@ -22,8 +22,7 @@ namespace Demo
 
     public class DoubleToDateTimeStringConverter : IValueConverterNS
     {
- 
-
+        
         public object ConverterTo(object value, CultureInfo culture)
         {
             var q = (double)value;
@@ -32,7 +31,7 @@ namespace Demo
 
             var t = DoubleValueConverter.DoubleToDateTimeOffset(q);
 
-            return t.ToString("yyyy MMMM dd", new CultureInfo("en-US"));
+            return t.ToString("yyyy MMMM", new CultureInfo("en-US"));
         }
     }
 

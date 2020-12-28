@@ -12,12 +12,14 @@ namespace MvvmCharting.Series
         /// <summary>
         /// This is used to let its host chart see its X value range
         /// </summary>
-        Range XDataRange { get; }
+        Range XValueRange { get; }
 
         /// <summary>
         /// This is used to let its host chart see its Y value range
         /// </summary>
-        Range YDataRange { get; }
+        Range YValueRange { get; }
+
+        void UpdateValueRange();
 
         /// <summary>
         /// The X value range which is used to plot the whole chart.
