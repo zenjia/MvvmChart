@@ -80,7 +80,8 @@
                                 Background="{TemplateBinding Background}">
 
                             <Grid x:Name="PART_PlottingCanvas" >
-                                <ContentControl x:Name="PART_GridLineHolder"/>
+                                <ContentControl x:Name="PART_GridLineHolder"
+                                                Visibility="{TemplateBinding GridLineControlVisibility}"/>
 
                                 <local:SlimItemsControl x:Name="PART_SeriesItemsControl"  
                                                         RenderTransformOrigin="0.5, 0.5">
@@ -92,7 +93,8 @@
                                 <Line x:Name="PART_HorizontalCrossHair" />
                                 <Line x:Name="PART_VerticalCrossHair"/>
 
-                                <ContentControl x:Name="PART_LegendHolder"/>
+                                <ContentControl x:Name="PART_LegendHolder"
+                                                Visibility="{TemplateBinding LegendVisibility}"/>
  
                             </Grid>
                         </Border>

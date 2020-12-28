@@ -60,8 +60,6 @@ namespace MvvmCharting.WpfFX
 
             foreach (var child in LogicalTreeHelper.GetChildren(o))
             {
-
-
                 foreach (var childItem in GetAllLogicalChildren(child as DependencyObject))
                 {
                     PrintLogicalTree(childItem as DependencyObject, indent);
@@ -71,8 +69,6 @@ namespace MvvmCharting.WpfFX
 
         public static IEnumerable<object> GetAllLogicalChildren(DependencyObject o)
         {
-   
-
             yield return o;
 
             foreach (var child in LogicalTreeHelper.GetChildren(o))

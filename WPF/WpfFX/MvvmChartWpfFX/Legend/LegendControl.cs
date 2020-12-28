@@ -17,6 +17,8 @@ using System.Windows.Shapes;
 
 namespace MvvmCharting.WpfFX
 {
+
+    [TemplatePart(Name = "PART_ItemsControl", Type = typeof(SlimItemsControl))]
     public class LegendControl : Control
     {
         static LegendControl()
@@ -24,12 +26,37 @@ namespace MvvmCharting.WpfFX
             DefaultStyleKeyProperty.OverrideMetadata(typeof(LegendControl), new FrameworkPropertyMetadata(typeof(LegendControl)));
         }
 
-        private ItemsControl PART_ItemsControl;
+        public event Action<LegendItemControl, bool> LegendItemHighlighChanged; 
+
+        private SlimItemsControl PART_ItemsControl;
 
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            PART_ItemsControl = (ItemsControl)this.GetTemplateChild("PART_ItemsControl");
+            this.PART_ItemsControl = (SlimItemsControl)this.GetTemplateChild("PART_ItemsControl");
+            if (this.PART_ItemsControl!=null)
+            {
+                this.PART_ItemsControl.ElementGenerated += PART_ItemsControl_ElementGenerated;
+            }
+        }
+
+        private void PART_ItemsControl_ElementGenerated(object arg1, FrameworkElement treeRoot)
+        {
+            var legendItemControl = treeRoot as LegendItemControl;
+            if (legendItemControl != null)
+            {
+                legendItemControl.PropertyChanged += LegendItemControl_PropertyChanged;
+            }
+        }
+
+        private void LegendItemControl_PropertyChanged(object sender, string propName)
+        {
+            if (propName == "IsHighlighted")
+            {
+                var legendItem = (LegendItemControl)sender;
+     
+                this.LegendItemHighlighChanged?.Invoke(legendItem, legendItem.IsHighlighted);
+            }
         }
 
         public IList ItemsSource
@@ -41,15 +68,7 @@ namespace MvvmCharting.WpfFX
             DependencyProperty.Register("ItemsSource", typeof(IList), typeof(LegendControl), new PropertyMetadata(null));
 
 
-        public ItemsPanelTemplate LegendPanelTemplate
-        {
-            get { return (ItemsPanelTemplate)GetValue(LegendPanelTemplateProperty); }
-            set { SetValue(LegendPanelTemplateProperty, value); }
-        }
-        public static readonly DependencyProperty LegendPanelTemplateProperty =
-            DependencyProperty.Register("LegendPanelTemplate", typeof(ItemsPanelTemplate), typeof(LegendControl), new PropertyMetadata(null));
-
-
+ 
 
         public DataTemplate LegendItemTemplate
         {
@@ -72,10 +91,9 @@ namespace MvvmCharting.WpfFX
 
         public void OnItemHighlightChanged(object item, bool newValue)
         {
-            var container = PART_ItemsControl.ItemContainerGenerator.ContainerFromItem(item);
+            var legendItem = PART_ItemsControl?.TryGetElementForItem(item) as LegendItemControl;
 
-            var legendItem = container?.GetAllVisualChildren().OfType<LegendItemControl>().FirstOrDefault();
-
+ 
             if (legendItem != null)
             {
                 legendItem.IsHighlighted = newValue;

@@ -130,7 +130,7 @@ namespace MvvmCharting.WpfFX
 
             this.PART_GridLineHolder = (ContentControl)GetTemplateChild(sPART_GridLineHolder);
 
- 
+
             OnGridLineControlChanged();
 
             this.PART_PlottingCanvas.MouseMove += PartPlottingCanvasMouseMove;
@@ -686,13 +686,25 @@ namespace MvvmCharting.WpfFX
 
             if (this.PART_GridLineHolder != null)
             {
-             
+
                 this.PART_GridLineHolder.Content = this.GridLineControl;
                 this.GridLineControl?.OnAxisItemCoordinateChanged(AxisType.Y, this.YAxis?.GetAxisItemCoordinates());
                 this.GridLineControl?.OnAxisItemCoordinateChanged(AxisType.X, this.XAxis?.GetAxisItemCoordinates());
             }
 
         }
+
+
+
+        public Visibility GridLineControlVisibility
+        {
+            get { return (Visibility)GetValue(GridLineControlVisibilityProperty); }
+            set { SetValue(GridLineControlVisibilityProperty, value); }
+        }
+        public static readonly DependencyProperty GridLineControlVisibilityProperty =
+            DependencyProperty.Register("GridLineControlVisibility", typeof(Visibility), typeof(SeriesChart), new PropertyMetadata(Visibility.Visible));
+
+
         #endregion
 
         #region Axises
@@ -1001,19 +1013,31 @@ namespace MvvmCharting.WpfFX
 
         private void OnLegendChanged()
         {
+            if (this.Legend != null)
+            {
+                this.Legend.ItemsSource = this.SeriesItemsSource;
+                this.Legend.LegendItemTemplate = this.LegendItemTemplate;
+                this.Legend.LegendItemHighlighChanged += Legend_LegendItemHighlighChanged;
+            }
+
             if (this.PART_LegendHolder != null)
             {
                 this.PART_LegendHolder.Content = this.Legend;
 
-                if (this.Legend != null)
-                {
-                    this.Legend.ItemsSource = this.SeriesItemsSource;
-                    this.Legend.LegendItemTemplate = this.LegendItemTemplate;
-                }
+
             }
         }
 
+        private void Legend_LegendItemHighlighChanged(LegendItemControl sender, bool newValue)
+        {
+            var item = sender.DataContext;
+            var sr = this.PART_SeriesItemsControl?.TryGetElementForItem(item) as ISeries;
 
+            if (sr != null)
+            {
+                sr.IsHighLighted = newValue;
+            }
+        }
 
         public DataTemplate LegendItemTemplate
         {
@@ -1035,6 +1059,19 @@ namespace MvvmCharting.WpfFX
                 this.Legend.LegendItemTemplate = this.LegendItemTemplate;
             }
         }
+
+
+
+
+        public Visibility LegendVisibility
+        {
+            get { return (Visibility)GetValue(LegendVisibilityProperty); }
+            set { SetValue(LegendVisibilityProperty, value); }
+        }
+        public static readonly DependencyProperty LegendVisibilityProperty =
+            DependencyProperty.Register("LegendVisibility", typeof(Visibility), typeof(SeriesChart), new PropertyMetadata(Visibility.Visible));
+
+
 
         #endregion
 

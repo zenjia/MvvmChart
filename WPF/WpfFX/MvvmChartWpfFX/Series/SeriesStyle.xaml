@@ -25,10 +25,11 @@
 
                         <local:SlimItemsControl x:Name="PART_DataPointItemsControl"/>
                     </Grid>
+
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsHighLighted" Value="True">
-                            <Setter TargetName="PART_Path" Property="StrokeThickness" Value="4"/>
-                            <Setter TargetName="PART_Path" Property="Stroke" Value="{DynamicResource Series_Highlighted_Stroke}"/>
+                            <Setter TargetName="PART_Path" Property="StrokeThickness" Value="2"/>
+                            <Setter TargetName="PART_Path" Property="Stroke" Value="{StaticResource Series_Highlighted_Stroke}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

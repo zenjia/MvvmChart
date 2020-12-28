@@ -5,6 +5,11 @@ namespace Demo
 {
     public class SomePoint : BindableBase
     {
+        public override string ToString()
+        {
+            return $"SomePoint: t={this.t:F3}, Y={this.Y:F3}";
+        }
+
         public double t { get; }
         public double Y { get; }
 

@@ -21,7 +21,7 @@ namespace MvvmCharting.WpfFX
             {
                 this.IsHighlighted = this.IsMouseOver;
             }
-            else if (e.Property == SeriesBase.IsHighLightedProperty)
+            else if (e.Property == LegendItemControl.IsHighlightedProperty)
             {
                 this.PropertyChanged?.Invoke(this, nameof(this.IsHighlighted));
             }

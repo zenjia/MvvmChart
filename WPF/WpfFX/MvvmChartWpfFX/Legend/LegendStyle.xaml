@@ -9,7 +9,8 @@
             <Setter.Value>
                 <ControlTemplate TargetType="local:LegendItemControl">
                     <Border BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="6,2">
                         <StackPanel Orientation="Horizontal" 
                                     Background="{TemplateBinding Background}">
                             <Rectangle Height="9" Width="9" 
@@ -22,11 +23,16 @@
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsHighlighted" Value="True">
-                            <Setter Property="FontWeight" Value="Bold"/>
                             <Setter Property="Background" Value="Ivory"/>
-                            <Setter Property="BorderThickness" Value="1.5"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
                             <Setter Property="BorderBrush" Value="GhostWhite"/>
                             <Setter Property="IndicatorBrush" Value="{StaticResource LegendItem_Highlighted_Stroke}"/>
+                            <Setter Property="RenderTransformOrigin" Value="0.5, 1"/>
+                            <Setter Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="1.1" ScaleY="1.1"/>
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
                     </ControlTemplate.Triggers>
 
@@ -37,16 +43,18 @@
 
 
 
-    <ItemsPanelTemplate x:Key="DefaultLegendPanelTemplate">
-        <StackPanel/>
-    </ItemsPanelTemplate>
+    <DataTemplate x:Key="DefaultLegendItemTemplate">
+        <local:LegendItemControl>
+
+        </local:LegendItemControl>
+    </DataTemplate>
 
     <Style TargetType="{x:Type local:LegendControl}">
         <Setter Property="BorderBrush" Value="DarkGray"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Background" Value="BurlyWood"/>
-        <Setter Property="HorizontalAlignment" Value="Right"></Setter>
-        <Setter Property="LegendPanelTemplate" Value="{StaticResource DefaultLegendPanelTemplate}"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="LegendItemTemplate" Value="{StaticResource DefaultLegendItemTemplate}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:LegendControl}">
@@ -58,11 +66,16 @@
                                  HorizontalAlignment="Right"
                                  VerticalAlignment="Top"
                                  Padding="6">
-                            <ItemsControl x:Name="PART_ItemsControl"
+                            <local:SlimItemsControl x:Name="PART_ItemsControl"
                                           ItemsSource="{TemplateBinding ItemsSource}"
                                           ItemTemplate="{TemplateBinding LegendItemTemplate}"
-                                          ItemTemplateSelector="{TemplateBinding LegendItemTemplateSelector}"
-                                          ItemsPanel="{TemplateBinding LegendPanelTemplate}"/>
+                                          ItemTemplateSelector="{TemplateBinding LegendItemTemplateSelector}">
+                                <local:SlimItemsControl.Template>
+                                    <ControlTemplate TargetType="local:SlimItemsControl">
+                                        <StackPanel x:Name="PART_Root"/>
+                                    </ControlTemplate>
+                                </local:SlimItemsControl.Template>
+                            </local:SlimItemsControl>
                         </Border>
 
                     </Grid>
