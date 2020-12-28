@@ -70,8 +70,8 @@
       <DependentUpon>BigDataTestView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\Big Data\BigDataViewModel.cs" />
-    <Compile Include="View\SeriesTemplateDemoView.xaml.cs">
-      <DependentUpon>SeriesTemplateDemoView.xaml</DependentUpon>
+    <Compile Include="View\GeneralDemoView.xaml.cs">
+      <DependentUpon>GeneralDemoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\AreaSeriesDemoView.xaml.cs">
       <DependentUpon>AreaSeriesDemoView.xaml</DependentUpon>
@@ -79,9 +79,6 @@
     <Compile Include="ViewModel\DemoDataViewModel.cs" />
     <Compile Include="ViewModel\SomePoint.cs" />
     <Compile Include="ViewModel\SomePointList.cs" />
-    <Compile Include="View\LineSeriesDemoView.xaml.cs">
-      <DependentUpon>LineSeriesDemoView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\SeriesTemplateSelector.cs" />
     <Page Include="View\ScatterCustomizationDemoView.xaml">
       <SubType>Designer</SubType>
@@ -95,7 +92,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\SeriesTemplateDemoView.xaml">
+    <Page Include="View\GeneralDemoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -115,10 +112,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\LineSeriesDemoView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

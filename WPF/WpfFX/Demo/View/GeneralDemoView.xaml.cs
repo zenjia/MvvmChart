@@ -53,11 +53,18 @@ namespace Demo
             set { SetProperty(ref _showBackgroundImage, value); }
         }
 
-        private bool _showGridLine;
+        private bool _showGridLine = true;
         public bool ShowGridLine
         {
             get { return _showGridLine; }
             set { SetProperty(ref _showGridLine, value); }
+        }
+
+        private bool _showLegend = true;
+        public bool ShowLegend
+        {
+            get { return _showLegend; }
+            set { SetProperty(ref _showLegend, value); }
         }
 
     }
@@ -65,9 +72,9 @@ namespace Demo
     /// <summary>
     /// Interaction logic for SeriesTemplateDemo.xaml
     /// </summary>
-    public partial class SeriesTemplateDemoView : UserControl
+    public partial class GeneralDemoView : UserControl
     {
-        public SeriesTemplateDemoView()
+        public GeneralDemoView()
         {
             InitializeComponent();
         }

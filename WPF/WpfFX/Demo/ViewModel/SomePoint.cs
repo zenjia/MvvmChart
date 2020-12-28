@@ -7,7 +7,7 @@ namespace Demo
     {
         public override string ToString()
         {
-            return $"SomePoint: t={this.t:F3}, Y={this.Y:F3}";
+            return $"SomePoint: t={this.t:F2}, Y={this.Y:F2}";
         }
 
         public double t { get; }

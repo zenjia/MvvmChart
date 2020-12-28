@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Demo"
         mc:Ignorable="d"
-        Height="800" Width="1000"
+        Height="800" Width="1200"
         Title="This a MvvmChart Demo for WPF(.NET Framework)" >
 
 
@@ -14,14 +14,11 @@
 
     <TabControl TabStripPlacement="Left" Margin="20">
 
-        <TabItem Header="SeriesTemplate Demo" Padding="6">
-            <local:SeriesTemplateDemoView Margin="15"/>
+        <TabItem Header="General Demo" Padding="6">
+            <local:GeneralDemoView Margin="15"/>
         </TabItem>
 
-        <TabItem Header="Line Series Demo" Padding="6">
-            <local:LineSeriesDemoView Margin="15"/>
-        </TabItem>
-
+ 
         <TabItem Header="Area Series Demo" Padding="6">
             <local:AreaSeriesDemoView Margin="15"/>
         </TabItem>
@@ -30,9 +27,10 @@
             <local:DateTimeDemoView Margin="15"/>
         </TabItem>
 
-        <TabItem Header="big data Test" Padding="6">
+        <TabItem Header="Big Data Test" Padding="6">
             <local:BigDataTestView Margin="15"/>
         </TabItem>
+
         <TabItem Header="Scatter Customization" Padding="6">
             <local:ScatterCustomizationDemoView Margin="15"/>
         </TabItem>

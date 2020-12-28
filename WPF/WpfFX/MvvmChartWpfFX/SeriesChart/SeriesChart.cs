@@ -29,7 +29,6 @@ namespace MvvmCharting.WpfFX
     [TemplatePart(Name = "PART_VerticalCrossHair", Type = typeof(Line))]
     [TemplatePart(Name = "PART_GridLineHolder", Type = typeof(ContentControl))]
     [TemplatePart(Name = "PART_LegendHolder", Type = typeof(ContentControl))]
-
     public class SeriesChart : Control, IXAxisOwner, IYAxisOwner
     {
         static SeriesChart()
@@ -133,8 +132,8 @@ namespace MvvmCharting.WpfFX
 
             OnGridLineControlChanged();
 
-            this.PART_PlottingCanvas.MouseMove += PartPlottingCanvasMouseMove;
-            this.PART_PlottingCanvas.MouseLeave += PartPlottingCanvasMouseLeave;
+            this.PART_PlottingCanvas.MouseMove += PlottingCanvasMouseMove;
+            this.PART_PlottingCanvas.MouseLeave += PlottingCanvasMouseLeave;
             this.PART_PlottingCanvas.SizeChanged += PartPlottingCanvasSizeChanged;
 
             this.PART_LegendHolder = (ContentControl)GetTemplateChild(sPART_LegendHolder);
@@ -572,30 +571,30 @@ namespace MvvmCharting.WpfFX
         public event Action<PlottingSettings> HorizontalSettingChanged;
         public event Action<PlottingSettings> VerticalSettingChanged;
 
-        private PlottingSettings _plottingHorizontalSetting;
-        public PlottingSettings PlottingHorizontalSetting
+        private PlottingSettings _horizontalPlottingSetting;
+        private PlottingSettings HorizontalPlottingSetting
         {
-            get { return this._plottingHorizontalSetting; }
+            get { return this._horizontalPlottingSetting; }
             set
             {
-                if (this._plottingHorizontalSetting != value)
+                if (this._horizontalPlottingSetting != value)
                 {
-                    this._plottingHorizontalSetting = value;
+                    this._horizontalPlottingSetting = value;
 
                     this.HorizontalSettingChanged?.Invoke(value);
                 }
             }
         }
 
-        private PlottingSettings _plottingVerticalSetting;
-        public PlottingSettings PlottingVerticalSetting
+        private PlottingSettings _verticalPlottingSetting;
+        private PlottingSettings VerticalPlottingSetting
         {
-            get { return this._plottingVerticalSetting; }
+            get { return this._verticalPlottingSetting; }
             set
             {
-                if (this._plottingVerticalSetting != value)
+                if (this._verticalPlottingSetting != value)
                 {
-                    this._plottingVerticalSetting = value;
+                    this._verticalPlottingSetting = value;
                     this.VerticalSettingChanged?.Invoke(value);
                 }
             }
@@ -655,10 +654,10 @@ namespace MvvmCharting.WpfFX
             switch (orientation)
             {
                 case AxisType.X:
-                    this.PlottingHorizontalSetting = args;
+                    this.HorizontalPlottingSetting = args;
                     break;
                 case AxisType.Y:
-                    this.PlottingVerticalSetting = args;
+                    this.VerticalPlottingSetting = args;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(orientation), orientation, null);
@@ -694,8 +693,6 @@ namespace MvvmCharting.WpfFX
 
         }
 
-
-
         public Visibility GridLineControlVisibility
         {
             get { return (Visibility)GetValue(GridLineControlVisibilityProperty); }
@@ -703,8 +700,6 @@ namespace MvvmCharting.WpfFX
         }
         public static readonly DependencyProperty GridLineControlVisibilityProperty =
             DependencyProperty.Register("GridLineControlVisibility", typeof(Visibility), typeof(SeriesChart), new PropertyMetadata(Visibility.Visible));
-
-
         #endregion
 
         #region Axises
@@ -879,7 +874,6 @@ namespace MvvmCharting.WpfFX
         }
         #endregion
 
-
         #region cross hair
         public Visibility HorizontalCrossHairVisibility
         {
@@ -889,7 +883,6 @@ namespace MvvmCharting.WpfFX
         public static readonly DependencyProperty HorizontalCrossHairVisibilityProperty =
             DependencyProperty.Register("HorizontalCrossHairVisibility", typeof(Visibility), typeof(SeriesChart), new PropertyMetadata(Visibility.Visible));
 
-
         public Visibility VerticalCrossHairVisiblity
         {
             get { return (Visibility)GetValue(VerticalCrossHairVisiblityProperty); }
@@ -897,9 +890,6 @@ namespace MvvmCharting.WpfFX
         }
         public static readonly DependencyProperty VerticalCrossHairVisiblityProperty =
             DependencyProperty.Register("VerticalCrossHairVisiblity", typeof(Visibility), typeof(SeriesChart), new PropertyMetadata(Visibility.Visible));
-
-
-
 
         public Style HorizontalCrossHairLineStyle
         {
@@ -909,7 +899,6 @@ namespace MvvmCharting.WpfFX
         public static readonly DependencyProperty HorizontalCrossHairLineStyleProperty =
             DependencyProperty.Register("HorizontalCrossHairLineStyle", typeof(Style), typeof(SeriesChart), new PropertyMetadata(null));
 
-
         public Style VerticalCrossHairLineStyle
         {
             get { return (Style)GetValue(VerticalCrossHairLineStyleProperty); }
@@ -918,9 +907,7 @@ namespace MvvmCharting.WpfFX
         public static readonly DependencyProperty VerticalCrossHairLineStyleProperty =
             DependencyProperty.Register("VerticalCrossHairLineStyle", typeof(Style), typeof(SeriesChart), new PropertyMetadata(null));
 
-
-
-        private void PartPlottingCanvasMouseMove(object sender, MouseEventArgs e)
+        private void PlottingCanvasMouseMove(object sender, MouseEventArgs e)
         {
             bool isHorizontalCrossHairVisible = this.HorizontalCrossHairVisibility == Visibility.Visible;
             bool isVerticalCrossHairVisible = this.VerticalCrossHairVisiblity == Visibility.Visible;
@@ -935,18 +922,18 @@ namespace MvvmCharting.WpfFX
 
             if (isHorizontalCrossHairVisible)
             {
-                MoveCrossHairLine(this.PART_HorizontalCrossHair, mousePoint.Y);
+                MoveCrossHairLine(Orientation.Horizontal, mousePoint.Y);
             }
 
             if (isVerticalCrossHairVisible)
             {
-                MoveCrossHairLine(this.PART_VerticalCrossHair, mousePoint.X);
+                MoveCrossHairLine(Orientation.Vertical, mousePoint.X);
             }
 
 
         }
 
-        private void PartPlottingCanvasMouseLeave(object sender, MouseEventArgs e)
+        private void PlottingCanvasMouseLeave(object sender, MouseEventArgs e)
         {
             if (this.PART_HorizontalCrossHair.Visibility != Visibility.Collapsed)
             {
@@ -959,8 +946,11 @@ namespace MvvmCharting.WpfFX
             }
         }
 
-        private void MoveCrossHairLine(Line crossHairLine, double offset)
+        public void MoveCrossHairLine(Orientation orientation, double offset)
         {
+            Line crossHairLine = orientation == Orientation.Horizontal
+                ? this.PART_HorizontalCrossHair
+                : this.PART_VerticalCrossHair;
 
             if (crossHairLine == null)
             {
@@ -1074,7 +1064,6 @@ namespace MvvmCharting.WpfFX
 
 
         #endregion
-
 
 
         /// <summary>

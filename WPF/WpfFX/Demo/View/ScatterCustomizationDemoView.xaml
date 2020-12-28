@@ -27,7 +27,7 @@
                 </mvvmCharting:Scatter2.LayoutTransform>
             </mvvmCharting:Scatter2>
         </DataTemplate>
-        <mvvmCharting:RectangleBuilder x:Key="RectangleBuilder"
+        <mvvmCharting:RectangleGeometryBuilder x:Key="RectangleBuilder"
                                        Size="12,12"/>
 
         <DataTemplate x:Key="MyScatterTemplate">

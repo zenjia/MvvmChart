@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Demo.SeriesTemplateDemoView"
+﻿<UserControl x:Class="Demo.GeneralDemoView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -11,7 +11,11 @@
     <UserControl.Resources>
         <local:DemoDataViewModel x:Key="DemoDataViewModel"/>
 
-        <mvvmCharting:EllipseGeometryBuilder x:Key="EllipseGeometryBuilder" RadiusX="6" RadiusY="6"/>
+        <mvvmCharting:EllipseGeometryBuilder x:Key="EllipseGeometryBuilder" 
+                                             RadiusX="6" 
+                                             RadiusY="6"/>
+        <mvvmCharting:RectangleGeometryBuilder x:Key="RectangleGeometryBuilder"
+                                       Size="15,15"/>
 
         <DataTemplate x:Key="ScatterDataTemplate">
             <mvvmCharting:Scatter />
@@ -19,8 +23,8 @@
 
 
         <DataTemplate x:Key="Scatter2DataTemplate">
-            <mvvmCharting:Scatter2 Fill="OrangeRed" 
-                                   GeometryBuilder="{StaticResource EllipseGeometryBuilder}"
+            <mvvmCharting:Scatter2 Fill="Red" 
+                                   GeometryBuilder="{StaticResource RectangleGeometryBuilder}"
                                    Opacity="0.6"/>
         </DataTemplate>
 
@@ -32,7 +36,7 @@
 
         <local:IndexToStrokeConverter x:Key="IndexToStrokeConverter"/>
 
-        <DataTemplate x:Key="SeriesTemplate1" DataType="local:SomePointList">
+        <DataTemplate x:Key="SeriesTemplate0" DataType="local:SomePointList">
             <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
                                          DependentValueProperty="Y"
                                          Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
@@ -46,6 +50,37 @@
             </mvvmCharting:PolyLineSeries>
         </DataTemplate>
 
+        <DataTemplate x:Key="SeriesTemplate1" DataType="local:SomePointList">
+            <mvvmCharting:StepLineSeries IndependentValueProperty="t"
+                                         DependentValueProperty="Y"
+                                         Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
+                                         StrokeThickness="1.5"
+                                         Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
+                                         IsScatterVisible="{Binding ShowSeriesPoints}"
+                                         IsLineOrAreaVisible="{Binding ShowSeriesLine}"
+                                         ItemsSource="{Binding DataList}"
+                                         ScatterTemplate="{Binding SelectedScatterTemplateType, Converter={StaticResource IndexToScatterTemplateConverter}}"/>
+
+        </DataTemplate>
+
+        <DataTemplate x:Key="SeriesTemplate2" DataType="local:SomePointList">
+            <mvvmCharting:SplineSeries IndependentValueProperty="t"
+                                       DependentValueProperty="Y"
+                                       Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
+                                       StrokeThickness="1.5"
+                                       Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
+                                       IsScatterVisible="{Binding ShowSeriesPoints}"
+                                       IsLineOrAreaVisible="{Binding ShowSeriesLine}"
+                                       ItemsSource="{Binding DataList}"
+                                       ScatterTemplate="{Binding SelectedScatterTemplateType, Converter={StaticResource IndexToScatterTemplateConverter}}">
+            </mvvmCharting:SplineSeries>
+        </DataTemplate>
+
+        <local:SeriesTemplateSelector x:Key="SeriesTemplateSelector"
+                                      DataTemplate0="{StaticResource SeriesTemplate0}"
+                                      DataTemplate1="{StaticResource SeriesTemplate1}"
+                                      DataTemplate2="{StaticResource SeriesTemplate2}"/>
+
         <local:ChartSettingTestViewModel x:Key="ChartSettingTestViewModel"/>
     </UserControl.Resources>
 
@@ -57,7 +92,9 @@
 
 
         <mvvmCharting:SeriesChart Background="Bisque"
-                                  SeriesDataTemplate="{StaticResource SeriesTemplate1}"
+                                  GridLineControlVisibility="{Binding ShowGridLine, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
+                                  LegendVisibility="{Binding ShowLegend, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
+                                  SeriesTemplateSelector="{StaticResource SeriesTemplateSelector}"
                                   SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource DemoDataViewModel}}">
             <mvvmCharting:SeriesChart.XAxis>
                 <axis:LinearAxis Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedXPlacement}"/>
@@ -92,7 +129,7 @@
                               Margin="6"
                               HorizontalAlignment="Left"
                               ItemsSource="{Binding AvailableScatterTemplates}"
-                              SelectedItem="{Binding SelectedScatterTemplateType, Mode=TwoWay}"></ComboBox>
+                              SelectedItem="{Binding SelectedScatterTemplateType, Mode=TwoWay}"/>
                 </StackPanel>
             </GroupBox>
 
@@ -128,10 +165,14 @@
                       Padding="9" 
                       DataContext="{Binding Source={StaticResource ChartSettingTestViewModel}}">
                 <StackPanel DataContext="{Binding Source={StaticResource ChartSettingTestViewModel}}">
-
+                    
                     <CheckBox Content="show back ground image"
-                              
                               IsChecked="{Binding ShowBackgroundImage, Mode=TwoWay}"/>
+                    <CheckBox Content="show GridLine"
+                              IsChecked="{Binding ShowGridLine, Mode=TwoWay}"/>
+
+                    <CheckBox Content="show Legend"
+                              IsChecked="{Binding ShowLegend, Mode=TwoWay}"/>
                 </StackPanel>
             </GroupBox>
 

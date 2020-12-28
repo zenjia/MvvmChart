@@ -78,7 +78,7 @@
     <Compile Include="common\VisualTreeHelper2.cs" />
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\CustomGeometryBuilder.cs" />
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\EllipseGeometryBuilder.cs" />
-    <Compile Include="GeometryBuilders\ScatterGeometryBuilders\RectangleBuilder.cs" />
+    <Compile Include="GeometryBuilders\ScatterGeometryBuilders\RectangleGeometryBuilder.cs" />
     <Compile Include="GridLine\GridLineControl.cs" />
     <Compile Include="Legend\LegendControl.cs" />
     <Compile Include="Series\Scatter\Scatter.cs" />

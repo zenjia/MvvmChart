@@ -4,7 +4,7 @@ using MvvmCharting.Series;
 
 namespace MvvmCharting.WpfFX
 {
-    public class RectangleBuilder : IScatterGeometryBuilder
+    public class RectangleGeometryBuilder : IScatterGeometryBuilder
     {
         public Size Size { get; set; }
         public object GetGeometry()

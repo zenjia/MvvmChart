@@ -42,7 +42,7 @@ namespace MvvmCharting.Axis
                                    (this.BorderThickness.X + this.BorderThickness.Y);
         }
 
-        public PlottingSettingsBase(AxisType orientation,
+        protected PlottingSettingsBase(AxisType orientation,
             double renderSize,
             PointNS margin,
             PointNS padding,
@@ -146,6 +146,21 @@ namespace MvvmCharting.Axis
                    !borderThickness.IsInvalid() &&
                    !plotingDataRange.IsInvalid;
 
+        }
+
+        public static bool operator ==(PlottingSettings settings, PlottingSettings settings2)
+        {
+            if (object.ReferenceEquals(settings, null))
+            {
+                return object.ReferenceEquals(settings2, null);
+            }
+
+            return settings.Equals(settings2);
+        }
+
+        public static bool operator !=(PlottingSettings settings, PlottingSettings settings2)
+        {
+            return !(settings == settings2);
         }
     }
 }

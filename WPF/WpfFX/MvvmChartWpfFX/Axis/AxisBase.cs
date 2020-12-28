@@ -157,7 +157,7 @@ namespace MvvmCharting.WpfFX.Axis
 
         private void OnLabelTextConverterChanged(IValueConverterNS oldValue, IValueConverterNS newValue)
         {
-            
+
             foreach (var axisItem in GetAllAxisItems())
             {
                 axisItem.SetLabelTextConverter(this.LabelTextConverter);
@@ -183,7 +183,7 @@ namespace MvvmCharting.WpfFX.Axis
 
 
 
-  
+
 
 
         private AxisType _orientation;
@@ -257,7 +257,7 @@ namespace MvvmCharting.WpfFX.Axis
 
             set
             {
-                if (this._plottingSetting != value)
+                if (this._plottingSetting != value )
                 {
                     this._plottingSetting = value;
                     UpdateAxisDrawingSettings();
@@ -273,7 +273,7 @@ namespace MvvmCharting.WpfFX.Axis
             set
             {
 
-                if (this._drawingSettings != value)
+                if (this._drawingSettings == null || !Equals(this._drawingSettings, value))
                 {
                     this._drawingSettings = value;
 
