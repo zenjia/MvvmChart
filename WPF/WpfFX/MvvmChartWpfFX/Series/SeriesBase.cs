@@ -28,11 +28,14 @@ namespace MvvmCharting.WpfFX
         public event Action<Range> XRangeChanged;
         public event Action<Range> YRangeChanged;
 
+        public event Action<object, string> PropertyChanged;
+
         private SlimItemsControl PART_ScatterItemsControl;
         protected Path PART_Path { get; private set; }
 
         protected SeriesBase()
         {
+ 
             this.HorizontalAlignment = HorizontalAlignment.Stretch;
         }
 
@@ -75,8 +78,25 @@ namespace MvvmCharting.WpfFX
         {
             base.OnRenderSizeChanged(sizeInfo);
 
-
             UpdateScattersCoordinate();
+        }
+
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+            if (e.Property == Control.IsMouseOverProperty)
+            {
+                this.IsHighLighted = this.IsMouseOver;
+            }
+            else if (e.Property == SeriesBase.IsHighLightedProperty)
+            {
+                this.PropertyChanged?.Invoke(this, nameof(this.IsHighLighted));
+            }
+            else if (e.Property == SeriesBase.FillProperty)
+            {
+                this.PropertyChanged?.Invoke(this, nameof(this.Fill));
+            }
+
         }
         #endregion
 
@@ -197,6 +217,15 @@ namespace MvvmCharting.WpfFX
         }
         public static readonly DependencyProperty FillProperty =
             Shape.FillProperty.AddOwner(typeof(SeriesBase));
+
+
+        public bool IsHighLighted
+        {
+            get { return (bool)GetValue(IsHighLightedProperty); }
+            set { SetValue(IsHighLightedProperty, value); }
+        }
+        public static readonly DependencyProperty IsHighLightedProperty =
+            DependencyProperty.Register("IsHighLighted", typeof(bool), typeof(SeriesBase), new PropertyMetadata(false));
 
  
 

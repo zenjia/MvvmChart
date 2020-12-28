@@ -31,6 +31,11 @@ namespace MvvmCharting.Series
         /// </summary>
         Range PlottingYDataRange { get; set; }
 
+
+        bool IsHighLighted { get; set; }
+
+        object DataContext { get; }
+
         /// <summary>
         /// Fired when the X value range of a series is changed. 
         /// The host chart need to know when the value range of its series changed
@@ -42,5 +47,7 @@ namespace MvvmCharting.Series
         /// The host chart need to know when the value range of its series changed
         /// </summary>
         event Action<Range> YRangeChanged;
+
+        event Action<object, string> PropertyChanged;
     }
 }

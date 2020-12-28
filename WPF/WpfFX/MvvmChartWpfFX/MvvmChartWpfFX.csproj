@@ -73,6 +73,7 @@
     <Compile Include="Axis\LinearAxis.cs" />
     <Compile Include="common\PointHelper.cs" />
     <Compile Include="common\SizeHelper.cs" />
+    <Compile Include="Legend\LegendItemControl.cs" />
     <Compile Include="SlimItemsControl\SlimItemsControl.cs" />
     <Compile Include="common\VisualTreeHelper2.cs" />
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\CustomGeometryBuilder.cs" />

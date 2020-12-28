@@ -7,6 +7,11 @@ namespace Demo
 {
     public class SomePointList: BindableBase
     {
+        public override string ToString()
+        {
+            return $"This is series {Index}";
+        }
+
         public int Index { get;  }
 
         private string _selectedScatterTemplateType;

@@ -129,6 +129,8 @@ namespace MvvmCharting.WpfFX
             }
 
             this.PART_GridLineHolder = (ContentControl)GetTemplateChild(sPART_GridLineHolder);
+
+ 
             OnGridLineControlChanged();
 
             this.PART_PlottingCanvas.MouseMove += PartPlottingCanvasMouseMove;
@@ -178,6 +180,7 @@ namespace MvvmCharting.WpfFX
 
             sr.XRangeChanged += Sr_XRangeChanged;
             sr.YRangeChanged += Sr_YRangeChanged;
+            sr.PropertyChanged += Sr_PropertyChanged;
 
             UpdateGlobalDataRange();
 
@@ -185,6 +188,17 @@ namespace MvvmCharting.WpfFX
             OnPlottingXDataRangeChanged();
 
         }
+
+        private void Sr_PropertyChanged(object sender, string propertyName)
+        {
+            var sr = (ISeries)sender;
+            if (propertyName == nameof(sr.IsHighLighted))
+            {
+                this.Legend.OnItemHighlightChanged(sr.DataContext, sr.IsHighLighted);
+            }
+
+        }
+
         private void PartPlottingCanvasSizeChanged(object sender, SizeChangedEventArgs e)
         {
 
@@ -670,14 +684,14 @@ namespace MvvmCharting.WpfFX
         private void OnGridLineControlChanged()
         {
 
-            if (this.PART_GridLineHolder == null)
+            if (this.PART_GridLineHolder != null)
             {
-                return;
+             
+                this.PART_GridLineHolder.Content = this.GridLineControl;
+                this.GridLineControl?.OnAxisItemCoordinateChanged(AxisType.Y, this.YAxis?.GetAxisItemCoordinates());
+                this.GridLineControl?.OnAxisItemCoordinateChanged(AxisType.X, this.XAxis?.GetAxisItemCoordinates());
             }
-            this.PART_GridLineHolder.Content = this.GridLineControl;
 
-            this.GridLineControl?.OnAxisItemCoordinateChanged(AxisType.Y, this.YAxis?.GetAxisItemCoordinates());
-            this.GridLineControl?.OnAxisItemCoordinateChanged(AxisType.X, this.XAxis?.GetAxisItemCoordinates());
         }
         #endregion
 
@@ -972,9 +986,6 @@ namespace MvvmCharting.WpfFX
         #endregion
 
         #region Legend
-
-
-
         public LegendControl Legend
         {
             get { return (LegendControl)GetValue(LegendProperty); }
@@ -1002,7 +1013,7 @@ namespace MvvmCharting.WpfFX
             }
         }
 
- 
+
 
         public DataTemplate LegendItemTemplate
         {
@@ -1014,14 +1025,13 @@ namespace MvvmCharting.WpfFX
 
         private static void OnLegendItemTemplatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-             ((SeriesChart)d).OnLegendItemTemplateChanged();
+            ((SeriesChart)d).OnLegendItemTemplateChanged();
         }
 
         private void OnLegendItemTemplateChanged()
         {
             if (this.Legend != null)
             {
-              
                 this.Legend.LegendItemTemplate = this.LegendItemTemplate;
             }
         }

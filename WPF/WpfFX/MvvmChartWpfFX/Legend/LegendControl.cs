@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,6 @@ using System.Windows.Shapes;
 
 namespace MvvmCharting.WpfFX
 {
-
     public class LegendControl : Control
     {
         static LegendControl()
@@ -24,7 +24,13 @@ namespace MvvmCharting.WpfFX
             DefaultStyleKeyProperty.OverrideMetadata(typeof(LegendControl), new FrameworkPropertyMetadata(typeof(LegendControl)));
         }
 
+        private ItemsControl PART_ItemsControl;
 
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            PART_ItemsControl = (ItemsControl)this.GetTemplateChild("PART_ItemsControl");
+        }
 
         public IList ItemsSource
         {
@@ -33,8 +39,6 @@ namespace MvvmCharting.WpfFX
         }
         public static readonly DependencyProperty ItemsSourceProperty =
             DependencyProperty.Register("ItemsSource", typeof(IList), typeof(LegendControl), new PropertyMetadata(null));
-
-
 
 
         public ItemsPanelTemplate LegendPanelTemplate
@@ -66,5 +70,18 @@ namespace MvvmCharting.WpfFX
             DependencyProperty.Register("LegendItemTemplateSelector", typeof(DataTemplateSelector), typeof(LegendControl), new PropertyMetadata(null));
 
 
+        public void OnItemHighlightChanged(object item, bool newValue)
+        {
+            var container = PART_ItemsControl.ItemContainerGenerator.ContainerFromItem(item);
+
+            var legendItem = container?.GetAllVisualChildren().OfType<LegendItemControl>().FirstOrDefault();
+
+            if (legendItem != null)
+            {
+                legendItem.IsHighlighted = newValue;
+            }
+
+
+        }
     }
 }

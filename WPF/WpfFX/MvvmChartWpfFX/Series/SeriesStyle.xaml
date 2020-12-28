@@ -6,6 +6,7 @@
         <ResourceDictionary Source="ScatterStyle.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
+    <SolidColorBrush x:Key="Series_Highlighted_Stroke" Color="Lime"/>
     <Style TargetType="local:PathSeries">
         <Setter Property="Stroke" Value="CadetBlue"/>
         <Setter Property="ScatterTemplate" Value="{StaticResource DefaultScatterTemplate}"/>
@@ -25,9 +26,9 @@
                         <local:SlimItemsControl x:Name="PART_DataPointItemsControl"/>
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger SourceName="PART_Path" Property="IsMouseOver" Value="True">
+                        <Trigger Property="IsHighLighted" Value="True">
                             <Setter TargetName="PART_Path" Property="StrokeThickness" Value="4"/>
-                            <Setter TargetName="PART_Path" Property="Stroke" Value="{x:Static Brushes.YellowGreen}"/>
+                            <Setter TargetName="PART_Path" Property="Stroke" Value="{DynamicResource Series_Highlighted_Stroke}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -39,7 +40,7 @@
     <local:StepLineGeometryBuilder x:Key="StepLineGeometryBuilder"/>
     <local:BezierGeometryBuilder x:Key="DefaultSplineGeometryBuilder"/>
 
-    <local:PolyLineAreaSeries x:Key="DefaultPolyLineAreaSeries"/>
+    <local:PolylineAreaGeometryBuilder x:Key="DefaultPolyLineAreaSeries"/>
     <local:StepLineAreaGeometryBuilder x:Key="StepStepLineAreaGeometryBuilder"/>
     <local:BezierAreaGeometryBuilder x:Key="DefaultSplineAreaGeometryBuilder"/>
 

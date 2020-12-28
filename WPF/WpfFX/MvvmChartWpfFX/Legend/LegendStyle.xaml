@@ -2,40 +2,70 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:MvvmCharting.WpfFX">
 
+
+    <SolidColorBrush x:Key="LegendItem_Highlighted_Stroke" Color="Lime"/>
+    <Style TargetType="{x:Type local:LegendItemControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:LegendItemControl">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <StackPanel Orientation="Horizontal" 
+                                    Background="{TemplateBinding Background}">
+                            <Rectangle Height="9" Width="9" 
+                                       VerticalAlignment="Center" 
+                                       Margin="4,2,6,2"
+                                       Fill="{TemplateBinding IndicatorBrush}"/>
+                            <TextBlock Text="{Binding}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="Background" Value="Ivory"/>
+                            <Setter Property="BorderThickness" Value="1.5"/>
+                            <Setter Property="BorderBrush" Value="GhostWhite"/>
+                            <Setter Property="IndicatorBrush" Value="{StaticResource LegendItem_Highlighted_Stroke}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+
     <ItemsPanelTemplate x:Key="DefaultLegendPanelTemplate">
         <StackPanel/>
     </ItemsPanelTemplate>
 
-
     <Style TargetType="{x:Type local:LegendControl}">
         <Setter Property="BorderBrush" Value="DarkGray"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Background" Value="FloralWhite"/>
+        <Setter Property="Background" Value="BurlyWood"/>
+        <Setter Property="HorizontalAlignment" Value="Right"></Setter>
         <Setter Property="LegendPanelTemplate" Value="{StaticResource DefaultLegendPanelTemplate}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:LegendControl}">
                     <Grid>
+
                         <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Top">
-                            <ListBox ItemsSource="{TemplateBinding ItemsSource}"
-                                     ItemTemplate="{TemplateBinding LegendItemTemplate}"
-                                     ItemTemplateSelector="{TemplateBinding LegendItemTemplateSelector}"
-                                     ItemsPanel="{TemplateBinding LegendPanelTemplate}"/>
+                                 BorderBrush="{TemplateBinding BorderBrush}"
+                                 BorderThickness="{TemplateBinding BorderThickness}"
+                                 HorizontalAlignment="Right"
+                                 VerticalAlignment="Top"
+                                 Padding="6">
+                            <ItemsControl x:Name="PART_ItemsControl"
+                                          ItemsSource="{TemplateBinding ItemsSource}"
+                                          ItemTemplate="{TemplateBinding LegendItemTemplate}"
+                                          ItemTemplateSelector="{TemplateBinding LegendItemTemplateSelector}"
+                                          ItemsPanel="{TemplateBinding LegendPanelTemplate}"/>
                         </Border>
 
                     </Grid>
-
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{x:Static Brushes.White}"/>
-                            <Setter Property="BorderBrush" Value="{x:Static Brushes.Maroon}"/>
-                            <Setter Property="BorderThickness" Value="2"/>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
 
             </Setter.Value>

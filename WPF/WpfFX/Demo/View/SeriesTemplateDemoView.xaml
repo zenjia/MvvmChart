@@ -30,10 +30,12 @@
                                                Scatter2Template="{StaticResource Scatter2DataTemplate}"/>
 
 
+        <local:IndexToStrokeConverter x:Key="IndexToStrokeConverter"/>
+
         <DataTemplate x:Key="SeriesTemplate1" DataType="local:SomePointList">
             <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
                                          DependentValueProperty="Y"
-                                         Stroke="CadetBlue"
+                                         Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
                                          StrokeThickness="1.5"
                                          Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
                                          IsScatterVisible="{Binding ShowSeriesPoints}"
@@ -63,6 +65,12 @@
             <mvvmCharting:SeriesChart.YAxis>
                 <axis:LinearAxis Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedYPlacement}"/>
             </mvvmCharting:SeriesChart.YAxis>
+
+            <mvvmCharting:SeriesChart.LegendItemTemplate>
+                <DataTemplate>
+                    <mvvmCharting:LegendItemControl IndicatorBrush="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"/>
+                </DataTemplate>
+            </mvvmCharting:SeriesChart.LegendItemTemplate>
 
             <mvvmCharting:SeriesChart.BackgroundImage>
                 <Image Source="../image/Caribbean1.jpg" 
