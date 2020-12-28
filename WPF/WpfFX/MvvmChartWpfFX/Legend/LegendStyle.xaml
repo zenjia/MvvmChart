@@ -3,7 +3,6 @@
                     xmlns:local="clr-namespace:MvvmCharting.WpfFX">
 
 
-    <SolidColorBrush x:Key="LegendItem_Highlighted_Stroke" Color="Lime"/>
     <Style TargetType="{x:Type local:LegendItemControl}">
         <Setter Property="Template">
             <Setter.Value>
@@ -24,9 +23,8 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsHighlighted" Value="True">
                             <Setter Property="Background" Value="Ivory"/>
-                            <Setter Property="FontWeight" Value="Bold"/>
+                            <!--<Setter Property="FontWeight" Value="Bold"/>-->
                             <Setter Property="BorderBrush" Value="GhostWhite"/>
-                            <Setter Property="IndicatorBrush" Value="{StaticResource LegendItem_Highlighted_Stroke}"/>
                             <Setter Property="RenderTransformOrigin" Value="0.5, 1"/>
                             <Setter Property="RenderTransform">
                                 <Setter.Value>
@@ -42,14 +40,15 @@
     </Style>
 
 
-
     <DataTemplate x:Key="DefaultLegendItemTemplate">
         <local:LegendItemControl>
 
         </local:LegendItemControl>
     </DataTemplate>
 
-    <Style TargetType="{x:Type local:LegendControl}">
+    <Style TargetType="local:LegendControl">
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Opacity" Value="0.7"/>
         <Setter Property="BorderBrush" Value="DarkGray"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Background" Value="BurlyWood"/>
@@ -57,7 +56,7 @@
         <Setter Property="LegendItemTemplate" Value="{StaticResource DefaultLegendItemTemplate}"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:LegendControl}">
+                <ControlTemplate TargetType="local:LegendControl">
                     <Grid>
 
                         <Border Background="{TemplateBinding Background}"
@@ -65,7 +64,9 @@
                                  BorderThickness="{TemplateBinding BorderThickness}"
                                  HorizontalAlignment="Right"
                                  VerticalAlignment="Top"
-                                 Padding="6">
+                                 Padding="6"
+                                 Margin="5"
+                                 CornerRadius="4">
                             <local:SlimItemsControl x:Name="PART_ItemsControl"
                                           ItemsSource="{TemplateBinding ItemsSource}"
                                           ItemTemplate="{TemplateBinding LegendItemTemplate}"

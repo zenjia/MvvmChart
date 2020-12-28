@@ -2,13 +2,13 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Demo"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-
+ 
         <BooleanToVisibilityConverter x:Key="t2v"/>
+ 
+        <SolidColorBrush x:Key="Series_Highlighted_Stroke" Color="Red"/>
 
-
-       
-         
     </Application.Resources>
 </Application>

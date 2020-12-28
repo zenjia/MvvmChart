@@ -32,9 +32,9 @@
 
 
 
-        <local:IndexToScatterTemplateConverter x:Key="IndexToScatterTemplateConverter"
-                                               ScatterTemplate="{StaticResource ScatterDataTemplate}"
-                                               Scatter2Template="{StaticResource Scatter2DataTemplate}"/>
+        <local:StringToScatterTemplateConverter x:Key="StringToScatterTemplateConverter"
+                                                ScatterTemplate="{StaticResource ScatterDataTemplate}"
+                                                Scatter2Template="{StaticResource Scatter2DataTemplate}"/>
 
 
         <DataTemplate x:Key="SeriesTemplate" DataType="local:SomePointList">
@@ -45,7 +45,7 @@
                                              IsScatterVisible="{Binding ShowSeriesPoints}"
                                              IsLineOrAreaVisible="{Binding ShowSeriesLine}"
                                              ItemsSource="{Binding DataList}"
-                                             ScatterTemplate="{Binding SelectedScatterTemplateType, Converter={StaticResource IndexToScatterTemplateConverter}}"
+                                             ScatterTemplate="{Binding SelectedScatterTemplateType, Converter={StaticResource StringToScatterTemplateConverter}}"
                                             >
             </mvvmCharting:PolyLineSeries>
 
@@ -67,8 +67,6 @@
                                   SeriesTemplate="{StaticResource SeriesTemplate}"
                                   SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource BigDataViewModel}}">
         </mvvmCharting:Chart>
-
-
 
 
         <StackPanel Grid.Row="1" Orientation="Horizontal"

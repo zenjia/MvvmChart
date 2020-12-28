@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,27 @@ using MvvmCharting.Common;
 
 namespace Demo
 {
- 
+
+    public class StringToScatterTemplateConverter : IValueConverter
+    {
+        public DataTemplate ScatterTemplate { get; set; }
+        public DataTemplate Scatter2Template { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((string)value == "ScatterTemplate")
+            {
+                return this.ScatterTemplate;
+            }
+
+            return this.Scatter2Template;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
     /// <summary>
     /// Interaction logic for BigDataTestView.xaml

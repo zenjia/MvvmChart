@@ -30,14 +30,16 @@
 
     <local:GridLineControl x:Key="DefaultGridLineControl" x:Shared="False"/>
 
+    <SolidColorBrush x:Key="HorizontalCrossHairLine.Static.Stroke" Color="Maroon"/>
+    <SolidColorBrush x:Key="VerticalCrossHairLine.Static.Stroke" Color="Maroon"/>
     <Style x:Key="DefaultHorizontalCrossHairLineStyle" TargetType="Line">
-        <Setter Property="Stroke" Value="Maroon"/>
+        <Setter Property="Stroke" Value="{StaticResource HorizontalCrossHairLine.Static.Stroke}"/>
         <Setter Property="IsHitTestVisible" Value="False"/>
         <Setter Property="StrokeThickness" Value="0.5"/>
     </Style>
 
     <Style x:Key="DefaultVerticalCrossHairLineStyle" TargetType="Line">
-        <Setter Property="Stroke" Value="Maroon"/>
+        <Setter Property="Stroke" Value="{StaticResource VerticalCrossHairLine.Static.Stroke}"/>
         <Setter Property="IsHitTestVisible" Value="False"/>
         <Setter Property="StrokeThickness" Value="0.5"/>
     </Style>
@@ -82,14 +84,6 @@
                                                 Visibility="{TemplateBinding GridLineControlVisibility}"/>
 
                                 <local:SeriesChart x:Name="PART_SeriesChart"/>
-
-                                <!--
-                                <local:SlimItemsControl x:Name="PART_SeriesItemsControl"  
-                                                        RenderTransformOrigin="0.5, 0.5">
-                                    <local:SlimItemsControl.RenderTransform>
-                                        <ScaleTransform ScaleY="-1" />
-                                    </local:SlimItemsControl.RenderTransform>
-                                </local:SlimItemsControl>-->
 
                                 <Line x:Name="PART_HorizontalCrossHair" />
                                 <Line x:Name="PART_VerticalCrossHair"/>

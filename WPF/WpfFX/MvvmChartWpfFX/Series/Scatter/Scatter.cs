@@ -60,6 +60,32 @@ namespace MvvmCharting.WpfFX
 
 
 
+
+        public Stretch Stretch
+        {
+            get { return (Stretch)GetValue(StretchProperty); }
+            set { SetValue(StretchProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Stretch.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty StretchProperty =
+            Shape.StretchProperty.AddOwner(typeof(Scatter));
+
+
+        /// <summary>
+        /// If the Template does not contains a Path, change this property will
+        /// have no effects. 
+        /// </summary>
+        public Geometry Data
+        {
+            get { return (Geometry)GetValue(DataProperty); }
+            set { SetValue(DataProperty, value); }
+        }
+
+        public static readonly DependencyProperty DataProperty =
+            Path.DataProperty.AddOwner(typeof(Scatter));
+ 
+
         public PointNS Coordinate
         {
             get { return (PointNS)GetValue(CoordinateProperty); }
@@ -75,7 +101,7 @@ namespace MvvmCharting.WpfFX
         private void OnCoordinateChanged(PointNS newValue)
         {
             UpdateAdjustedCoordinate();
-
+ 
         }
 
 
@@ -86,22 +112,29 @@ namespace MvvmCharting.WpfFX
                 return;
             }
 
-            var offset = GetOffsetForSizeChangedOverride();
+            double x, y;
 
-            if (offset.IsEmpty())
+            if (this.NeedOffsetForSize)
             {
-                return;
+                PointNS offset = GetOffsetForSizeChangedOverride();
+                if (offset.IsEmpty())
+                {
+                    return;
+                }
+
+                x = this.Coordinate.X + offset.X;
+                y = this.Coordinate.Y + offset.Y;
             }
-
-            var x = this.Coordinate.X + offset.X;
-            var y = this.Coordinate.Y + offset.Y;
-
+            else
+            {
+                x = this.Coordinate.X;
+                y = this.Coordinate.Y;
+            }
 
             //if (!double.IsInfinity(x))
             //{
             //    Canvas.SetLeft(this, x);
             //}
-
 
             //if (!double.IsInfinity(y))
             //{
@@ -120,11 +153,16 @@ namespace MvvmCharting.WpfFX
             }
         }
 
+        /// <summary>
+        /// Only EllipseGeometry doesn't need to set NeedOffsetForSize to true,
+        /// because it's default center is (0, 0), while other shapes or UIElements
+        /// are centered at (ActualWidth / 2, ActualHeight / 2) 
+        /// </summary>
+        public bool NeedOffsetForSize { get; set; }
 
-        public PointNS GetOffsetForSizeChangedOverride()
+        public virtual PointNS GetOffsetForSizeChangedOverride()
         {
-            //
-            return new PointNS(/*-ActualWidth / 2, -ActualHeight / 2*/);
+            return new PointNS(-ActualWidth / 2, -ActualHeight / 2);
         }
     }
 }

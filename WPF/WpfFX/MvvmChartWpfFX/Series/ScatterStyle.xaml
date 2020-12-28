@@ -2,18 +2,22 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:MvvmCharting.WpfFX">
 
+    <SolidColorBrush x:Key="Scatter.MouseOver.Fill" Color="RoyalBlue"/>
+    <SolidColorBrush x:Key="Scatter.Static.Fill" Color="Red"/>
+
+    <EllipseGeometry x:Key="DefaultScatterPathData" RadiusX="7" RadiusY="7"/>
+
     <Style TargetType="local:Scatter">
+        <Setter Property="Data" Value="{StaticResource DefaultScatterPathData}"/>
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Fill" Value="DarkOrange"/>
+        <Setter Property="Fill" Value="{StaticResource Scatter.Static.Fill}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:Scatter">
                     <Path x:Name="PART_Path" 
-                          RenderTransformOrigin="0.5,0.5"
-                          Fill="{TemplateBinding Fill}">
-                        <Path.Data>
-                            <EllipseGeometry RadiusX="7" RadiusY="7"/>
-                        </Path.Data>
+                          Stretch="{TemplateBinding Stretch}"
+                          Fill="{TemplateBinding Fill}" 
+                          Data="{TemplateBinding Data}">
                         <Path.ToolTip>
                             <TextBlock Text="{Binding }"/>
                         </Path.ToolTip>
@@ -21,12 +25,14 @@
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PART_Path" Property="RenderTransformOrigin" Value="0.5,0.5"/>
                             <Setter TargetName="PART_Path" Property="RenderTransform">
                                 <Setter.Value>
                                     <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                                 </Setter.Value>
                             </Setter>
-                            <Setter TargetName="PART_Path" Property="Fill" Value="{x:Static Brushes.RoyalBlue}"/>
+                            <Setter Property="Opacity" Value="0.6"/>
+                            <Setter TargetName="PART_Path" Property="Fill" Value="{StaticResource Scatter.MouseOver.Fill}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

@@ -35,18 +35,25 @@ namespace Demo
     }
     public class IndexToScatterTemplateConverter : IValueConverter
     {
-        public DataTemplate ScatterTemplate { get; set; }
-        public DataTemplate Scatter2Template { get; set; }
+        public DataTemplate ScatterDataTemplate { get; set; }
+        public DataTemplate ScatterDataTemplate1 { get; set; }
+        public DataTemplate ScatterDataTemplate2 { get; set; }
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
- 
-            string s = (string) value;
-            if (s == "Scatter2Template")
+
+            int index = (int) value;
+            switch (index)
             {
-                return this.Scatter2Template;
+                case 0:
+                    return this.ScatterDataTemplate;
+                case 1:
+                    return this.ScatterDataTemplate1;
+                case 2:
+                    return this.ScatterDataTemplate2;
+                
             }
 
-            return this.ScatterTemplate;
+            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

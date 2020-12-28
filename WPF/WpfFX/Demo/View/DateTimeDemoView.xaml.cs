@@ -27,8 +27,6 @@ namespace Demo
         {
             var q = (double)value;
 
-
-
             var t = DoubleValueConverter.DoubleToDateTimeOffset(q);
 
             return t.ToString("yyyy MMMM", new CultureInfo("en-US"));
