@@ -1,14 +1,17 @@
-﻿namespace MvvmCharting.WpfFX
+﻿using System.Windows;
+
+namespace MvvmCharting.WpfFX
 {
     /// <summary>
     /// A handy class to draw poly line series.
     /// </summary>
     public class PolyLineSeries : PathSeries
     {
-        public PolyLineSeries()
+        static PolyLineSeries()
         {
-            this.GeometryBuilder = new PolyLineGeometryBuilder();
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(PolyLineSeries), new FrameworkPropertyMetadata(typeof(PolyLineSeries)));
         }
+
 
     }
 }

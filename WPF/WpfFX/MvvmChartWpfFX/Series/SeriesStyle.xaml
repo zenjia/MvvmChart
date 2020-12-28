@@ -1,0 +1,76 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:MvvmCharting.WpfFX">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="ScatterStyle.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style TargetType="local:PathSeries">
+        <Setter Property="Stroke" Value="CadetBlue"/>
+        <Setter Property="ScatterTemplate" Value="{StaticResource DefaultScatterTemplate}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:PathSeries">
+                    <Grid>
+                        <Path x:Name="PART_Path" 
+                              Fill="{TemplateBinding Fill}"
+                              Stroke="{TemplateBinding Stroke}" 
+                              StrokeThickness="{TemplateBinding StrokeThickness}">
+                            <Path.ToolTip>
+                                <TextBlock Text="{Binding}"/>
+                            </Path.ToolTip>
+                        </Path>
+
+                        <local:SlimItemsControl x:Name="PART_DataPointItemsControl"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger SourceName="PART_Path" Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PART_Path" Property="StrokeThickness" Value="4"/>
+                            <Setter TargetName="PART_Path" Property="Stroke" Value="{x:Static Brushes.YellowGreen}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <local:PolyLineGeometryBuilder x:Key="DefaultPolyLineGeometryBuilder"/>
+    <local:StepLineGeometryBuilder x:Key="StepLineGeometryBuilder"/>
+    <local:BezierGeometryBuilder x:Key="DefaultSplineGeometryBuilder"/>
+
+    <local:PolyLineAreaSeries x:Key="DefaultPolyLineAreaSeries"/>
+    <local:StepLineAreaGeometryBuilder x:Key="StepStepLineAreaGeometryBuilder"/>
+    <local:BezierAreaGeometryBuilder x:Key="DefaultSplineAreaGeometryBuilder"/>
+
+    <Style TargetType="local:PolyLineSeries" 
+           BasedOn="{StaticResource {x:Type local:PathSeries}}">
+        <Setter Property="GeometryBuilder" Value="{StaticResource DefaultPolyLineGeometryBuilder}"/>
+    </Style>
+
+    <Style TargetType="local:StepLineSeries" 
+           BasedOn="{StaticResource {x:Type local:PathSeries}}">
+        <Setter Property="GeometryBuilder" Value="{StaticResource StepLineGeometryBuilder}"/>
+    </Style>
+
+    <Style TargetType="local:SplineSeries" 
+           BasedOn="{StaticResource {x:Type local:PathSeries}}">
+        <Setter Property="GeometryBuilder" Value="{StaticResource DefaultSplineGeometryBuilder}"/>
+    </Style>
+
+    <Style TargetType="local:PolyLineAreaSeries" 
+           BasedOn="{StaticResource {x:Type local:PathSeries}}">
+        <Setter Property="GeometryBuilder" Value="{StaticResource DefaultPolyLineAreaSeries}"/>
+    </Style>
+
+    <Style TargetType="local:StepLineAreaSeries" 
+           BasedOn="{StaticResource {x:Type local:PathSeries}}">
+        <Setter Property="GeometryBuilder" Value="{StaticResource StepStepLineAreaGeometryBuilder}"/>
+    </Style>
+
+    <Style TargetType="local:SplineAreaSeries" 
+           BasedOn="{StaticResource {x:Type local:PathSeries}}">
+        <Setter Property="GeometryBuilder" Value="{StaticResource DefaultSplineAreaGeometryBuilder}"/>
+    </Style>
+
+</ResourceDictionary>

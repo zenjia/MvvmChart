@@ -1,13 +1,15 @@
-﻿namespace MvvmCharting.WpfFX
+﻿using System.Windows;
+
+namespace MvvmCharting.WpfFX
 {
     /// <summary>
     /// A handy class to draw spline series.
     /// </summary>
     public class SplineSeries : PathSeries
     {
-        public SplineSeries()
+        static SplineSeries()
         {
-            this.GeometryBuilder = new BezierGeometryBuilder();
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(SplineSeries), new FrameworkPropertyMetadata(typeof(SplineSeries)));
         }
 
     }

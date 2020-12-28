@@ -1,0 +1,42 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:MvvmCharting.WpfFX">
+    <Style x:Key="DefaultGridLineStyle" TargetType="Line">
+        <Setter Property="Stroke" Value="SkyBlue"/>
+        <Setter Property="StrokeThickness" Value="1"/>
+        <Setter Property="StrokeDashArray" Value="3 2"/>
+    </Style>
+
+
+
+    <Style TargetType="local:GridLineControl">
+        <Setter Property="VerticalGridLineStyle" Value="{StaticResource DefaultGridLineStyle}"/>
+        <Setter Property="HorizontalGridLineStyle" Value="{StaticResource DefaultGridLineStyle}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:GridLineControl">
+
+                    <Grid Background="{TemplateBinding Background}">
+                        <local:SlimItemsControl x:Name="PART_HorizontalGridLineItemsControl" >
+                            <local:SlimItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Line/>
+                                </DataTemplate>
+                            </local:SlimItemsControl.ItemTemplate>
+                        </local:SlimItemsControl>
+
+                        <local:SlimItemsControl x:Name="PART_VerticalGridLineItemsControl">
+                            <local:SlimItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Line/>
+                                </DataTemplate>
+                            </local:SlimItemsControl.ItemTemplate>
+                        </local:SlimItemsControl>
+
+
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

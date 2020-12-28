@@ -6,24 +6,24 @@
              xmlns:local="clr-namespace:Demo"
              xmlns:mvvmCharting="clr-namespace:MvvmCharting.WpfFX;assembly=MvvmChartWpfFX"
              xmlns:axis="clr-namespace:MvvmCharting.WpfFX.Axis;assembly=MvvmChartWpfFX"
-             mc:Ignorable="d" >
+             mc:Ignorable="d">
+
     <UserControl.Resources>
         <local:DemoDataViewModel x:Key="DemoDataViewModel"/>
-        <mvvmCharting:EllipseGeometryBuilder x:Key="EllipseGeometryBuilder" RadiusX="6" RadiusY="6"/>
-        <DataTemplate x:Key="Scatter2DataTemplate">
-            <mvvmCharting:Scatter2 Fill="OrangeRed" 
-                                  GeometryBuilder="{StaticResource EllipseGeometryBuilder}"
-                                  Opacity="0.6">
 
-            </mvvmCharting:Scatter2>
-        </DataTemplate>
+        <mvvmCharting:EllipseGeometryBuilder x:Key="EllipseGeometryBuilder" RadiusX="6" RadiusY="6"/>
 
         <DataTemplate x:Key="ScatterDataTemplate">
-            <mvvmCharting:Scatter >
-
-
-            </mvvmCharting:Scatter>
+            <mvvmCharting:Scatter />
         </DataTemplate>
+
+
+        <DataTemplate x:Key="Scatter2DataTemplate">
+            <mvvmCharting:Scatter2 Fill="OrangeRed" 
+                                   GeometryBuilder="{StaticResource EllipseGeometryBuilder}"
+                                   Opacity="0.6"/>
+        </DataTemplate>
+
 
         <local:IndexToScatterTemplateConverter x:Key="IndexToScatterTemplateConverter"
                                                ScatterTemplate="{StaticResource ScatterDataTemplate}"

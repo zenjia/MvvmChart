@@ -73,12 +73,13 @@
     <Compile Include="Axis\LinearAxis.cs" />
     <Compile Include="common\PointHelper.cs" />
     <Compile Include="common\SizeHelper.cs" />
-    <Compile Include="common\SlimItemsControl.cs" />
+    <Compile Include="SlimItemsControl\SlimItemsControl.cs" />
     <Compile Include="common\VisualTreeHelper2.cs" />
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\CustomGeometryBuilder.cs" />
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\EllipseGeometryBuilder.cs" />
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\RectangleBuilder.cs" />
     <Compile Include="GridLine\GridLineControl.cs" />
+    <Compile Include="Legend\LegendControl.cs" />
     <Compile Include="Series\Scatter\Scatter.cs" />
     <Compile Include="SeriesChart\SeriesChart.cs" />
     <Compile Include="Series\Scatter\Scatter2.cs" />
@@ -96,6 +97,30 @@
     <Compile Include="Series\SpecificSeries\SplineSeries.cs" />
     <Compile Include="Series\SpecificSeries\StepLineAreaSeries.cs" />
     <Compile Include="Series\SpecificSeries\StepLineSeries.cs" />
+    <Page Include="Axis\AxisStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GridLine\GridLineStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Legend\LegendStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Series\ScatterStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Series\SeriesStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SlimItemsControl\SlimItemsControlStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

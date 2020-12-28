@@ -1,10 +1,12 @@
-﻿namespace MvvmCharting.WpfFX
+﻿using System.Windows;
+
+namespace MvvmCharting.WpfFX
 {
     public class PolyLineAreaSeries : PathSeries
     {
-        public PolyLineAreaSeries()
+        static PolyLineAreaSeries()
         {
-            this.GeometryBuilder = new PolylineAreaGeometryBuilder();
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(PolyLineAreaSeries), new FrameworkPropertyMetadata(typeof(PolyLineAreaSeries)));
         }
 
     }

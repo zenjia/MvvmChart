@@ -27,7 +27,9 @@ namespace MvvmCharting.WpfFX
     [TemplatePart(Name = "PART_SeriesItemsControl", Type = typeof(SlimItemsControl))]
     [TemplatePart(Name = "PART_HorizontalCrossHair", Type = typeof(Line))]
     [TemplatePart(Name = "PART_VerticalCrossHair", Type = typeof(Line))]
-    [TemplatePart(Name = "PART_GridLineHolder", Type = typeof(Line))]
+    [TemplatePart(Name = "PART_GridLineHolder", Type = typeof(ContentControl))]
+    [TemplatePart(Name = "PART_LegendHolder", Type = typeof(ContentControl))]
+
     public class SeriesChart : Control, IXAxisOwner, IYAxisOwner
     {
         static SeriesChart()
@@ -39,9 +41,12 @@ namespace MvvmCharting.WpfFX
         private static readonly string sPART_PlottingCanvas = "PART_PlottingCanvas";
 
         private static readonly string sPART_SeriesItemsControl = "PART_SeriesItemsControl";
+
         private static readonly string sPART_HorizontalCrossHair = "PART_HorizontalCrossHair";
         private static readonly string sPART_VerticalCrossHair = "PART_VerticalCrossHair";
+
         private static readonly string sPART_GridLineHolder = "PART_GridLineHolder";
+        private static readonly string sPART_LegendHolder = "PART_LegendHolder";
 
         private Grid PART_Root;
         private Grid PART_PlottingCanvas;
@@ -51,6 +56,7 @@ namespace MvvmCharting.WpfFX
         private Line PART_VerticalCrossHair;
 
         private ContentControl PART_GridLineHolder;
+        private ContentControl PART_LegendHolder;
 
         private int SeriesCount => this.PART_SeriesItemsControl?.ItemCount ?? 0;
         private IEnumerable<ISeries> GetSeries()
@@ -128,6 +134,9 @@ namespace MvvmCharting.WpfFX
             this.PART_PlottingCanvas.MouseMove += PartPlottingCanvasMouseMove;
             this.PART_PlottingCanvas.MouseLeave += PartPlottingCanvasMouseLeave;
             this.PART_PlottingCanvas.SizeChanged += PartPlottingCanvasSizeChanged;
+
+            this.PART_LegendHolder = (ContentControl)GetTemplateChild(sPART_LegendHolder);
+            OnLegendChanged();
         }
 
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -305,6 +314,11 @@ namespace MvvmCharting.WpfFX
                     .AddHandler(newItemsSource, "CollectionChanged", SeriesItemsSource_CollectionChanged);
             }
 
+
+            if (this.Legend != null)
+            {
+                this.Legend.ItemsSource = this.SeriesItemsSource;
+            }
         }
 
         private void SeriesItemsSource_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -704,7 +718,7 @@ namespace MvvmCharting.WpfFX
                 {
                     newValue.Placement = AxisPlacement.Bottom;
                 }
- 
+
                 this.PART_Root.Children.Add(newValue as UIElement);
                 newValue.Owner = this;
                 newValue.Orientation = AxisType.X;
@@ -749,7 +763,7 @@ namespace MvvmCharting.WpfFX
                     newValue.Placement = AxisPlacement.Left;
                 }
 
- 
+
                 this.PART_Root.Children.Add(newValue as UIElement);
                 newValue.Owner = this;
                 newValue.Orientation = AxisType.Y;
@@ -760,7 +774,7 @@ namespace MvvmCharting.WpfFX
 
         private void OnAxisPlacementChanged(IAxisNS obj)
         {
- 
+
             var axis = obj as UIElement;
             switch (obj.Orientation)
             {
@@ -956,6 +970,65 @@ namespace MvvmCharting.WpfFX
 
         }
         #endregion
+
+        #region Legend
+
+
+
+        public LegendControl Legend
+        {
+            get { return (LegendControl)GetValue(LegendProperty); }
+            set { SetValue(LegendProperty, value); }
+        }
+        public static readonly DependencyProperty LegendProperty =
+            DependencyProperty.Register("Legend", typeof(LegendControl), typeof(SeriesChart), new PropertyMetadata(null, OnLegendPropertyChanged));
+
+        private static void OnLegendPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((SeriesChart)d).OnLegendChanged();
+        }
+
+        private void OnLegendChanged()
+        {
+            if (this.PART_LegendHolder != null)
+            {
+                this.PART_LegendHolder.Content = this.Legend;
+
+                if (this.Legend != null)
+                {
+                    this.Legend.ItemsSource = this.SeriesItemsSource;
+                    this.Legend.LegendItemTemplate = this.LegendItemTemplate;
+                }
+            }
+        }
+
+ 
+
+        public DataTemplate LegendItemTemplate
+        {
+            get { return (DataTemplate)GetValue(LegendItemTemplateProperty); }
+            set { SetValue(LegendItemTemplateProperty, value); }
+        }
+        public static readonly DependencyProperty LegendItemTemplateProperty =
+            DependencyProperty.Register("LegendItemTemplate", typeof(DataTemplate), typeof(SeriesChart), new PropertyMetadata(null, OnLegendItemTemplatePropertyChanged));
+
+        private static void OnLegendItemTemplatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+             ((SeriesChart)d).OnLegendItemTemplateChanged();
+        }
+
+        private void OnLegendItemTemplateChanged()
+        {
+            if (this.Legend != null)
+            {
+              
+                this.Legend.LegendItemTemplate = this.LegendItemTemplate;
+            }
+        }
+
+        #endregion
+
+
 
         /// <summary>
         /// Called when x-axis or y-axis has updated the coordinates of its items.
