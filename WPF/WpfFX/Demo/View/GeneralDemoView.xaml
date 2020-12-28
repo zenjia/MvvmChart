@@ -10,6 +10,7 @@
 
     <UserControl.Resources>
         <local:DemoDataViewModel x:Key="DemoDataViewModel"/>
+        <local:ItemToScatterFillConverter x:Key="ItemToScatterFillConverter"/>
 
         <mvvmCharting:EllipseGeometryBuilder x:Key="EllipseGeometryBuilder" 
                                              RadiusX="6" 
@@ -19,7 +20,7 @@
 
         <!--This is the Default Scatter Style-->
         <DataTemplate x:Key="ScatterDataTemplate">
-            <mvvmCharting:Scatter/>
+            <mvvmCharting:Scatter Fill="{Binding Converter={StaticResource ItemToScatterFillConverter}}"/>
         </DataTemplate>
 
         <!--This change the Data from EllipseGeometry(default) to other geometry-->
@@ -60,7 +61,7 @@
                                         <ScaleTransform ScaleX="1.5" ScaleY="2" />
                                     </Setter.Value>
                                 </Setter>
-                                <Setter Property="Opacity" Value="0.6"/>
+                                <Setter Property="Opacity" Value="0.8"/>
                                 <Setter TargetName="PART_Rect" Property="Fill" Value="SandyBrown"/>
                             </Trigger>
                         </ControlTemplate.Triggers>

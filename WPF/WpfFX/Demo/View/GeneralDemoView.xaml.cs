@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -16,6 +18,38 @@ using MvvmCharting.Common;
 
 namespace Demo
 {
+    public class ItemToScatterFillConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+
+
+
+            SomePoint pt = (SomePoint)value;
+            int i = (int)pt.t;
+            int j = (int)pt.Y;
+
+            if (i % 2 == 0 && j % 2 == 0)
+            {
+                return Brushes.Red;
+            }
+
+
+            return Brushes.LightSeaGreen;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+     
+    }
+
     public class ChartSettingTestViewModel : BindableBase
     {
         public ChartSettingTestViewModel()
