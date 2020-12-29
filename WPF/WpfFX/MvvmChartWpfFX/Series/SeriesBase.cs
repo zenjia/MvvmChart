@@ -32,7 +32,7 @@ namespace MvvmCharting.WpfFX
 
         private SlimItemsControl PART_ScatterItemsControl;
         protected Path PART_Path { get; private set; }
-
+        internal SeriesHost Owner { get; set; }
         protected SeriesBase()
         {
 
@@ -67,7 +67,7 @@ namespace MvvmCharting.WpfFX
                 this.PART_ScatterItemsControl.ItemTemplateSelector = this.ScatterTemplateSelector;
                 this.PART_ScatterItemsControl.ItemTemplate = this.ScatterTemplate;
 
-                UpdateScattersCoordinate();
+                //UpdateScattersCoordinate();
             }
 
 
@@ -270,14 +270,6 @@ namespace MvvmCharting.WpfFX
 
             if (newValue != null)
             {
-                //if (this._coordinateCache == null)
-                //{
-                //    this._coordinateCache = new PointNS[newValue.Count];
-                //}
-                //else
-                //{
-                //    Array.Resize(ref this._coordinateCache, newValue.Count);
-                //}
 
                 HandleItemsSourceCollectionChange(null, newValue);
 

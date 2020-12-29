@@ -1,9 +1,15 @@
-﻿using System.Windows;
+﻿using System.Collections;
+using System.Windows;
 using System.Windows.Media;
 using MvvmCharting.Series;
 
 namespace MvvmCharting.WpfFX
 {
+    public interface SeriesHost
+    {
+        IList SeriesItemsSource { get; }
+    }
+
     /// <summary>
     /// PathSeries just use a Path to draw the series.
     /// This is the generic series type which can be customized to create almost any shape.
@@ -70,9 +76,11 @@ namespace MvvmCharting.WpfFX
                 return;
             }
 
-            var coordinates = this.GetCoordinates();  
-          
-            this.PathData = (Geometry) this.GeometryBuilder.GetGeometry(coordinates);
+            var coordinates = this.GetCoordinates();
+
+            this.PathData = coordinates == null
+                ? Geometry.Empty
+                : (Geometry) this.GeometryBuilder.GetGeometry(coordinates);
         }
     }
 }

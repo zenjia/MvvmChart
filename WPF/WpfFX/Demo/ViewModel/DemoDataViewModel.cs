@@ -89,7 +89,7 @@ namespace Demo
         private void InitiateData()
         {
             var first = new SomePointList(0);
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i <= this.Max; i++)
             {
                 var pt = GetPoint(i);
                 first.DataList.Add(pt);
