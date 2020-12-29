@@ -268,7 +268,7 @@ namespace MvvmCharting.WpfFX
 
                     foreach (var sr in this.GetSeries())
                     {
-                        sr.PlottingXDataRange = this.PlottingXDataRange;
+                        sr.PlottingXValueRange = this.PlottingXDataRange;
                     }
                 }
             }
@@ -289,7 +289,7 @@ namespace MvvmCharting.WpfFX
 
                     foreach (var sr in this.GetSeries())
                     {
-                        sr.PlottingYDataRange = this.PlottingYDataRange;
+                        sr.PlottingYValueRange = this.PlottingYDataRange;
                     }
                 }
             }

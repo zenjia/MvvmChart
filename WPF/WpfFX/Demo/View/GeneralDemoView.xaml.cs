@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -111,6 +112,18 @@ namespace Demo
         public GeneralDemoView()
         {
             InitializeComponent();
+        }
+
+        private void btnAddDataClick(object sender, RoutedEventArgs e)
+        {
+            DemoDataViewModel viewModel = (DemoDataViewModel) this.Resources["DemoDataViewModel"];
+            viewModel.AddData();
+        }
+
+        private void btnRemoveDataClick(object sender, RoutedEventArgs e)
+        {
+            DemoDataViewModel viewModel = (DemoDataViewModel)this.Resources["DemoDataViewModel"];
+            viewModel.RemoveData();
         }
     }
 }

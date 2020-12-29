@@ -196,7 +196,7 @@
             <GroupBox Margin="10" 
                       Padding="9" 
                       DataContext="{Binding Source={StaticResource ChartSettingTestViewModel}}">
-                <StackPanel DataContext="{Binding Source={StaticResource ChartSettingTestViewModel}}">
+                <StackPanel  >
 
                     <CheckBox Content="show back ground image"
                               IsChecked="{Binding ShowBackgroundImage, Mode=TwoWay}"/>
@@ -207,6 +207,12 @@
                               IsChecked="{Binding ShowLegend, Mode=TwoWay}"/>
                 </StackPanel>
             </GroupBox>
+
+            <StackPanel Margin="10,20" >
+                <Button Content="Add Data" Click="btnAddDataClick" />
+                <Button Content="Remove Data"  Click="btnRemoveDataClick" />
+            </StackPanel>
+
 
 
         </StackPanel>

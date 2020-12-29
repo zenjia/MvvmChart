@@ -25,13 +25,13 @@ namespace MvvmCharting.Series
         /// The X value range which is used to plot the whole chart.
         /// A series need to know the plotting X range of its host chart
         /// </summary>
-        Range PlottingXDataRange { get; set; }
+        Range PlottingXValueRange { get; set; }
 
         /// <summary>
         /// The Y value range which is used to plot the whole chart.
         /// A series need to know the plotting Y range of its host chart
         /// </summary>
-        Range PlottingYDataRange { get; set; }
+        Range PlottingYValueRange { get; set; }
 
 
         bool IsHighLighted { get; set; }
@@ -50,6 +50,6 @@ namespace MvvmCharting.Series
         /// </summary>
         event Action<Range> YRangeChanged;
 
-        event Action<object, string> PropertyChanged;
+        //event Action<object, string> PropertyChanged;
     }
 }

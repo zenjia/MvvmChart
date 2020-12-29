@@ -61,26 +61,37 @@ namespace Demo
                 }
             }
         }
-        public DemoDataViewModel()
+
+        private int _max=30;
+        public int Max
         {
-            this.AvailableScatterTemplates = new ObservableCollection<string>()
-            {
-                "ScatterTemplate",
-                "Scatter2Template"
-            };
+            get { return _max; }
+            set { _max = value; }
+        }
 
-           
 
-            this.ItemsSourceList = new ObservableCollection<SomePointList>();
+        private int _min=0;
+        public int Min
+        {
+            get { return _min; }
+            set { _min = value; }
+        }
 
-            this.SelectedScatterTemplateType = this.AvailableScatterTemplates.First();
+        private SomePoint GetPoint(int i)
+        {
+            var v = i / 1.0;
+            var y = Math.Abs(v) < 1e-10 ? 1 : Math.Sin(v) / v;
+            var pt = new SomePoint(v, y);
 
+            return pt;
+        }
+
+        private void InitiateData()
+        {
             var first = new SomePointList(0);
             for (int i = 0; i < 30; i++)
             {
-                var v = i / 1.0;
-                var y =  Math.Abs(v) < 1e-10 ? 1 : Math.Sin(v) / v;
-                var pt = new SomePoint(v, y);
+                var pt = GetPoint(i);
                 first.DataList.Add(pt);
             }
 
@@ -97,7 +108,52 @@ namespace Demo
 
                 ItemsSourceList.Add(list);
             }
+        }
 
+        public void AddData()
+        {
+            this.Max++;
+            var pt = GetPoint(this.Max);
+            for (int i = 0; i < ItemsSourceList.Count; i++)
+            {
+                var list = ItemsSourceList[i];
+                double yOffset = i * 0.5;
+                list.DataList.Add(new SomePoint(pt.t, pt.Y + yOffset));
+            }
+        }
+
+        public void RemoveData()
+        {
+            this.Min++;
+ 
+            for (int i = 0; i < ItemsSourceList.Count; i++)
+            {
+                var list = ItemsSourceList[i];
+                if (list.DataList.Count>3)
+                {
+                    list.DataList.RemoveAt(0);
+                }
+ 
+            }
+        }
+
+
+        public DemoDataViewModel()
+        {
+            this.AvailableScatterTemplates = new ObservableCollection<string>()
+            {
+                "ScatterTemplate",
+                "Scatter2Template"
+            };
+
+           
+
+            this.ItemsSourceList = new ObservableCollection<SomePointList>();
+
+            this.SelectedScatterTemplateType = this.AvailableScatterTemplates.First();
+
+
+            InitiateData();
 
 
 

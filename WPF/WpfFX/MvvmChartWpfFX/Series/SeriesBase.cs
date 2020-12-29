@@ -35,7 +35,7 @@ namespace MvvmCharting.WpfFX
 
         protected SeriesBase()
         {
- 
+
             this.HorizontalAlignment = HorizontalAlignment.Stretch;
         }
 
@@ -48,7 +48,7 @@ namespace MvvmCharting.WpfFX
             if (this.PART_Path != null)
             {
                 this.PART_Path.Visibility = this.IsLineOrAreaVisible ? Visibility.Visible : Visibility.Collapsed;
- 
+
             }
 
 
@@ -208,7 +208,7 @@ namespace MvvmCharting.WpfFX
         public static readonly DependencyProperty StrokeThicknessProperty =
             Shape.StrokeThicknessProperty.AddOwner(typeof(SeriesBase), new PropertyMetadata(1.0));
 
- 
+
 
         public Brush Fill
         {
@@ -227,7 +227,7 @@ namespace MvvmCharting.WpfFX
         public static readonly DependencyProperty IsHighLightedProperty =
             DependencyProperty.Register("IsHighLighted", typeof(bool), typeof(SeriesBase), new PropertyMetadata(false));
 
- 
+
 
         #endregion
 
@@ -270,14 +270,14 @@ namespace MvvmCharting.WpfFX
 
             if (newValue != null)
             {
-                if (this._coordinateCache == null)
-                {
-                    this._coordinateCache = new PointNS[newValue.Count];
-                }
-                else
-                {
-                    Array.Resize(ref this._coordinateCache, newValue.Count);
-                }
+                //if (this._coordinateCache == null)
+                //{
+                //    this._coordinateCache = new PointNS[newValue.Count];
+                //}
+                //else
+                //{
+                //    Array.Resize(ref this._coordinateCache, newValue.Count);
+                //}
 
                 HandleItemsSourceCollectionChange(null, newValue);
 
@@ -412,7 +412,7 @@ namespace MvvmCharting.WpfFX
         #endregion
 
 
-
+        #region value range
         private Range _yValueRange = Range.Empty;
         /// <summary>
         /// The min & max of the dependent value
@@ -451,45 +451,46 @@ namespace MvvmCharting.WpfFX
                 }
             }
         }
+        #endregion
 
-
-        private Range _plottingXDataRange = Range.Empty;
+        #region plotting value range
+        private Range _plottingXValueRange = Range.Empty;
         /// <summary>
         /// The final X value range used to plot the chart
         /// </summary>
-        public Range PlottingXDataRange
+        public Range PlottingXValueRange
         {
-            get { return this._plottingXDataRange; }
+            get { return this._plottingXValueRange; }
             set
             {
-                if (this._plottingXDataRange != value)
+                if (this._plottingXValueRange != value)
                 {
-                    this._plottingXDataRange = value;
+                    this._plottingXValueRange = value;
 
                     UpdateScattersCoordinate();
                 }
             }
         }
 
-        private Range _plottingYDataRange = Range.Empty;
+        private Range _plottingYValueRange = Range.Empty;
         /// <summary>
         /// The final Y value range used to plot the chart
         /// </summary>
-        public Range PlottingYDataRange
+        public Range PlottingYValueRange
         {
-            get { return this._plottingYDataRange; }
+            get { return this._plottingYValueRange; }
             set
             {
-                if (this._plottingYDataRange != value)
+                if (this._plottingYValueRange != value)
                 {
-                    this._plottingYDataRange = value;
+                    this._plottingYValueRange = value;
 
                     UpdateScattersCoordinate();
 
                 }
             }
         }
-
+        #endregion
 
 
         #region Coordinates calculating
@@ -498,8 +499,8 @@ namespace MvvmCharting.WpfFX
 
         private void UpdatePixelPerUnit()
         {
-            if (this.PlottingXDataRange.IsInvalid ||
-                this.PlottingYDataRange.IsInvalid ||
+            if (this.PlottingXValueRange.IsInvalid ||
+                this.PlottingYValueRange.IsInvalid ||
                 this.RenderSize.IsInvalid())
             {
                 this.xPixelPerUnit = double.NaN;
@@ -510,16 +511,16 @@ namespace MvvmCharting.WpfFX
 
 
 
-            this.xPixelPerUnit = this.RenderSize.Width / this.PlottingXDataRange.Span;
-            this.yPixelPerUnit = this.RenderSize.Height / this.PlottingYDataRange.Span;
+            this.xPixelPerUnit = this.RenderSize.Width / this.PlottingXValueRange.Span;
+            this.yPixelPerUnit = this.RenderSize.Height / this.PlottingYValueRange.Span;
 
         }
 
         private PointNS GetPlotCoordinateForItem(object item)
         {
             var itemValuePoint = GetPointFromItem(item);
-            var pt = new PointNS((itemValuePoint.X - this.PlottingXDataRange.Min) * this.xPixelPerUnit,
-                (itemValuePoint.Y - this.PlottingYDataRange.Min) * this.yPixelPerUnit);
+            var pt = new PointNS((itemValuePoint.X - this.PlottingXValueRange.Min) * this.xPixelPerUnit,
+                (itemValuePoint.Y - this.PlottingYValueRange.Min) * this.yPixelPerUnit);
 
             return pt;
         }
@@ -537,6 +538,9 @@ namespace MvvmCharting.WpfFX
 
                 return;
             }
+
+
+            Array.Resize(ref this._coordinateCache, this.ItemsSource.Count);
 
 
             for (int i = 0; i < this.ItemsSource.Count; i++)
@@ -586,7 +590,7 @@ namespace MvvmCharting.WpfFX
 
 
 
-      
+
     }
 
 
