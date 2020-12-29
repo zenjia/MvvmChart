@@ -5,6 +5,8 @@ using MvvmCharting.Drawing;
 
 namespace MvvmCharting.WpfFX
 {
+ 
+
     public static class PointHelper
     {
         public static Point EmptyPoint = new Point(Double.NaN, double.NaN);

@@ -9,51 +9,56 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <local:DemoDataViewModel x:Key="DemoDataViewModel"/>
+        <local:DemoDataViewModel2 x:Key="DemoDataViewModel"/>
+        <mvvmCharting:PolyLineGeometryBuilder x:Key="PolyLineGeometryBuilder"/>
+        <mvvmCharting:SplineGeometryBuilder x:Key="SplineGeometryBuilder"/>
         <DataTemplate x:Key="SeriesTemplate0" DataType="local:SomePointList">
-            <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
+            <mvvmCharting:ProportionAreaSeries IndependentValueProperty="t"
                                              DependentValueProperty="Y"
                                              Mode="Area"
+                                             GeometryBuilder="{StaticResource PolyLineGeometryBuilder}"
                                              Stroke="Blue"
                                              Opacity="0.4"
                                              Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
                                              IsScatterVisible="{Binding ShowSeriesPoints}"
                                              IsLineOrAreaVisible="{Binding ShowSeriesLine}"
                                              ItemsSource="{Binding DataList}">
-                <mvvmCharting:PolyLineSeries.ScatterTemplate>
+                <mvvmCharting:ProportionAreaSeries.ScatterTemplate>
                     <DataTemplate>
                         <mvvmCharting:Scatter Fill="Red" 
                                                       Opacity="0.5"/>
                     </DataTemplate>
-                </mvvmCharting:PolyLineSeries.ScatterTemplate>
-            </mvvmCharting:PolyLineSeries>
+                </mvvmCharting:ProportionAreaSeries.ScatterTemplate>
+            </mvvmCharting:ProportionAreaSeries>
 
         </DataTemplate>
 
         <DataTemplate x:Key="SeriesTemplate1" DataType="local:SomePointList">
-            <mvvmCharting:StepLineSeries IndependentValueProperty="t"
-                                         DependentValueProperty="Y"
-                                         Mode="Area"
-                                         Stroke="Red"
-                                         Opacity="0.4"
-                                         Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
-                                         IsScatterVisible="{Binding ShowSeriesPoints}"
-                                         IsLineOrAreaVisible="{Binding ShowSeriesLine}"
-                                         ItemsSource="{Binding DataList}"/>
+            <mvvmCharting:ProportionAreaSeries IndependentValueProperty="t"
+                                               DependentValueProperty="Y"
+                                               Mode="Area"
+                                               GeometryBuilder="{StaticResource PolyLineGeometryBuilder}"
+                                               Stroke="Red"
+                                               Opacity="0.4"
+                                               Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
+                                               IsScatterVisible="{Binding ShowSeriesPoints}"
+                                               IsLineOrAreaVisible="{Binding ShowSeriesLine}"
+                                               ItemsSource="{Binding DataList}"/>
 
         </DataTemplate>
 
         <DataTemplate x:Key="SeriesTemplate2" DataType="local:SomePointList">
-            <mvvmCharting:SplineSeries IndependentValueProperty="t"
-                                           DependentValueProperty="Y"
-                                           Mode="Area"
-                                           Stroke="Green"
-                                           Opacity="0.6"
-                                           Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
-                                           IsScatterVisible="{Binding ShowSeriesPoints}"
-                                           IsLineOrAreaVisible="{Binding ShowSeriesLine}"
-                                           ItemsSource="{Binding DataList}">
-            </mvvmCharting:SplineSeries>
+            <mvvmCharting:ProportionAreaSeries IndependentValueProperty="t"
+                                               DependentValueProperty="Y"
+                                               Mode="Area"
+                                               GeometryBuilder="{StaticResource PolyLineGeometryBuilder}"
+                                               Stroke="Green"
+                                               Opacity="0.6"
+                                               Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
+                                               IsScatterVisible="{Binding ShowSeriesPoints}"
+                                               IsLineOrAreaVisible="{Binding ShowSeriesLine}"
+                                               ItemsSource="{Binding DataList}">
+            </mvvmCharting:ProportionAreaSeries>
         </DataTemplate>
 
 
@@ -71,22 +76,15 @@
         </Grid.RowDefinitions>
 
         <mvvmCharting:Chart Background="Bisque"
+                            YMaximum="1"
+                            YMinimum="0"
                               SeriesTemplateSelector="{StaticResource SeriesTemplateSelector}"
                               SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource DemoDataViewModel}}">
 
 
 
         </mvvmCharting:Chart>
-        <GroupBox Header="Options" 
-                  Grid.Row="1"
-                  Margin="20" 
-                  HorizontalAlignment="Left"
-                  Padding="9">
-            <StackPanel >
-                <CheckBox Content="ShowSeriesLine" IsChecked="{Binding Source={StaticResource DemoDataViewModel}, Path=ShowSeriesLine, Mode=TwoWay}"/>
-                <CheckBox Content="ShowSeriesScatter" IsChecked="{Binding Source={StaticResource DemoDataViewModel}, Path=ShowSeriesPoints, Mode=TwoWay}"/>
-            </StackPanel>
-        </GroupBox>
+ 
 
 
 

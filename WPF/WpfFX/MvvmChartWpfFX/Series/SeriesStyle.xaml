@@ -17,6 +17,7 @@
                 <ControlTemplate TargetType="local:PathSeries">
                     <Grid>
                         <Path x:Name="PART_Path" 
+                              
                               Stroke="{TemplateBinding Stroke}" 
                               StrokeThickness="{TemplateBinding StrokeThickness}">
                             <Path.ToolTip>

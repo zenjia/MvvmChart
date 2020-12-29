@@ -26,7 +26,7 @@ namespace MvvmCharting.WpfFX
     /// A series is composed of a curve(or a area) and a collection of Scatters
     /// </summary>
     [TemplatePart(Name = "PART_SeriesItemsControl", Type = typeof(SlimItemsControl))]
-    public class SeriesChart : Control
+    public class SeriesChart : Control, ISeriesHost
     {
         private static readonly string sPART_SeriesItemsControl = "PART_SeriesItemsControl";
         static SeriesChart()
@@ -38,14 +38,14 @@ namespace MvvmCharting.WpfFX
 
         private int SeriesCount => this.PART_SeriesItemsControl?.ItemCount ?? 0;
 
-        private IEnumerable<ISeries> GetSeries()
+        public IEnumerable<SeriesBase> GetSeries()
         {
             if (this.PART_SeriesItemsControl == null)
             {
-                return Enumerable.Empty<ISeries>();
+                return Enumerable.Empty<SeriesBase>();
             }
 
-            return this.PART_SeriesItemsControl.GetAllElements().OfType<ISeries>();
+            return this.PART_SeriesItemsControl.GetAllElements().OfType<SeriesBase>();
         }
 
         public override void OnApplyTemplate()
@@ -94,6 +94,11 @@ namespace MvvmCharting.WpfFX
             sr.YRangeChanged += Sr_YValueRangeChanged;
             //sr.PropertyChanged += Sr_PropertyChanged;
 
+
+            if (sr is ProportionAreaSeries)
+            {
+                ((ProportionAreaSeries)sr).Owner = this;
+            }
 
             sr.UpdateValueRange();
 

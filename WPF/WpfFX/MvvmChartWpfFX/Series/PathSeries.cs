@@ -56,8 +56,27 @@ namespace MvvmCharting.WpfFX
             ((PathSeries)d).UpdateLineOrArea();
         }
 
+        protected virtual PointNS[] GetPreviousSeriesCoordinates()
+        {
 
-     
+            PointNS[] previous = null;
+            switch (this.Mode)
+            {
+                case SeriesGeometryMode.Line:
+                    break;
+                case SeriesGeometryMode.Area:
+                    previous = new PointNS[2];
+                    previous[0] = new PointNS(0, 0);
+                    previous[1] = new PointNS(this.ActualWidth, 0);
+                    break;
+                case SeriesGeometryMode.ProportionalArea:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return previous;
+        }
 
         /// <summary>
         /// This should be called when GeometryBuilder, Mode or coordinates changed
@@ -71,29 +90,16 @@ namespace MvvmCharting.WpfFX
             {
                 return;
             }
-            
-           
+
+
             var coordinates = this.GetCoordinates();
 
-            PointNS[] previous = null;
-            switch (this.Mode)
-            {
-                case SeriesGeometryMode.Line:
-                    break;
-                case SeriesGeometryMode.Area:
-                    previous = new PointNS[2];
-                    previous[0] = new PointNS(0,0);
-                    previous[1] = new PointNS(this.ActualWidth, 0);
-                    break;
-                case SeriesGeometryMode.ProportionalArea:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            PointNS[] previous = GetPreviousSeriesCoordinates();
 
             var geometry = coordinates == null
                 ? Geometry.Empty
-                : (Geometry) this.GeometryBuilder.GetGeometry(coordinates, previous);
+                : (Geometry)this.GeometryBuilder.GetGeometry(coordinates, previous);
+
 
             if (geometry != this._pathData)
             {

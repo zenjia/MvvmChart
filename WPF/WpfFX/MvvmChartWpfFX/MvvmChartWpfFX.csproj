@@ -76,6 +76,7 @@
     <Compile Include="common\SizeHelper.cs" />
     <Compile Include="Legend\LegendItemControl.cs" />
     <Compile Include="Series\ISeriesHost.cs" />
+    <Compile Include="Series\ProportionAreaSeries.cs" />
     <Compile Include="Series\SeriesGeometryMode.cs" />
     <Compile Include="SlimItemsControl\SlimItemsControl.cs" />
     <Compile Include="common\VisualTreeHelper2.cs" />

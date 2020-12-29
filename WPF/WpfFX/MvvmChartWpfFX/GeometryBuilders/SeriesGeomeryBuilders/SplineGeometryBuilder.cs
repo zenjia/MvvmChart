@@ -85,6 +85,7 @@ namespace MvvmCharting.WpfFX
 
                 if (previousPoints.Length > 2)
                 {
+ 
                     bezierSegment = new PolyBezierSegment(previousPoints.Reversed(), false);
                     pathFigure.Segments.Add(bezierSegment);
                 }
@@ -93,6 +94,9 @@ namespace MvvmCharting.WpfFX
                     var polyLineSegment = new PolyLineSegment(previousPoints.Reversed(), false);
                     pathFigure.Segments.Add(polyLineSegment);
                 }
+
+                lineSegment = new LineSegment(points[0], false);
+                pathFigure.Segments.Add(lineSegment);
 
                 pathFigure.IsClosed = true;
                 pathFigure.IsFilled = true;
@@ -129,6 +133,7 @@ namespace MvvmCharting.WpfFX
                 }
                 else
                 {
+ 
                     curvePoints2 = MakeCurvePoints(previousPoints, this.Tension);
                 }
             }
