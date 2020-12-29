@@ -400,22 +400,11 @@ namespace MvvmCharting.WpfFX
 
         public void LoadAllItems()
         {
-            if (this.ItemsSource == null)
+            if (this.ItemsSource == null || !CanAddItem())
             {
-             
                 return;
             }
-
-
-            if (!CanAddItem())
-            {
-
-              
-                return;
-            }
-
-
-
+            
             if (object.ReferenceEquals(this._handledItemsSource, this.ItemsSource))
             {
                 return;

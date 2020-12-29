@@ -305,7 +305,7 @@ namespace MvvmCharting.WpfFX
                     this._plottingXDataRange = value;
                     TryUpdatePlottingSettings(AxisType.X);
 
-                    this.PART_SeriesChart.PlottingXDataRange = value;
+                    this.PART_SeriesChart.PlottingXValueRange = value;
                     //OnPlottingXDataRangeChanged();
                 }
             }
@@ -325,7 +325,7 @@ namespace MvvmCharting.WpfFX
                     this._plottingYDataRange = value;
 
                     TryUpdatePlottingSettings(AxisType.Y);
-                    this.PART_SeriesChart.PlottingYDataRange = value;
+                    this.PART_SeriesChart.PlottingYValueRange = value;
                     // OnPlottingYDataRangeChanged();
                 }
             }
@@ -391,33 +391,8 @@ namespace MvvmCharting.WpfFX
         public event Action<PlottingSettings> VerticalSettingChanged;
 
         private PlottingSettings _horizontalPlottingSetting;
-        private PlottingSettings HorizontalPlottingSetting
-        {
-            get { return this._horizontalPlottingSetting; }
-            set
-            {
-                if (this._horizontalPlottingSetting != value)
-                {
-                    this._horizontalPlottingSetting = value;
-
-                    this.HorizontalSettingChanged?.Invoke(value);
-                }
-            }
-        }
-
         private PlottingSettings _verticalPlottingSetting;
-        private PlottingSettings VerticalPlottingSetting
-        {
-            get { return this._verticalPlottingSetting; }
-            set
-            {
-                if (this._verticalPlottingSetting != value)
-                {
-                    this._verticalPlottingSetting = value;
-                    this.VerticalSettingChanged?.Invoke(value);
-                }
-            }
-        }
+
         private PlottingSettings GetPlottingSettings(AxisType orientation)
         {
             if (this.PART_PlottingCanvas == null)
@@ -461,6 +436,11 @@ namespace MvvmCharting.WpfFX
 
             return null;
         }
+        
+        /// <summary>
+        /// Detect if plotting setting changed. If true, then re-plot the axis & gridline
+        /// </summary>
+        /// <param name="orientation"></param>
         private void TryUpdatePlottingSettings(AxisType orientation)
         {
             if (!this.IsLoaded)
@@ -469,14 +449,22 @@ namespace MvvmCharting.WpfFX
             }
 
 
-            var args = GetPlottingSettings(orientation);
+            var newValue = GetPlottingSettings(orientation);
             switch (orientation)
             {
                 case AxisType.X:
-                    this.HorizontalPlottingSetting = args;
+                    if (this._horizontalPlottingSetting != newValue)
+                    {
+                        this._horizontalPlottingSetting = newValue;
+                        this.HorizontalSettingChanged?.Invoke(newValue);
+                    }
                     break;
                 case AxisType.Y:
-                    this.VerticalPlottingSetting = args;
+                    if (this._verticalPlottingSetting != newValue)
+                    {
+                        this._verticalPlottingSetting = newValue;
+                        this.VerticalSettingChanged?.Invoke(newValue);
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(orientation), orientation, null);

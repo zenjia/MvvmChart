@@ -17,6 +17,13 @@ namespace Demo
             set { SetProperty(ref this._isVisible, value); }
         }
 
+        private bool _isHighlighted;
+        public bool IsHighlighted
+        {
+            get { return _isHighlighted; }
+            set { SetProperty(ref _isHighlighted, value); }
+        }
+
         private bool _showSeriesLine = true;
         public bool ShowSeriesLine
         {

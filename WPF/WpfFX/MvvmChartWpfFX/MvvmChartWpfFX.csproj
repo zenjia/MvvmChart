@@ -75,6 +75,8 @@
     <Compile Include="common\PointHelper.cs" />
     <Compile Include="common\SizeHelper.cs" />
     <Compile Include="Legend\LegendItemControl.cs" />
+    <Compile Include="Series\ISeriesHost.cs" />
+    <Compile Include="Series\SeriesGeometryMode.cs" />
     <Compile Include="SlimItemsControl\SlimItemsControl.cs" />
     <Compile Include="common\VisualTreeHelper2.cs" />
     <Compile Include="GeometryBuilders\ScatterGeometryBuilders\CustomGeometryBuilder.cs" />
@@ -85,19 +87,12 @@
     <Compile Include="Series\Scatter\Scatter.cs" />
     <Compile Include="Chart.cs" />
     <Compile Include="Series\Scatter\Scatter2.cs" />
-    <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\BezierAreaGeometryBuilder.cs" />
-    <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\BezierPathBuilder.cs" />
-    <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\PolylineAreaGeometryBuilder.cs" />
+    <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\SplineGeometryBuilder.cs" />
     <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\PolyLineGeometryBuilder.cs" />
-    <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\StepLineAreaGeometryBuilder.cs" />
     <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\StepLineGeometryBuilder.cs" />
     <Compile Include="Series\PathSeries.cs" />
-    <Compile Include="Series\SpecificScatters\RoundScatter2.cs" />
-    <Compile Include="Series\SpecificSeries\PolyLineAreaSeries.cs" />
     <Compile Include="Series\SpecificSeries\PolyLineSeries.cs" />
-    <Compile Include="Series\SpecificSeries\SplineAreaSeries.cs" />
     <Compile Include="Series\SpecificSeries\SplineSeries.cs" />
-    <Compile Include="Series\SpecificSeries\StepLineAreaSeries.cs" />
     <Compile Include="Series\SpecificSeries\StepLineSeries.cs" />
     <Page Include="Axis\AxisStyle.xaml">
       <SubType>Designer</SubType>
@@ -164,6 +159,8 @@
       <Name>CommonLib</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Series\SpecificScatters\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

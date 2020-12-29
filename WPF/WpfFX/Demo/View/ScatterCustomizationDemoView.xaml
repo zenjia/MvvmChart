@@ -42,7 +42,9 @@
         <DataTemplate x:Key="SeriesTemplate0" DataType="local:SomePointList">
             <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
                                              DependentValueProperty="Y"
-                                             Stroke="CadetBlue"
+                                             IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
+                                             Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
+
                                              StrokeThickness="1.5"
                                              Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
                                              IsScatterVisible="{Binding ShowSeriesPoints}"
@@ -66,7 +68,9 @@
         <DataTemplate x:Key="SeriesTemplate1" DataType="local:SomePointList">
             <mvvmCharting:StepLineSeries IndependentValueProperty="t"
                                          DependentValueProperty="Y"
-                                         Stroke="Red"
+                                         IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
+                                         Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
+
                                          StrokeThickness="1.5"
                                          Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
                                          IsScatterVisible="{Binding ShowSeriesPoints}"
@@ -78,7 +82,9 @@
         <DataTemplate x:Key="SeriesTemplate2" DataType="local:SomePointList">
             <mvvmCharting:SplineSeries IndependentValueProperty="t"
                                      DependentValueProperty="Y"
-                                     Stroke="Green"
+                                     IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
+                                     Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
+
                                      StrokeThickness="1.5"
                                      Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
                                      IsScatterVisible="{Binding ShowSeriesPoints}"
@@ -109,7 +115,13 @@
                               SeriesTemplateSelector="{StaticResource SeriesTemplateSelector}"
                               SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource DemoDataViewModel}}">
 
- 
+            <mvvmCharting:Chart.LegendItemTemplate>
+                <DataTemplate DataType="local:SomePointList">
+                    <mvvmCharting:LegendItemControl 
+                        IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
+                        IndicatorBrush="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"/>
+                </DataTemplate>
+            </mvvmCharting:Chart.LegendItemTemplate>
 
         </mvvmCharting:Chart>
 

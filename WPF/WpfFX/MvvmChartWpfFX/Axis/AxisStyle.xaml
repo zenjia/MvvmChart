@@ -4,7 +4,7 @@
                     xmlns:axis="clr-namespace:MvvmCharting.Axis;assembly=CommonLib"
                     xmlns:wpfFx="clr-namespace:MvvmCharting.WpfFX">
 
-    <SolidColorBrush x:Key="AxisItem.MouseOver.Foregound" Color="{x:Static SystemColors.HighlightTextColor}"/>
+    <SolidColorBrush x:Key="AxisItem.MouseOver.Foregound" Color="Maroon"/>
     <Style TargetType="local:AxisItem">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="VerticalAlignment" Value="Top"/>

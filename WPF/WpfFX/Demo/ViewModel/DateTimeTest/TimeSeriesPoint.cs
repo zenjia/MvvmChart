@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using MvvmCharting.Common;
 using MvvmCharting;
 
@@ -13,6 +14,11 @@ namespace Demo
         {
             this.t = t;
             this.Y = y;
+        }
+
+        public override string ToString()
+        {
+            return $"{t.ToString("yy-MMM-dd ddd",  CultureInfo.CurrentCulture)}: {Y:F2}";
         }
     }
 }

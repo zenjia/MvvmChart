@@ -5,10 +5,11 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
- 
+
+        <local:IndexToStrokeConverter x:Key="IndexToStrokeConverter"/>
+
         <BooleanToVisibilityConverter x:Key="t2v"/>
  
-        <SolidColorBrush x:Key="Series_Highlighted_Stroke" Color="Red"/>
 
         <Style TargetType="Button">
             <Setter Property="Margin" Value="1"/>

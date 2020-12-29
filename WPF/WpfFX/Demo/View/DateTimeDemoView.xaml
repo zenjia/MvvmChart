@@ -13,10 +13,11 @@
 
         <local:DoubleToDateTimeStringConverter x:Key="DoubleToDateTimeStringConverter"/>
         <local:TimeSeriesViewModel x:Key="TimeSeriesViewModel"/>
-        <DataTemplate x:Key="SeriesTemplate" DataType="local:SomePointList">
+        <DataTemplate x:Key="SeriesTemplate" DataType="local:TimeSeriesData">
             <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
                                          DependentValueProperty="Y"
-                                         Stroke="CadetBlue"
+                                         IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
+                                         Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
                                          StrokeThickness="1.5"
                                          Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
                                          IsScatterVisible="{Binding ShowSeriesPoints}"
@@ -37,7 +38,13 @@
             <axis:LinearAxis LabelTextConverter="{StaticResource DoubleToDateTimeStringConverter}"/>
         </mvvmCharting:Chart.XAxis>
 
- 
+        <mvvmCharting:Chart.LegendItemTemplate>
+            <DataTemplate DataType="local:TimeSeriesData">
+                <mvvmCharting:LegendItemControl 
+                    IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
+                    IndicatorBrush="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"/>
+            </DataTemplate>
+        </mvvmCharting:Chart.LegendItemTemplate>
 
     </mvvmCharting:Chart>
 </UserControl>

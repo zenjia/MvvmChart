@@ -106,7 +106,7 @@ namespace Demo
                     list.DataList.Add(new SomePoint(item.t, item.Y + yOffset));
                 }
 
-                ItemsSourceList.Add(list);
+                ItemsSourceList.Insert(0, list);
             }
         }
 
@@ -114,9 +114,10 @@ namespace Demo
         {
             this.Max++;
             var pt = GetPoint(this.Max);
+            int j = ItemsSourceList.Count - 1;
             for (int i = 0; i < ItemsSourceList.Count; i++)
             {
-                var list = ItemsSourceList[i];
+                var list = ItemsSourceList[j--];
                 double yOffset = i * 0.5;
                 list.DataList.Add(new SomePoint(pt.t, pt.Y + yOffset));
             }

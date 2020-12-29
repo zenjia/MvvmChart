@@ -17,7 +17,6 @@
                 <ControlTemplate TargetType="local:PathSeries">
                     <Grid>
                         <Path x:Name="PART_Path" 
-                              Fill="{TemplateBinding Fill}"
                               Stroke="{TemplateBinding Stroke}" 
                               StrokeThickness="{TemplateBinding StrokeThickness}">
                             <Path.ToolTip>
@@ -32,6 +31,17 @@
                         <Trigger Property="IsHighLighted" Value="True">
                             <Setter TargetName="PART_Path" Property="StrokeThickness" Value="{StaticResource Series.Highlighted.StrokeThickness}"/>
                         </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Mode" Value="Area"/>
+                                <Condition Property="IsHighLighted" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.Setters>
+                                <Setter TargetName="PART_Path" Property="Opacity" Value="0.4"/>
+                                <Setter TargetName="PART_Path" Property="Stroke" Value="{x:Static Brushes.Chartreuse}"/>
+                                <Setter TargetName="PART_Path" Property="StrokeThickness" Value="{StaticResource Series.Highlighted.StrokeThickness}"/>
+                            </MultiTrigger.Setters>
+                        </MultiTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -40,11 +50,8 @@
 
     <local:PolyLineGeometryBuilder x:Key="DefaultPolyLineGeometryBuilder"/>
     <local:StepLineGeometryBuilder x:Key="StepLineGeometryBuilder"/>
-    <local:BezierGeometryBuilder x:Key="DefaultSplineGeometryBuilder"/>
+    <local:SplineGeometryBuilder x:Key="DefaultSplineGeometryBuilder"/>
 
-    <local:PolylineAreaGeometryBuilder x:Key="DefaultPolyLineAreaSeries"/>
-    <local:StepLineAreaGeometryBuilder x:Key="StepStepLineAreaGeometryBuilder"/>
-    <local:BezierAreaGeometryBuilder x:Key="DefaultSplineAreaGeometryBuilder"/>
 
     <Style TargetType="local:PolyLineSeries" 
            BasedOn="{StaticResource {x:Type local:PathSeries}}">
@@ -61,19 +68,6 @@
         <Setter Property="GeometryBuilder" Value="{StaticResource DefaultSplineGeometryBuilder}"/>
     </Style>
 
-    <Style TargetType="local:PolyLineAreaSeries" 
-           BasedOn="{StaticResource {x:Type local:PathSeries}}">
-        <Setter Property="GeometryBuilder" Value="{StaticResource DefaultPolyLineAreaSeries}"/>
-    </Style>
-
-    <Style TargetType="local:StepLineAreaSeries" 
-           BasedOn="{StaticResource {x:Type local:PathSeries}}">
-        <Setter Property="GeometryBuilder" Value="{StaticResource StepStepLineAreaGeometryBuilder}"/>
-    </Style>
-
-    <Style TargetType="local:SplineAreaSeries" 
-           BasedOn="{StaticResource {x:Type local:PathSeries}}">
-        <Setter Property="GeometryBuilder" Value="{StaticResource DefaultSplineAreaGeometryBuilder}"/>
-    </Style>
+    
 
 </ResourceDictionary>

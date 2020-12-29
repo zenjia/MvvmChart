@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Media;
 using MvvmCharting.Drawing;
 using MvvmCharting.Series;
 
@@ -7,23 +6,46 @@ namespace MvvmCharting.WpfFX
 {
     public class StepLineGeometryBuilder : ISeriesGeometryBuilder
     {
-        
-        public object GetGeometry(PointNS[] points)
+        public object GetGeometry(PointNS[] points, PointNS[] previousPoints)
         {
-            PointCollection pc = new PointCollection();
-            foreach (var pt in points)
+            PointNS[] arr;
+            if (previousPoints!=null)
             {
-                if (pc.Count > 0)
-                {
-                    pc.Add(new Point(pt.X, pc[pc.Count - 1].Y));
-                }
-                pc.Add(pt.ToPoint());
-            }
+                arr = new PointNS[points.Length + 2 + (points.Length - 1)];
+                arr[0] = new PointNS(points[0].X, 0);
+                arr[arr.Length - 1] = new PointNS(points[points.Length - 1].X, 0);
 
-            return PolyLineGeometryBuilder.CreateGeometry(pc);
- 
+                int j = 1;
+                for (int i = 0; i < points.Length; i++)
+                {
+                    arr[j++] = points[i];
+
+                    if (i < points.Length - 1)
+                    {
+                        arr[j++] = new PointNS(points[i + 1].X, points[i].Y);
+                    }
+
+                }
+            }
+            else
+            {
+                arr = new PointNS[points.Length + (points.Length - 1)];
+      
+                int j = 0;
+                for (int i = 0; i < points.Length; i++)
+                {
+                    arr[j++] = points[i];
+
+                    if (i < points.Length - 1)
+                    {
+                        arr[j++] = new PointNS(points[i + 1].X, points[i].Y);
+                    }
+
+                }
+            }
+           
+
+            return PolyLineGeometryBuilder.CreateGeometry(arr, previousPoints);
         }
     }
-
-
 }

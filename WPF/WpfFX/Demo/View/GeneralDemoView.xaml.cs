@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MvvmCharting.Axis;
 using MvvmCharting.Common;
+using MvvmCharting.WpfFX;
 
 namespace Demo
 {
@@ -62,10 +63,26 @@ namespace Demo
             this.YAxisPlacements = new ObservableCollection<AxisPlacement>();
             this.YAxisPlacements.Add(AxisPlacement.Left);
             this.YAxisPlacements.Add(AxisPlacement.Right);
+
+            GeometryModes = new ObservableCollection<SeriesGeometryMode>()
+            {
+                SeriesGeometryMode.Line,
+                SeriesGeometryMode.Area
+            };
         }
+
+        public ObservableCollection<SeriesGeometryMode> GeometryModes { get; }
 
         public ObservableCollection<AxisPlacement> XAxisPlacements { get; }
         public ObservableCollection<AxisPlacement> YAxisPlacements { get;  }
+
+        private SeriesGeometryMode _selectedGeometryMode;
+        public SeriesGeometryMode SelectedGeometryMode
+        {
+            get { return _selectedGeometryMode; }
+            set { SetProperty(ref _selectedGeometryMode, value); }
+        }
+
 
         private AxisPlacement _selectedXPlacement = AxisPlacement.Bottom;
         public AxisPlacement SelectedXPlacement

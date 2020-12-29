@@ -32,7 +32,7 @@ namespace MvvmCharting.WpfFX
 
         private SlimItemsControl PART_ScatterItemsControl;
         protected Path PART_Path { get; private set; }
-        internal SeriesHost Owner { get; set; }
+        internal ISeriesHost Owner { get; set; }
         protected SeriesBase()
         {
 
@@ -48,7 +48,7 @@ namespace MvvmCharting.WpfFX
             if (this.PART_Path != null)
             {
                 this.PART_Path.Visibility = this.IsLineOrAreaVisible ? Visibility.Visible : Visibility.Collapsed;
-
+                UpdatePathProperties();
             }
 
 
@@ -78,6 +78,16 @@ namespace MvvmCharting.WpfFX
         {
             base.OnRenderSizeChanged(sizeInfo);
 
+            if (sizeInfo.WidthChanged)
+            {
+                UpdatePixelPerUnit(Orientation.Horizontal);
+            }
+
+            if (sizeInfo.HeightChanged)
+            {
+                UpdatePixelPerUnit(Orientation.Vertical);
+            }
+           
             UpdateScattersCoordinate();
         }
 
@@ -92,10 +102,7 @@ namespace MvvmCharting.WpfFX
             {
                 this.PropertyChanged?.Invoke(this, nameof(this.IsHighLighted));
             }
-            else if (e.Property == SeriesBase.FillProperty)
-            {
-                this.PropertyChanged?.Invoke(this, nameof(this.Fill));
-            }
+
 
         }
         #endregion
@@ -195,8 +202,12 @@ namespace MvvmCharting.WpfFX
             set { SetValue(StrokeProperty, value); }
         }
         public static readonly DependencyProperty StrokeProperty =
-            Shape.StrokeProperty.AddOwner(typeof(SeriesBase));
+            Shape.StrokeProperty.AddOwner(typeof(SeriesBase), new PropertyMetadata(OnStrokePropertyChanged));
 
+        private static void OnStrokePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((SeriesBase)d).UpdatePathProperties();
+        }
 
 
         public double StrokeThickness
@@ -206,17 +217,12 @@ namespace MvvmCharting.WpfFX
         }
 
         public static readonly DependencyProperty StrokeThicknessProperty =
-            Shape.StrokeThicknessProperty.AddOwner(typeof(SeriesBase), new PropertyMetadata(1.0));
+            Shape.StrokeThicknessProperty.AddOwner(typeof(SeriesBase), new PropertyMetadata(1.0, OnStrokeThicknessPropertyChanged));
 
-
-
-        public Brush Fill
+        private static void OnStrokeThicknessPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            get { return (Brush)GetValue(FillProperty); }
-            set { SetValue(FillProperty, value); }
+            ((SeriesBase)d).UpdatePathProperties();
         }
-        public static readonly DependencyProperty FillProperty =
-            Shape.FillProperty.AddOwner(typeof(SeriesBase));
 
 
         public bool IsHighLighted
@@ -303,7 +309,7 @@ namespace MvvmCharting.WpfFX
 
             UpdateValueRange();
             UpdateScattersCoordinate();
-            UpdatePathData();
+
 
 
         }
@@ -355,6 +361,41 @@ namespace MvvmCharting.WpfFX
         }
 
         #endregion
+
+        public SeriesGeometryMode Mode
+        {
+            get { return (SeriesGeometryMode)GetValue(ModeProperty); }
+            set { SetValue(ModeProperty, value); }
+        }
+        public static readonly DependencyProperty ModeProperty =
+            DependencyProperty.Register("Mode", typeof(SeriesGeometryMode), typeof(SeriesBase), new PropertyMetadata(SeriesGeometryMode.Line, OnModePropertyChanged));
+
+        private static void OnModePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((PathSeries)d).OnModeChanged();
+        }
+        private void OnModeChanged()
+        {
+            UpdatePathProperties();
+            UpdateLineOrArea();
+        }
+
+        private void UpdatePathProperties()
+        {
+            if (this.PART_Path != null)
+            {
+                if (this.Mode == SeriesGeometryMode.Line)
+                {
+                    this.PART_Path.Fill = null;
+                }
+                else
+                {
+                    this.PART_Path.SetBinding(Shape.FillProperty, new Binding(nameof(this.Stroke)) { Source = this });
+                }
+
+            }
+        }
+
 
         #region ItemTemplate & ItemTemplateSelector properties
         public DataTemplate ScatterTemplate
@@ -458,7 +499,7 @@ namespace MvvmCharting.WpfFX
                 if (this._plottingXValueRange != value)
                 {
                     this._plottingXValueRange = value;
-
+                    UpdatePixelPerUnit(Orientation.Horizontal);
                     UpdateScattersCoordinate();
                 }
             }
@@ -476,7 +517,7 @@ namespace MvvmCharting.WpfFX
                 if (this._plottingYValueRange != value)
                 {
                     this._plottingYValueRange = value;
-
+                    UpdatePixelPerUnit(Orientation.Vertical);
                     UpdateScattersCoordinate();
 
                 }
@@ -489,22 +530,37 @@ namespace MvvmCharting.WpfFX
         private double xPixelPerUnit;
         private double yPixelPerUnit;
 
-        private void UpdatePixelPerUnit()
+        private void UpdatePixelPerUnit(Orientation orientation)
         {
-            if (this.PlottingXValueRange.IsInvalid ||
-                this.PlottingYValueRange.IsInvalid ||
-                this.RenderSize.IsInvalid())
+             switch (orientation)
             {
-                this.xPixelPerUnit = double.NaN;
-                this.yPixelPerUnit = double.NaN;
+                case Orientation.Horizontal:
 
-                return;
+                    if (this.PlottingXValueRange.IsInvalid ||
+                        this.RenderSize.IsInvalid())
+                    {
+                        this.xPixelPerUnit = double.NaN;
+                        return;
+                    }
+
+                    this.xPixelPerUnit = this.RenderSize.Width / this.PlottingXValueRange.Span;
+                    break;
+                case Orientation.Vertical:
+
+                    if (this.PlottingYValueRange.IsInvalid ||
+                        this.RenderSize.IsInvalid())
+                    {
+                        this.yPixelPerUnit = double.NaN;
+
+                        return;
+                    }
+
+                    this.yPixelPerUnit = this.RenderSize.Height / this.PlottingYValueRange.Span;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(orientation), orientation, null);
             }
 
-
-
-            this.xPixelPerUnit = this.RenderSize.Width / this.PlottingXValueRange.Span;
-            this.yPixelPerUnit = this.RenderSize.Height / this.PlottingYValueRange.Span;
 
         }
 
@@ -517,23 +573,23 @@ namespace MvvmCharting.WpfFX
             return pt;
         }
 
+        /// <summary>
+        /// This should be call when 1) ItemsSource; 2) x or y PixelPerUnit, and 3) RenderSize changed.
+        /// This method will first update the _coordinateCache and the Coordinate of each scatter,
+        /// then update the shape of the Line or Area
+        /// </summary>
         private void UpdateScattersCoordinate()
         {
-            UpdatePixelPerUnit();
-
-
             if (this.xPixelPerUnit.IsNaN() ||
                 this.yPixelPerUnit.IsNaN() ||
                 this.ItemsSource == null ||
                 this.ItemsSource.Count == 0)
             {
-
                 return;
             }
 
 
             Array.Resize(ref this._coordinateCache, this.ItemsSource.Count);
-
 
             for (int i = 0; i < this.ItemsSource.Count; i++)
             {
@@ -550,23 +606,15 @@ namespace MvvmCharting.WpfFX
                     var scatter = (IScatter)fe;
                     scatter.Coordinate = pt;
                 }
-
-
             }
 
-
-            if (this.PART_ScatterItemsControl != null &&
-                this.PART_ScatterItemsControl.ItemCount == 0)
-            {
-                this.PART_ScatterItemsControl.LoadAllItems();
-
-            }
-
-            UpdatePathData();
+            UpdateLineOrArea();
         }
 
+        /// <summary>
+        /// cache the coordinate for performance
+        /// </summary>
         private PointNS[] _coordinateCache;
-
         protected PointNS[] GetCoordinates()
         {
             return this._coordinateCache;
@@ -578,7 +626,7 @@ namespace MvvmCharting.WpfFX
         /// Update the Data of path(line or area). This should be called after
         /// coordinates is calculated and <see cref="_coordinateCache"/> is updated
         /// </summary>
-        protected abstract void UpdatePathData();
+        protected abstract void UpdateLineOrArea();
 
 
 

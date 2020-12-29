@@ -4,6 +4,6 @@ namespace MvvmCharting.Series
 {
     public interface ISeriesGeometryBuilder
     {
-        object GetGeometry(PointNS[] points);
+        object GetGeometry(PointNS[] points, PointNS[] previousPoints);
     }
 }

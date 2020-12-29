@@ -248,48 +248,48 @@ namespace MvvmCharting.WpfFX
         }
         #endregion
 
-        #region Plotting Data Range
-        private Range _plottingXDataRange = Range.Empty;
+        #region Plotting Data value Range
+        private Range _plottingXValueRange = Range.Empty;
         /// <summary>
         /// The final independent value range(min & max) used to plot series chart
         /// </summary>
-        public Range PlottingXDataRange
+        public Range PlottingXValueRange
         {
             get
             {
 
-                return this._plottingXDataRange;
+                return this._plottingXValueRange;
             }
             set
             {
-                if (this._plottingXDataRange != value)
+                if (this._plottingXValueRange != value)
                 {
-                    this._plottingXDataRange = value;
+                    this._plottingXValueRange = value;
 
                     foreach (var sr in this.GetSeries())
                     {
-                        sr.PlottingXValueRange = this.PlottingXDataRange;
+                        sr.PlottingXValueRange = this.PlottingXValueRange;
                     }
                 }
             }
         }
 
-        private Range _plottingYDataRange = Range.Empty;
+        private Range _plottingYValueRange = Range.Empty;
         /// <summary>
         /// The final dependent value range(min & max) used to plot series chart
         /// </summary>
-        public Range PlottingYDataRange
+        public Range PlottingYValueRange
         {
-            get { return this._plottingYDataRange; }
+            get { return this._plottingYValueRange; }
             set
             {
-                if (this._plottingYDataRange != value)
+                if (this._plottingYValueRange != value)
                 {
-                    this._plottingYDataRange = value;
+                    this._plottingYValueRange = value;
 
                     foreach (var sr in this.GetSeries())
                     {
-                        sr.PlottingYValueRange = this.PlottingYDataRange;
+                        sr.PlottingYValueRange = this.PlottingYValueRange;
                     }
                 }
             }

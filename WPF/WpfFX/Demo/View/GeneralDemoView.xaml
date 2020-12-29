@@ -9,6 +9,7 @@
              mc:Ignorable="d">
 
     <UserControl.Resources>
+        <local:ChartSettingTestViewModel x:Key="ChartSettingTestViewModel"/>
         <local:DemoDataViewModel x:Key="DemoDataViewModel"/>
         <local:ItemToScatterFillConverter x:Key="ItemToScatterFillConverter"/>
 
@@ -76,11 +77,13 @@
                                                ScatterDataTemplate2="{StaticResource ScatterDataTemplate2}"/>
 
 
-        <local:IndexToStrokeConverter x:Key="IndexToStrokeConverter"/>
+       
 
         <DataTemplate x:Key="SeriesTemplate0" DataType="local:SomePointList">
             <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
                                          DependentValueProperty="Y"
+                                         Opacity="0.7"
+                                         Mode="{Binding SelectedGeometryMode, Source={StaticResource ChartSettingTestViewModel}}"
                                          Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
                                          StrokeThickness="1.5"
                                          IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
@@ -94,6 +97,8 @@
         <DataTemplate x:Key="SeriesTemplate1" DataType="local:SomePointList">
             <mvvmCharting:StepLineSeries IndependentValueProperty="t"
                                          DependentValueProperty="Y"
+                                         Opacity="0.7"
+                                         Mode="{Binding SelectedGeometryMode, Source={StaticResource ChartSettingTestViewModel}}"
                                          Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
                                          StrokeThickness="1.5"
                                          IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
@@ -108,6 +113,8 @@
         <DataTemplate x:Key="SeriesTemplate2" DataType="local:SomePointList">
             <mvvmCharting:SplineSeries IndependentValueProperty="t"
                                        DependentValueProperty="Y"
+                                       Opacity="0.7"
+                                       Mode="{Binding SelectedGeometryMode, Source={StaticResource ChartSettingTestViewModel}}"
                                        Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
                                        StrokeThickness="1.5"
                                        IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
@@ -123,7 +130,7 @@
                                       DataTemplate1="{StaticResource SeriesTemplate1}"
                                       DataTemplate2="{StaticResource SeriesTemplate2}"/>
 
-        <local:ChartSettingTestViewModel x:Key="ChartSettingTestViewModel"/>
+
     </UserControl.Resources>
 
     <Grid>
@@ -161,56 +168,73 @@
 
 
         <StackPanel Grid.Row="1" 
-                    DataContext="{Binding Source={StaticResource DemoDataViewModel}}"
+                    DataContext="{Binding Source={StaticResource ChartSettingTestViewModel}}"
                     Margin="10"
                     Orientation="Horizontal">
+            <StackPanel.Resources>
+                <Style TargetType="GroupBox">
+                    <Setter Property="Margin" Value="7"/>
+                    <Setter Property="Padding" Value="5"/>
+                </Style>
+            </StackPanel.Resources>
 
-            <GroupBox Margin="10" 
-                      Padding="9" 
-                      DataContext="{Binding Source={StaticResource ChartSettingTestViewModel}}">
+            <GroupBox Header="Series settings">
+                <StackPanel DataContext="{Binding Source={StaticResource DemoDataViewModel}}">
+                    <CheckBox Content="Show Scatters"
+                              IsChecked="{Binding ShowSeriesPoints, Mode=TwoWay}"
+                              />
+                    <CheckBox Content="Show Line(Area)"
+                              IsChecked="{Binding ShowSeriesLine, Mode=TwoWay}"/>
+
+                    <StackPanel  DataContext="{Binding Source={StaticResource ChartSettingTestViewModel}}">
+
+                        <CheckBox Content="show GridLine"
+                                  IsChecked="{Binding ShowGridLine, Mode=TwoWay}"/>
+
+                        <CheckBox Content="show Legend"
+                                  IsChecked="{Binding ShowLegend, Mode=TwoWay}"/>
+
+                        <CheckBox Content="show back ground image"
+                                  IsChecked="{Binding ShowBackgroundImage, Mode=TwoWay}"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox>
                 <StackPanel>
-                    <TextBlock VerticalAlignment="Center" Margin="6" Text="X Axis placement: "/>
+                    <TextBlock VerticalAlignment="Center" Margin="6" Text="Series Mode: "/>
 
                     <ComboBox Width="160"
                               Margin="6"
                               HorizontalAlignment="Left"
-                              ItemsSource="{Binding XAxisPlacements}"
-                              SelectedItem="{Binding SelectedXPlacement, Mode=TwoWay}"/>
+                              ItemsSource="{Binding GeometryModes}"
+                              SelectedItem="{Binding SelectedGeometryMode, Mode=TwoWay}"/>
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Margin="10" 
-                      Padding="9" 
-                      DataContext="{Binding Source={StaticResource ChartSettingTestViewModel}}">
+            <GroupBox>
                 <StackPanel>
-                    <TextBlock VerticalAlignment="Center" Margin="6" Text="Y Axis placement: "/>
-
+                    <TextBlock VerticalAlignment="Center" Margin="6,6,6,0" Text="X Axis placement: "/>
                     <ComboBox Width="160"
-                              Margin="6"
+                              Margin="6,0,6,6"
+                              HorizontalAlignment="Left"
+                              ItemsSource="{Binding XAxisPlacements}"
+                              SelectedItem="{Binding SelectedXPlacement, Mode=TwoWay}"/>
+
+                    <TextBlock VerticalAlignment="Center" Margin="6,6,6,0" Text="Y Axis placement: "/>
+                    <ComboBox Width="160"
+                              Margin="6,0,6,6"
                               HorizontalAlignment="Left"
                               ItemsSource="{Binding YAxisPlacements}"
                               SelectedItem="{Binding SelectedYPlacement, Mode=TwoWay}"/>
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Margin="10" 
-                      Padding="9" 
-                      DataContext="{Binding Source={StaticResource ChartSettingTestViewModel}}">
-                <StackPanel  >
-
-                    <CheckBox Content="show back ground image"
-                              IsChecked="{Binding ShowBackgroundImage, Mode=TwoWay}"/>
-                    <CheckBox Content="show GridLine"
-                              IsChecked="{Binding ShowGridLine, Mode=TwoWay}"/>
-
-                    <CheckBox Content="show Legend"
-                              IsChecked="{Binding ShowLegend, Mode=TwoWay}"/>
-                </StackPanel>
-            </GroupBox>
+ 
 
             <StackPanel Margin="10,20" >
                 <Button Content="Add Data" Click="btnAddDataClick" />
-                <Button Content="Remove Data"  Click="btnRemoveDataClick" />
+                <Button Content="Remove Data"  Click="btnRemoveDataClick" Margin="0,6"/>
             </StackPanel>
 
 

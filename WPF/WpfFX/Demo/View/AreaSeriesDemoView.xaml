@@ -11,46 +11,49 @@
     <UserControl.Resources>
         <local:DemoDataViewModel x:Key="DemoDataViewModel"/>
         <DataTemplate x:Key="SeriesTemplate0" DataType="local:SomePointList">
-            <mvvmCharting:PolyLineAreaSeries IndependentValueProperty="t"
+            <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
                                              DependentValueProperty="Y"
-                                             Fill="Blue"
+                                             Mode="Area"
+                                             Stroke="Blue"
                                              Opacity="0.4"
                                              Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
                                              IsScatterVisible="{Binding ShowSeriesPoints}"
                                              IsLineOrAreaVisible="{Binding ShowSeriesLine}"
                                              ItemsSource="{Binding DataList}">
-                <mvvmCharting:PolyLineAreaSeries.ScatterTemplate>
+                <mvvmCharting:PolyLineSeries.ScatterTemplate>
                     <DataTemplate>
                         <mvvmCharting:Scatter Fill="Red" 
                                                       Opacity="0.5"/>
                     </DataTemplate>
-                </mvvmCharting:PolyLineAreaSeries.ScatterTemplate>
-            </mvvmCharting:PolyLineAreaSeries>
+                </mvvmCharting:PolyLineSeries.ScatterTemplate>
+            </mvvmCharting:PolyLineSeries>
 
         </DataTemplate>
 
         <DataTemplate x:Key="SeriesTemplate1" DataType="local:SomePointList">
-            <mvvmCharting:StepLineAreaSeries IndependentValueProperty="t"
-                                             DependentValueProperty="Y"
-                                             Fill="Red"
-                                             Opacity="0.4"
-                                             Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
-                                             IsScatterVisible="{Binding ShowSeriesPoints}"
-                                             IsLineOrAreaVisible="{Binding ShowSeriesLine}"
-                                             ItemsSource="{Binding DataList}"/>
+            <mvvmCharting:StepLineSeries IndependentValueProperty="t"
+                                         DependentValueProperty="Y"
+                                         Mode="Area"
+                                         Stroke="Red"
+                                         Opacity="0.4"
+                                         Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
+                                         IsScatterVisible="{Binding ShowSeriesPoints}"
+                                         IsLineOrAreaVisible="{Binding ShowSeriesLine}"
+                                         ItemsSource="{Binding DataList}"/>
 
         </DataTemplate>
 
         <DataTemplate x:Key="SeriesTemplate2" DataType="local:SomePointList">
-            <mvvmCharting:SplineAreaSeries IndependentValueProperty="t"
+            <mvvmCharting:SplineSeries IndependentValueProperty="t"
                                            DependentValueProperty="Y"
-                                           Fill="Green"
+                                           Mode="Area"
+                                           Stroke="Green"
                                            Opacity="0.6"
                                            Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
                                            IsScatterVisible="{Binding ShowSeriesPoints}"
                                            IsLineOrAreaVisible="{Binding ShowSeriesLine}"
                                            ItemsSource="{Binding DataList}">
-            </mvvmCharting:SplineAreaSeries>
+            </mvvmCharting:SplineSeries>
         </DataTemplate>
 
 
@@ -71,7 +74,7 @@
                               SeriesTemplateSelector="{StaticResource SeriesTemplateSelector}"
                               SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource DemoDataViewModel}}">
 
- 
+
 
         </mvvmCharting:Chart>
         <GroupBox Header="Options" 

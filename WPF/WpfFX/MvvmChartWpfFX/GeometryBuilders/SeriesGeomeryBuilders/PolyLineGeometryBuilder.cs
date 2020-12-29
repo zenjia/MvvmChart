@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Linq;
+using System.Windows;
 using System.Windows.Media;
 using MvvmCharting.Drawing;
 using MvvmCharting.Series;
@@ -7,54 +9,57 @@ namespace MvvmCharting.WpfFX
 {
     public class PolyLineGeometryBuilder : ISeriesGeometryBuilder
     {
-        internal static Geometry CreateGeometry(PointNS[] points, bool isClosed = false)
+        public static Geometry CreateGeometry(PointNS[] points, PointNS[] previousPoints)
         {
-            PathGeometry path_geometry = new PathGeometry();
-
-            PolyLineSegment polyLineSegment = new PolyLineSegment();
-            var pointCollection = new PointCollection();
-            for (int i = 0; i < points.Length; i++)
-            {
-                pointCollection.Add(new Point(points[i].X, points[i].Y));
-            }
-
-            polyLineSegment.Points = pointCollection;
-
-
             PathFigure figure = new PathFigure();
+            figure.StartPoint = points[0].ToPoint();
+            var polyLineSegment = new PolyLineSegment(points.ToPoints(), true);
             figure.Segments.Add(polyLineSegment);
-            if (isClosed)
+
+            if (previousPoints != null)
             {
+                var lineSegment = new LineSegment(previousPoints.Last().ToPoint(), false);
+                figure.Segments.Add(lineSegment);
+
+                polyLineSegment = new PolyLineSegment(previousPoints.ToPointsReversed(), false);
+                figure.Segments.Add(polyLineSegment);
+
+                //lineSegment = new LineSegment(points.First().ToPoint(), false);
+                //figure.Segments.Add(lineSegment);
+
                 figure.IsClosed = true;
                 figure.IsFilled = true;
             }
+            
 
-            path_geometry.Figures.Add(figure);
+            PathGeometry pathGeometry = new PathGeometry();
+            pathGeometry.Figures.Add(figure);
 
-            path_geometry.Freeze();
-            return path_geometry;
+            pathGeometry.Freeze();
+            return pathGeometry;
         }
 
-        internal static Geometry CreateGeometry(PointCollection pointCollection)
+        //internal static Geometry CreateGeometry(PointCollection pointCollection)
+        //{
+        //    var path_geometry = new PathGeometry();
+
+        //    var polyLineSegment = new PolyLineSegment();
+        //    polyLineSegment.Points = pointCollection;
+
+        //    var figure = new PathFigure();
+        //    figure.Segments.Add(polyLineSegment);
+
+        //    path_geometry.Figures.Add(figure);
+
+        //    path_geometry.Freeze();
+        //    return path_geometry;
+        //}
+
+
+
+        public object GetGeometry(PointNS[] points, PointNS[] previousPoints)
         {
-            var path_geometry = new PathGeometry();
-
-            var polyLineSegment = new PolyLineSegment();
-            polyLineSegment.Points = pointCollection;
-
-            var figure = new PathFigure();
-            figure.Segments.Add(polyLineSegment);
-
-            path_geometry.Figures.Add(figure);
-
-            path_geometry.Freeze();
-            return path_geometry;
-        }
-
-        public object GetGeometry(PointNS[] points)
-        {
-            return CreateGeometry(points);
-
+            return CreateGeometry(points, previousPoints);
         }
     }
 }
