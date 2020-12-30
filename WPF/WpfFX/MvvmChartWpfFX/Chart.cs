@@ -38,8 +38,6 @@ namespace MvvmCharting.WpfFX
         private static readonly string sPART_Root = "PART_Root";
         private static readonly string sPART_PlottingCanvas = "PART_PlottingCanvas";
 
-        //private static readonly string sPART_SeriesItemsControl = "PART_SeriesItemsControl";
-
         private static readonly string sPART_HorizontalCrossHair = "PART_HorizontalCrossHair";
         private static readonly string sPART_VerticalCrossHair = "PART_VerticalCrossHair";
 
@@ -47,7 +45,7 @@ namespace MvvmCharting.WpfFX
         private static readonly string sPART_LegendHolder = "PART_LegendHolder";
 
 
-        private SeriesChart PART_SeriesChart;
+        private SeriesControl PART_SeriesControl;
         private Grid PART_Root;
         private Grid PART_PlottingCanvas;
         //private SlimItemsControl PART_SeriesItemsControl;
@@ -57,8 +55,6 @@ namespace MvvmCharting.WpfFX
 
         private ContentControl PART_GridLineHolder;
         private ContentControl PART_LegendHolder;
-
-
 
         public Chart()
         {
@@ -70,23 +66,20 @@ namespace MvvmCharting.WpfFX
         {
             base.OnApplyTemplate();
 
-            this.PART_SeriesChart = (SeriesChart)this.GetTemplateChild("PART_SeriesChart");
-            if (this.PART_SeriesChart!=null)
+            this.PART_SeriesControl = (SeriesControl)this.GetTemplateChild("PART_SeriesControl");
+            if (this.PART_SeriesControl!=null)
             {
-                this.PART_SeriesChart.GlobalXValueRangeChanged += SeriesChartGlobalXValueRangeChanged;
-                this.PART_SeriesChart.GlobalYValueRangeChanged += SeriesChartGlobalYValueRangeChanged;
+                this.PART_SeriesControl.GlobalXValueRangeChanged += SeriesControlGlobalXValueRangeChanged;
+                this.PART_SeriesControl.GlobalYValueRangeChanged += SeriesControlGlobalYValueRangeChanged;
 
-                this.PART_SeriesChart.SetBinding(SeriesChart.SeriesTemplateProperty,
+                this.PART_SeriesControl.SetBinding(SeriesControl.SeriesTemplateProperty,
                     new Binding(nameof(this.SeriesTemplate)) { Source = this });
-                this.PART_SeriesChart.SetBinding(SeriesChart.SeriesTemplateSelectorProperty,
+                this.PART_SeriesControl.SetBinding(SeriesControl.SeriesTemplateSelectorProperty,
                     new Binding(nameof(this.SeriesTemplateSelector)) { Source = this });
-                this.PART_SeriesChart.SetBinding(SeriesChart.SeriesItemsSourceProperty,
+                this.PART_SeriesControl.SetBinding(SeriesControl.SeriesItemsSourceProperty,
                     new Binding(nameof(this.SeriesItemsSource)) { Source = this });
 
             }
-
-  
-
 
 
             this.PART_Root = (Grid)GetTemplateChild(sPART_Root);
@@ -128,12 +121,12 @@ namespace MvvmCharting.WpfFX
             OnLegendChanged();
         }
 
-        private void SeriesChartGlobalYValueRangeChanged(Range obj)
+        private void SeriesControlGlobalYValueRangeChanged(Range obj)
         {
             UpdatePlottingYDataRange();
         }
 
-        private void SeriesChartGlobalXValueRangeChanged(Range obj)
+        private void SeriesControlGlobalXValueRangeChanged(Range obj)
         {
             UpdatePlottingXDataRange();
         }
@@ -258,7 +251,7 @@ namespace MvvmCharting.WpfFX
         }
 
         public static readonly DependencyProperty SeriesTemplateProperty =
-            SeriesChart.SeriesTemplateProperty.AddOwner(typeof(Chart));
+            SeriesControl.SeriesTemplateProperty.AddOwner(typeof(Chart));
 
         public DataTemplateSelector SeriesTemplateSelector
         {
@@ -266,7 +259,7 @@ namespace MvvmCharting.WpfFX
             set { SetValue(SeriesTemplateSelectorProperty, value); }
         }
         public static readonly DependencyProperty SeriesTemplateSelectorProperty =
-            SeriesChart.SeriesTemplateSelectorProperty.AddOwner(typeof(Chart));
+            SeriesControl.SeriesTemplateSelectorProperty.AddOwner(typeof(Chart));
         #endregion
 
         #region SeriesItemsSource
@@ -279,10 +272,7 @@ namespace MvvmCharting.WpfFX
             set { SetValue(SeriesItemsSourceProperty, value); }
         }
         public static readonly DependencyProperty SeriesItemsSourceProperty =
-            SeriesChart.SeriesItemsSourceProperty.AddOwner(typeof(Chart));
-   
-
-
+            SeriesControl.SeriesItemsSourceProperty.AddOwner(typeof(Chart));
         #endregion
 
         #region Plotting Data Range
@@ -304,7 +294,7 @@ namespace MvvmCharting.WpfFX
                     this._plottingXDataRange = value;
                     TryUpdatePlottingSettings(AxisType.X);
 
-                    this.PART_SeriesChart.PlottingXValueRange = value;
+                    this.PART_SeriesControl.SetPlottingValueRange(Orientation.Horizontal, value);
                     //OnPlottingXDataRangeChanged();
                 }
             }
@@ -324,7 +314,8 @@ namespace MvvmCharting.WpfFX
                     this._plottingYDataRange = value;
 
                     TryUpdatePlottingSettings(AxisType.Y);
-                    this.PART_SeriesChart.PlottingYValueRange = value;
+                    this.PART_SeriesControl.SetPlottingValueRange(Orientation.Vertical, value); 
+ 
                     // OnPlottingYDataRangeChanged();
                 }
             }
@@ -332,14 +323,14 @@ namespace MvvmCharting.WpfFX
 
         private void UpdatePlottingXDataRange()
         {
-            if (this.PART_SeriesChart == null)
+            if (this.PART_SeriesControl == null)
             {
                 this.PlottingXDataRange = Range.Empty;
                 return;
             }
 
-            double min = !this.XMinimum.IsNaN() ? this.XMinimum : this.PART_SeriesChart.GlobalXValueRange.Min;
-            double max = !this.XMaximum.IsNaN() ? this.XMaximum : this.PART_SeriesChart.GlobalXValueRange.Max;
+            double min = !this.XMinimum.IsNaN() ? this.XMinimum : this.PART_SeriesControl.GlobalXValueRange.Min;
+            double max = !this.XMaximum.IsNaN() ? this.XMaximum : this.PART_SeriesControl.GlobalXValueRange.Max;
 
             if (min.IsNaN() && max.IsNaN())
             {
@@ -358,15 +349,15 @@ namespace MvvmCharting.WpfFX
             }
         }
 
-        private void UpdatePlottingYDataRange()
+        protected virtual void UpdatePlottingYDataRange()
         {
-            if (this.PART_SeriesChart == null)
+            if (this.PART_SeriesControl == null)
             {
                 this.PlottingXDataRange = Range.Empty;
                 return;
             }
-            double min = !this.YMinimum.IsNaN() ? this.YMinimum : this.PART_SeriesChart.GlobalYValueRange.Min;
-            double max = !this.YMaximum.IsNaN() ? this.YMaximum : this.PART_SeriesChart.GlobalYValueRange.Max;
+            double min = !this.YMinimum.IsNaN() ? this.YMinimum : this.PART_SeriesControl.GlobalYValueRange.Min;
+            double max = !this.YMaximum.IsNaN() ? this.YMaximum : this.PART_SeriesControl.GlobalYValueRange.Max;
 
             if (min.IsNaN() && max.IsNaN())
             {
@@ -877,6 +868,19 @@ namespace MvvmCharting.WpfFX
         public void OnAxisItemsCoordinateChanged(AxisType orientation, IEnumerable<double> ticks)
         {
             this.GridLineControl?.OnAxisItemCoordinateChanged(orientation, ticks);
+        }
+    }
+
+    public class StackedAreaControl : Chart
+    {
+        public StackedAreaControl()
+        {
+            this.PlottingYDataRange = new Range(0, 1);
+        }
+
+        protected override void UpdatePlottingYDataRange()
+        {
+            //do nothing here
         }
     }
 }

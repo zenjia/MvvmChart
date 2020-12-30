@@ -34,7 +34,7 @@ namespace MvvmCharting.WpfFX
         /// <summary>
         /// Fired when ItemTemplate is applied for an item
         /// </summary>
-        public event Action<object, FrameworkElement> ElementGenerated;
+        public event Action<object, FrameworkElement, int> ElementGenerated;
 
         public event Action<object, FrameworkElement> ItemRemoved;
         public event Action<object, FrameworkElement> ItemReplaced;
@@ -295,7 +295,7 @@ namespace MvvmCharting.WpfFX
 
             this.PART_Root.Children.Insert(index, treeRoot);
 
-            this.ElementGenerated?.Invoke(this, treeRoot);
+            this.ElementGenerated?.Invoke(this, treeRoot, index);
 
             this.ItemAdded?.Invoke(this, treeRoot);
 
@@ -353,7 +353,7 @@ namespace MvvmCharting.WpfFX
             //this.PART_Root.Children.RemoveAt(index);
             //this.PART_Root.Children.Insert(index, treeRoot);
 
-            this.ElementGenerated?.Invoke(this, treeRoot);
+            this.ElementGenerated?.Invoke(this, treeRoot, index);
         }
 
         private void OnItemMoved(object item, int oldIndex, int newIndex)

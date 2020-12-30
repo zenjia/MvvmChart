@@ -29,17 +29,13 @@ namespace MvvmCharting.WpfFX
         {
             base.OnApplyTemplate();
             OnPathDataChanged();
- 
         }
-
-   
-
 
         /// <summary>
         /// cache the created Geometry object
         /// </summary>
         private Geometry _pathData;
- 
+
 
         private void OnPathDataChanged()
         {
@@ -49,7 +45,6 @@ namespace MvvmCharting.WpfFX
             }
 
         }
-
 
         public ISeriesGeometryBuilder GeometryBuilder
         {
@@ -64,7 +59,7 @@ namespace MvvmCharting.WpfFX
             ((PathSeries)d).UpdateLineOrArea();
         }
 
- 
+
         /// <summary>
         /// This should be called when GeometryBuilder, Mode or coordinates changed
         /// </summary>
@@ -73,18 +68,41 @@ namespace MvvmCharting.WpfFX
             if (this.GeometryBuilder == null ||
                 this.PART_Shape == null ||
                 this.ItemsSource == null ||
-                this.ItemsSource.Count == 0)
+                this.ItemsSource.Count == 0 ||
+                this.RenderSize.IsInvalid() ||
+                !this.IsLoaded)
             {
                 return;
             }
 
-
             var coordinates = this.GetCoordinates();
 
-           PointNS[] previous = null;
-            if (this.IsFilled)
+            PointNS[] previous;
+
+            switch (this.SeriesShapeType)
             {
-                previous = new[] { new PointNS(0, 0), new PointNS(this.ActualWidth, 0) };
+                case SeriesShapeType.Line:
+                    previous = null;
+                    break;
+                case SeriesShapeType.Area:
+                    previous = new[] { new PointNS(0, 0), new PointNS(this.ActualWidth, 0) };
+                    break;
+                case SeriesShapeType.StackedArea:
+                case SeriesShapeType.StackedArea100:
+                    var ls = this.Owner.GetSeries().ToArray();
+                    var index = Array.IndexOf(ls, this);
+                    if (index == 0)
+                    {
+                        previous = new[] { new PointNS(0, 0), new PointNS(this.ActualWidth, 0) };
+                    }
+                    else
+                    {
+                        previous = ls[index - 1].GetCoordinates();
+                    }
+
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             var geometry = coordinates == null

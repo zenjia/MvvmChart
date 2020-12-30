@@ -64,6 +64,26 @@ namespace MvvmCharting.WpfFX.Axis
 
 
 
+        public string Title
+        {
+            get { return (string)GetValue(TitleProperty); }
+            set { SetValue(TitleProperty, value); }
+        }
+        public static readonly DependencyProperty TitleProperty =
+            DependencyProperty.Register("Title", typeof(string), typeof(AxisBase), new PropertyMetadata(null));
+
+
+
+        public Style TitleStyle
+        {
+            get { return (Style)GetValue(TitleStyleProperty); }
+            set { SetValue(TitleStyleProperty, value); }
+        }
+        public static readonly DependencyProperty TitleStyleProperty =
+            DependencyProperty.Register("TitleStyle", typeof(Style), typeof(AxisBase), new PropertyMetadata(null));
+
+
+
         public AxisPlacement Placement
         {
             get { return (AxisPlacement)GetValue(PlacementProperty); }
@@ -352,7 +372,7 @@ namespace MvvmCharting.WpfFX.Axis
         }
 
 
-        private void AxisItemsControlItemTemplateApplied(object sender, DependencyObject root)
+        private void AxisItemsControlItemTemplateApplied(object sender, DependencyObject root, int index)
         {
             if (!(root is IAxisItem axisItem))
             {

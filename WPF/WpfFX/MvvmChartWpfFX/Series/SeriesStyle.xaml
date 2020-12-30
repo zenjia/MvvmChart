@@ -50,7 +50,7 @@
     </Style>
 
     <local:PolyLineGeometryBuilder x:Key="DefaultPolyLineGeometryBuilder"/>
-    <local:StepLineGeometryBuilder x:Key="StepLineGeometryBuilder"/>
+    <local:StepLineGeometryBuilder x:Key="DefaultStepLineGeometryBuilder"/>
     <local:SplineGeometryBuilder x:Key="DefaultSplineGeometryBuilder"/>
 
 
@@ -61,7 +61,7 @@
 
     <Style TargetType="local:StepLineSeries" 
            BasedOn="{StaticResource {x:Type local:PathSeries}}">
-        <Setter Property="GeometryBuilder" Value="{StaticResource StepLineGeometryBuilder}"/>
+        <Setter Property="GeometryBuilder" Value="{StaticResource DefaultStepLineGeometryBuilder}"/>
     </Style>
 
     <Style TargetType="local:SplineSeries" 

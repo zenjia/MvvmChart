@@ -13,11 +13,13 @@
         <local:DemoDataViewModel x:Key="DemoDataViewModel"/>
         <local:ItemToScatterFillConverter x:Key="ItemToScatterFillConverter"/>
 
-        <mvvmCharting:EllipseGeometryBuilder x:Key="EllipseGeometryBuilder" 
-                                             RadiusX="6" 
-                                             RadiusY="6"/>
-        <mvvmCharting:RectangleGeometryBuilder x:Key="RectangleGeometryBuilder"
-                                       Size="15,15"/>
+
+        <local:SelectedSeriesShapeTypeToChartMaxConverter x:Key="SelectedSeriesShapeTypeToChartMaxConverter"/>
+        <local:SelectedSeriesShapeTypeToChartMinConverter x:Key="SelectedSeriesShapeTypeToChartMinConverter"/>
+
+        <mvvmCharting:PolyLineGeometryBuilder x:Key="DefaultPolyLineGeometryBuilder"/>
+        <mvvmCharting:StepLineGeometryBuilder x:Key="DefaultStepLineGeometryBuilder"/>
+        <mvvmCharting:SplineGeometryBuilder x:Key="DefaultSplineGeometryBuilder"/>
 
         <!--This is the Default Scatter Style-->
         <DataTemplate x:Key="ScatterDataTemplate">
@@ -77,12 +79,13 @@
                                                ScatterDataTemplate2="{StaticResource ScatterDataTemplate2}"/>
 
 
-       
+
 
         <DataTemplate x:Key="SeriesTemplate0" DataType="local:SomePointList">
             <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
                                          DependentValueProperty="Y"
-                                         Opacity="0.7"
+                                         Opacity="0.8"
+                                         SeriesShapeType="{Binding SelectedSeriesShapeType, Source={StaticResource ChartSettingTestViewModel}}"
                                          IsFilled="{Binding IsFilled, Source={StaticResource ChartSettingTestViewModel}}"
                                          Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
                                          StrokeThickness="1.5"
@@ -95,9 +98,10 @@
         </DataTemplate>
 
         <DataTemplate x:Key="SeriesTemplate1" DataType="local:SomePointList">
-            <mvvmCharting:StepLineSeries IndependentValueProperty="t"
+            <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
                                          DependentValueProperty="Y"
-                                         Opacity="0.7"
+                                         Opacity="0.8"
+                                         SeriesShapeType="{Binding SelectedSeriesShapeType, Source={StaticResource ChartSettingTestViewModel}}"
                                          IsFilled="{Binding IsFilled, Source={StaticResource ChartSettingTestViewModel}}"
                                          Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
                                          StrokeThickness="1.5"
@@ -111,18 +115,19 @@
         </DataTemplate>
 
         <DataTemplate x:Key="SeriesTemplate2" DataType="local:SomePointList">
-            <mvvmCharting:SplineSeries IndependentValueProperty="t"
-                                       DependentValueProperty="Y"
-                                       Opacity="0.7"
-                                       IsFilled="{Binding IsFilled, Source={StaticResource ChartSettingTestViewModel}}"
-                                       Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
-                                       StrokeThickness="1.5"
-                                       IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
-                                       Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
-                                       IsScatterVisible="{Binding ShowSeriesPoints}"
-                                       IsLineOrAreaVisible="{Binding ShowSeriesLine}"
-                                       ItemsSource="{Binding DataList}"
-                                       ScatterTemplate="{Binding Index, Converter={StaticResource IndexToScatterTemplateConverter}}"/>
+            <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
+                                         DependentValueProperty="Y"
+                                         Opacity="0.8"
+                                         SeriesShapeType="{Binding SelectedSeriesShapeType, Source={StaticResource ChartSettingTestViewModel}}"
+                                         IsFilled="{Binding IsFilled, Source={StaticResource ChartSettingTestViewModel}}"
+                                         Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
+                                         StrokeThickness="1.5"
+                                         IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
+                                         Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
+                                         IsScatterVisible="{Binding ShowSeriesPoints}"
+                                         IsLineOrAreaVisible="{Binding ShowSeriesLine}"
+                                         ItemsSource="{Binding DataList}"
+                                         ScatterTemplate="{Binding Index, Converter={StaticResource IndexToScatterTemplateConverter}}"/>
         </DataTemplate>
 
         <local:SeriesTemplateSelector x:Key="SeriesTemplateSelector"
@@ -140,15 +145,17 @@
         </Grid.RowDefinitions>
 
         <mvvmCharting:Chart Background="Bisque"
+                            YMaximum="{Binding SelectedSeriesShapeType, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource SelectedSeriesShapeTypeToChartMaxConverter}}"
+                            YMinimum="{Binding SelectedSeriesShapeType, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource SelectedSeriesShapeTypeToChartMinConverter}}"
                             GridLineControlVisibility="{Binding ShowGridLine, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
                             LegendVisibility="{Binding ShowLegend, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
                             SeriesTemplateSelector="{StaticResource SeriesTemplateSelector}"
                             SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource DemoDataViewModel}}">
             <mvvmCharting:Chart.XAxis>
-                <axis:LinearAxis Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedXPlacement}"/>
+                <axis:LinearAxis Title="t values" Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedXPlacement}"/>
             </mvvmCharting:Chart.XAxis>
             <mvvmCharting:Chart.YAxis>
-                <axis:LinearAxis Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedYPlacement}"/>
+                <axis:LinearAxis Title="Y values"  Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedYPlacement}"/>
             </mvvmCharting:Chart.YAxis>
 
             <mvvmCharting:Chart.LegendItemTemplate>
@@ -190,7 +197,18 @@
                               DataContext="{Binding Source={StaticResource ChartSettingTestViewModel}}"
                               IsChecked="{Binding IsFilled, Mode=TwoWay}"/>
 
- 
+
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Axis Placement">
+                <StackPanel>
+                    <TextBlock VerticalAlignment="Center" Margin="6,6,6,0" Text="SeriesShapeType: "/>
+                    <ComboBox Width="160"
+                              Margin="6,0,6,6"
+                              HorizontalAlignment="Left"
+                              ItemsSource="{Binding SeriesShapeTypes}"
+                              SelectedItem="{Binding SelectedSeriesShapeType, Mode=TwoWay}"/>
                 </StackPanel>
             </GroupBox>
 
@@ -227,7 +245,7 @@
                 </StackPanel>
             </GroupBox>
 
- 
+
 
             <StackPanel Margin="10,20" >
                 <Button Content="Add Series" Click="btnAddSeriesClick" />

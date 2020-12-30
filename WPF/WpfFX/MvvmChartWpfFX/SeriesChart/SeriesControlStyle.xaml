@@ -2,10 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:MvvmCharting.WpfFX">
 
-    <Style TargetType="local:SeriesChart">
+    <Style TargetType="local:SeriesControl">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:SeriesChart">
+                <ControlTemplate TargetType="local:SeriesControl">
                     <local:SlimItemsControl x:Name="PART_SeriesItemsControl"  
                                             RenderTransformOrigin="0.5, 0.5">
                         <local:SlimItemsControl.RenderTransform>

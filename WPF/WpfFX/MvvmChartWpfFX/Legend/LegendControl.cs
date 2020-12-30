@@ -40,7 +40,7 @@ namespace MvvmCharting.WpfFX
             }
         }
 
-        private void PART_ItemsControl_ElementGenerated(object arg1, FrameworkElement treeRoot)
+        private void PART_ItemsControl_ElementGenerated(object arg1, FrameworkElement treeRoot, int index)
         {
             var legendItemControl = treeRoot as LegendItemControl;
             if (legendItemControl != null)

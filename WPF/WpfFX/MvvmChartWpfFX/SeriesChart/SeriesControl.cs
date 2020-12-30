@@ -21,24 +21,47 @@ using MvvmCharting.Series;
 
 namespace MvvmCharting.WpfFX
 {
+    //public class StackedAreaChart : SeriesChart
+    //{
+    //    public StackedAreaChart()
+    //    {
+    //        this.PlottingYValueRange = new Range(0,1);
+    //    }
+
+    //    internal override void SetPlottingValueRange(Orientation orientation, Range newValue)
+    //    {
+    //        switch (orientation)
+    //        {
+    //            case Orientation.Horizontal:
+    //                this.PlottingXValueRange = newValue;
+    //                break;
+    //            case Orientation.Vertical:
+    //                //do nothing
+    //                break;
+    //            default:
+    //                throw new ArgumentOutOfRangeException(nameof(orientation), orientation, null);
+    //        }
+    //    }
+    //}
+
     /// <summary>
     /// This is used to plot one series or a collection of series.
     /// A series is composed of a curve(or a area) and a collection of Scatters
     /// </summary>
     [TemplatePart(Name = "PART_SeriesItemsControl", Type = typeof(SlimItemsControl))]
-    public class SeriesChart : Control
+    public class SeriesControl : Control, ISeriesHost
     {
         private static readonly string sPART_SeriesItemsControl = "PART_SeriesItemsControl";
-        static SeriesChart()
+        static SeriesControl()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(SeriesChart), new FrameworkPropertyMetadata(typeof(SeriesChart)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(SeriesControl), new FrameworkPropertyMetadata(typeof(SeriesControl)));
         }
 
         private SlimItemsControl PART_SeriesItemsControl;
 
         private int SeriesCount => this.PART_SeriesItemsControl?.ItemCount ?? 0;
 
-        private IEnumerable<SeriesBase> GetSeries()
+        public IEnumerable<SeriesBase> GetSeries()
         {
             if (this.PART_SeriesItemsControl == null)
             {
@@ -89,10 +112,8 @@ namespace MvvmCharting.WpfFX
             UpdateGlobalValueRange();
         }
 
-        private void SeriesItemTemplateApplied(object sender, DependencyObject root)
+        private void SeriesItemTemplateApplied(object sender, DependencyObject root, int index)
         {
-
- 
             if (root == null)
             {
                 return;
@@ -104,6 +125,7 @@ namespace MvvmCharting.WpfFX
                 throw new MvvmChartException("The root element in the SeriesDataTemplate should implement ISeries!");
             }
 
+            (sr as SeriesBase).Owner = this;
 
             sr.XRangeChanged += Sr_XValueRangeChanged;
             sr.YRangeChanged += Sr_YValueRangeChanged;
@@ -116,16 +138,6 @@ namespace MvvmCharting.WpfFX
 
         }
 
-        //private void Sr_PropertyChanged(object sender, string propertyName)
-        //{
-        //    var sr = (ISeries)sender;
-        //    if (propertyName == nameof(sr.IsHighLighted))
-        //    {
-        //        this.Legend.OnItemHighlightChanged(sr.DataContext, sr.IsHighLighted);
-        //    }
-
-        //}
-
         #region SeriesDataTemplate & SeriesTemplateSelector
         public DataTemplate SeriesTemplate
         {
@@ -133,7 +145,7 @@ namespace MvvmCharting.WpfFX
             set { SetValue(SeriesTemplateProperty, value); }
         }
         public static readonly DependencyProperty SeriesTemplateProperty =
-            DependencyProperty.Register("SeriesTemplate", typeof(DataTemplate), typeof(SeriesChart), new PropertyMetadata(null));
+            DependencyProperty.Register("SeriesTemplate", typeof(DataTemplate), typeof(SeriesControl), new PropertyMetadata(null));
 
         public DataTemplateSelector SeriesTemplateSelector
         {
@@ -141,7 +153,7 @@ namespace MvvmCharting.WpfFX
             set { SetValue(SeriesTemplateSelectorProperty, value); }
         }
         public static readonly DependencyProperty SeriesTemplateSelectorProperty =
-            DependencyProperty.Register("SeriesTemplateSelector", typeof(DataTemplateSelector), typeof(SeriesChart), new PropertyMetadata(null));
+            DependencyProperty.Register("SeriesTemplateSelector", typeof(DataTemplateSelector), typeof(SeriesControl), new PropertyMetadata(null));
         #endregion
 
         #region SeriesItemsSource
@@ -154,9 +166,7 @@ namespace MvvmCharting.WpfFX
             set { SetValue(SeriesItemsSourceProperty, value); }
         }
         public static readonly DependencyProperty SeriesItemsSourceProperty =
-            DependencyProperty.Register("SeriesItemsSource", typeof(IList), typeof(SeriesChart));
-
- 
+            DependencyProperty.Register("SeriesItemsSource", typeof(IList), typeof(SeriesControl));
         #endregion
 
         #region Global Data Range
@@ -271,7 +281,7 @@ namespace MvvmCharting.WpfFX
         /// <summary>
         /// The final independent value range(min & max) used to plot series chart
         /// </summary>
-        public Range PlottingXValueRange
+        protected Range PlottingXValueRange
         {
             get
             {
@@ -296,7 +306,7 @@ namespace MvvmCharting.WpfFX
         /// <summary>
         /// The final dependent value range(min & max) used to plot series chart
         /// </summary>
-        public Range PlottingYValueRange
+        protected Range PlottingYValueRange
         {
             get { return this._plottingYValueRange; }
             set
@@ -313,9 +323,20 @@ namespace MvvmCharting.WpfFX
             }
         }
 
- 
-
-
+        internal virtual void SetPlottingValueRange(Orientation orientation, Range newValue)
+        {
+            switch (orientation)
+            {
+                case Orientation.Horizontal:
+                    this.PlottingXValueRange = newValue;
+                    break;
+                case Orientation.Vertical:
+                    this.PlottingYValueRange = newValue;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(orientation), orientation, null);
+            }
+        }
         #endregion
 
 

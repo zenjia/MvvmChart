@@ -8,7 +8,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/SlimItemsControl/SlimItemsControlStyle.xaml"/>
-        <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/SeriesChart/SeriesChartStyle.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/SeriesChart/SeriesControlStyle.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/Legend/LegendStyle.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/Axis/AxisStyle.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/GridLine/GridLineStyle.xaml"/>
@@ -83,7 +83,7 @@
                                 <ContentControl x:Name="PART_GridLineHolder"
                                                 Visibility="{TemplateBinding GridLineControlVisibility}"/>
 
-                                <local:SeriesChart x:Name="PART_SeriesChart"/>
+                                <local:SeriesControl x:Name="PART_SeriesControl"/>
 
                                 <Line x:Name="PART_HorizontalCrossHair" />
                                 <Line x:Name="PART_VerticalCrossHair"/>

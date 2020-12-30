@@ -106,7 +106,14 @@
         <local:AxisItem FontWeight="Bold"/>
     </DataTemplate>
 
+
+    <Style TargetType="TextBlock" x:Key="DefaultTitleStyle">
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontSize" Value="17"/>
+    </Style>
+
     <Style TargetType="local:AxisBase">
+        <Setter Property="TitleStyle" Value="{StaticResource DefaultTitleStyle}"/>
         <Setter Property="ItemTemplate" Value="{StaticResource DefualtAxisItemDataTemplate}"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -115,8 +122,63 @@
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Background="{TemplateBinding Background}"
                             Padding="{TemplateBinding Padding}">
-                        <wpfFx:SlimItemsControl x:Name="PART_AxisItemsControl"/>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <wpfFx:SlimItemsControl x:Name="PART_AxisItemsControl"
+                                                    Grid.Row="0" Grid.Column="0"/>
+
+                            <TextBlock x:Name="PART_Title" 
+                                       Grid.Row="1" 
+                                       Grid.Column="0" 
+                                       RenderTransformOrigin="0.5,0.5"
+                                       Text="{TemplateBinding Title}"
+                                       HorizontalAlignment="Center"
+                                       Style="{TemplateBinding TitleStyle}"
+                                       />
+                        </Grid>
+                       
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Placement" Value="Top">
+                            <Setter TargetName="PART_Title" Property="Grid.Row" Value="0"/>
+                            <Setter TargetName="PART_AxisItemsControl" Property="Grid.Row" Value="1"/>
+                        </Trigger>
+
+                        <Trigger Property="Placement" Value="Left">
+                            <Setter TargetName="PART_Title" Property="Grid.Column" Value="0"/>
+                            <Setter TargetName="PART_Title" Property="VerticalAlignment" Value="Center"/>
+                            <Setter TargetName="PART_Title" Property="LayoutTransform" >
+                                <Setter.Value>
+                                    <RotateTransform Angle="-90"/>
+                                </Setter.Value>
+                            </Setter>
+
+                            <Setter TargetName="PART_AxisItemsControl" Property="Grid.Row" Value="1"/>
+                            <Setter TargetName="PART_AxisItemsControl" Property="Grid.Column" Value="1"/>
+
+                        </Trigger>
+
+                        <Trigger Property="Placement" Value="Right">
+                            <Setter TargetName="PART_Title" Property="Grid.Column" Value="1"/>
+                            <Setter TargetName="PART_Title" Property="VerticalAlignment" Value="Center"/>
+                            <Setter TargetName="PART_Title" Property="LayoutTransform" >
+                                <Setter.Value>
+                                    <RotateTransform Angle="90"/>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter TargetName="PART_AxisItemsControl" Property="Grid.Row" Value="1"/>
+                            <Setter TargetName="PART_AxisItemsControl" Property="Grid.Column" Value="0"/>
+
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

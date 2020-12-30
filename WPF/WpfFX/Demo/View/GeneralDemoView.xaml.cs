@@ -52,6 +52,54 @@ namespace Demo
      
     }
 
+    public class SelectedSeriesShapeTypeToChartMinConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            SeriesShapeType t = (SeriesShapeType) value;
+            switch (t)
+            {
+                case SeriesShapeType.Line:
+                case SeriesShapeType.Area:
+                    return DependencyProperty.UnsetValue;
+                case SeriesShapeType.StackedArea:
+                case SeriesShapeType.StackedArea100:
+                    return 0.0;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class SelectedSeriesShapeTypeToChartMaxConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            SeriesShapeType t = (SeriesShapeType)value;
+            switch (t)
+            {
+                case SeriesShapeType.Line:
+                case SeriesShapeType.Area:
+                case SeriesShapeType.StackedArea:
+                    return DependencyProperty.UnsetValue;
+                case SeriesShapeType.StackedArea100:
+                    return 1.0;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class ChartSettingTestViewModel : BindableBase
     {
         public ChartSettingTestViewModel()
@@ -64,12 +112,29 @@ namespace Demo
             this.YAxisPlacements.Add(AxisPlacement.Left);
             this.YAxisPlacements.Add(AxisPlacement.Right);
 
- 
+            SeriesShapeTypes = new ObservableCollection<SeriesShapeType>()
+            {
+                SeriesShapeType.Line,
+                SeriesShapeType.Area,
+                SeriesShapeType.StackedArea,
+                SeriesShapeType.StackedArea100
+            };
+
+
         }
 
+        public ObservableCollection<SeriesShapeType> SeriesShapeTypes { get; }
  
         public ObservableCollection<AxisPlacement> XAxisPlacements { get; }
         public ObservableCollection<AxisPlacement> YAxisPlacements { get;  }
+
+        private SeriesShapeType _selectedSeriesShapeType;
+        public SeriesShapeType SelectedSeriesShapeType
+        {
+            get { return _selectedSeriesShapeType; }
+            set { SetProperty(ref _selectedSeriesShapeType, value); }
+        }
+
 
         private bool _isFilled;
         public bool IsFilled

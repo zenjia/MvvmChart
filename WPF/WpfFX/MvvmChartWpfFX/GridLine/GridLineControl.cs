@@ -130,12 +130,12 @@ namespace MvvmCharting.WpfFX
             line.SetBinding(StyleProperty, b);
         }
          
-        private void VerticalGridLineItemTemplateApplied(object arg1, DependencyObject rootChild)
+        private void VerticalGridLineItemTemplateApplied(object arg1, DependencyObject rootChild, int index)
         {
             SetGridLineBindings(rootChild, Orientation.Vertical);
         }
 
-        private void HorizontalGridLineItemTemplateApplied(object arg1, DependencyObject rootChild)
+        private void HorizontalGridLineItemTemplateApplied(object arg1, DependencyObject rootChild, int index)
         {
             SetGridLineBindings(rootChild, Orientation.Horizontal);
         }
