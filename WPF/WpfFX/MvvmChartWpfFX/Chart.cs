@@ -285,7 +285,6 @@ namespace MvvmCharting.WpfFX
 
         #endregion
 
-
         #region Plotting Data Range
         private Range _plottingXDataRange = Range.Empty;
         /// <summary>
@@ -869,7 +868,6 @@ namespace MvvmCharting.WpfFX
 
 
         #endregion
-
 
         /// <summary>
         /// Called when x-axis or y-axis has updated the coordinates of its items.

@@ -1,4 +1,4 @@
-﻿#define DEBUG_SlimItemsControl
+﻿//#define DEBUG_SlimItemsControl
 
 using System;
 using System.Collections;

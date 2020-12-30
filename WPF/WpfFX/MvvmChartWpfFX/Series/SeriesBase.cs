@@ -130,7 +130,7 @@ namespace MvvmCharting.WpfFX
             var item = scatter.DataContext;
 
 
-            if (!this.xPixelPerUnit.IsNaN() && !this.yPixelPerUnit.IsNaN())
+            if (!this._xPixelPerUnit.IsNaN() && !this._yPixelPerUnit.IsNaN())
             {
                 scatter.Coordinate = GetPlotCoordinateForItem(item);
 
@@ -140,7 +140,6 @@ namespace MvvmCharting.WpfFX
 
 
         }
-
 
         #region IndependentValueProperty & DependentValueProperty properties
         public string IndependentValueProperty
@@ -544,8 +543,8 @@ namespace MvvmCharting.WpfFX
 
         #region Coordinates calculating
 
-        private double xPixelPerUnit { get; set; }
-        private double yPixelPerUnit { get; set; }
+        private double _xPixelPerUnit { get; set; }
+        private double _yPixelPerUnit { get; set; }
 
         private void UpdatePixelPerUnit(Orientation orientation)
         {
@@ -556,23 +555,23 @@ namespace MvvmCharting.WpfFX
                     if (this.PlottingXValueRange.IsInvalid ||
                         this.RenderSize.IsInvalid())
                     {
-                        this.xPixelPerUnit = double.NaN;
+                        this._xPixelPerUnit = double.NaN;
                         return;
                     }
 
-                    this.xPixelPerUnit = this.RenderSize.Width / this.PlottingXValueRange.Span;
+                    this._xPixelPerUnit = this.RenderSize.Width / this.PlottingXValueRange.Span;
                     break;
                 case Orientation.Vertical:
 
                     if (this.PlottingYValueRange.IsInvalid ||
                         this.RenderSize.IsInvalid())
                     {
-                        this.yPixelPerUnit = double.NaN;
+                        this._yPixelPerUnit = double.NaN;
 
                         return;
                     }
 
-                    this.yPixelPerUnit = this.RenderSize.Height / this.PlottingYValueRange.Span;
+                    this._yPixelPerUnit = this.RenderSize.Height / this.PlottingYValueRange.Span;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(orientation), orientation, null);
@@ -584,8 +583,8 @@ namespace MvvmCharting.WpfFX
         private PointNS GetPlotCoordinateForItem(object item)
         {
             var itemValue = GetValueFromItem(item);
-            var pt = new PointNS((itemValue.X - this.PlottingXValueRange.Min) * this.xPixelPerUnit,
-                (itemValue.Y - this.PlottingYValueRange.Min) * this.yPixelPerUnit);
+            var pt = new PointNS((itemValue.X - this.PlottingXValueRange.Min) * this._xPixelPerUnit,
+                (itemValue.Y - this.PlottingYValueRange.Min) * this._yPixelPerUnit);
 
             return pt;
         }
@@ -600,8 +599,8 @@ namespace MvvmCharting.WpfFX
             UpdatePixelPerUnit(Orientation.Horizontal);
             UpdatePixelPerUnit(Orientation.Vertical);
 
-            if (this.xPixelPerUnit.IsNaN() ||
-                this.yPixelPerUnit.IsNaN() ||
+            if (this._xPixelPerUnit.IsNaN() ||
+                this._yPixelPerUnit.IsNaN() ||
                 this.ItemsSource == null ||
                 this.ItemsSource.Count == 0 ||
                 !this.IsLoaded)
@@ -642,7 +641,6 @@ namespace MvvmCharting.WpfFX
             return this._coordinateCache;
         }
         #endregion
-
 
         /// <summary>
         /// Update the Data of path(line or area). This should be called after

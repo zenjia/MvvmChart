@@ -84,19 +84,9 @@ namespace MvvmCharting.WpfFX
             UpdateGlobalValueRange();
         }
 
-        private void PART_SeriesItemsControl_ItemReplaced(object arg1, FrameworkElement arg2)
-        {
-            throw new NotImplementedException();
-        }
-
         private void PART_SeriesItemsControl_ItemRemoved(object arg1, FrameworkElement arg2)
         {
             UpdateGlobalValueRange();
-        }
-
-        private void PART_SeriesItemsControl_ItemAdded(object arg1, FrameworkElement arg2)
-        {
-            //throw new NotImplementedException();
         }
 
         private void SeriesItemTemplateApplied(object sender, DependencyObject root)
