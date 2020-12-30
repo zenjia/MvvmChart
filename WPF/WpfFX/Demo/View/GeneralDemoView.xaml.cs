@@ -64,23 +64,18 @@ namespace Demo
             this.YAxisPlacements.Add(AxisPlacement.Left);
             this.YAxisPlacements.Add(AxisPlacement.Right);
 
-            GeometryModes = new ObservableCollection<SeriesGeometryMode>()
-            {
-                SeriesGeometryMode.Line,
-                SeriesGeometryMode.Area
-            };
+ 
         }
 
-        public ObservableCollection<SeriesGeometryMode> GeometryModes { get; }
-
+ 
         public ObservableCollection<AxisPlacement> XAxisPlacements { get; }
         public ObservableCollection<AxisPlacement> YAxisPlacements { get;  }
 
-        private SeriesGeometryMode _selectedGeometryMode;
-        public SeriesGeometryMode SelectedGeometryMode
+        private bool _isFilled;
+        public bool IsFilled
         {
-            get { return _selectedGeometryMode; }
-            set { SetProperty(ref _selectedGeometryMode, value); }
+            get { return _isFilled; }
+            set { SetProperty(ref _isFilled, value); }
         }
 
 
@@ -141,6 +136,20 @@ namespace Demo
         {
             DemoDataViewModel viewModel = (DemoDataViewModel)this.Resources["DemoDataViewModel"];
             viewModel.RemoveData();
+        }
+
+        private void btnAddSeriesClick(object sender, RoutedEventArgs e)
+        {
+            DemoDataViewModel viewModel = (DemoDataViewModel)this.Resources["DemoDataViewModel"];
+            viewModel.AddList();
+
+        }
+
+        private void btnRemoveSeriesClick(object sender, RoutedEventArgs e)
+        {
+            DemoDataViewModel viewModel = (DemoDataViewModel)this.Resources["DemoDataViewModel"];
+            viewModel.RemoveList();
+
         }
     }
 }

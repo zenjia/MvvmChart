@@ -1,5 +1,4 @@
-﻿
-//#define DEBUG_SlimItemsControl
+﻿#define DEBUG_SlimItemsControl
 
 using System;
 using System.Collections;
@@ -37,6 +36,11 @@ namespace MvvmCharting.WpfFX
         /// </summary>
         public event Action<object, FrameworkElement> ElementGenerated;
 
+        public event Action<object, FrameworkElement> ItemRemoved;
+        public event Action<object, FrameworkElement> ItemReplaced;
+        public event Action<object, FrameworkElement> ItemAdded;
+        public event Action<object> Reset;
+
         private Dictionary<object, FrameworkElement> _itemsDictionary = new Dictionary<object, FrameworkElement>();
 
         private Panel PART_Root;
@@ -51,7 +55,7 @@ namespace MvvmCharting.WpfFX
                 throw new MvvmChartException($"'PART_Root' is not found!");
             }
 
-        
+
             LoadAllItems();
 
 
@@ -119,7 +123,7 @@ namespace MvvmCharting.WpfFX
 #if DEBUG_SlimItemsControl
             Debug.WriteLine($"{this.Name}({this.GetHashCode()})....OnItemsSourceChanged....");
 #endif
-           
+
 
             ReloadAllItems();
 
@@ -293,7 +297,7 @@ namespace MvvmCharting.WpfFX
 
             this.ElementGenerated?.Invoke(this, treeRoot);
 
-
+            this.ItemAdded?.Invoke(this, treeRoot);
 
         }
 
@@ -303,8 +307,15 @@ namespace MvvmCharting.WpfFX
             Debug.WriteLine($"{this.Name}({this.GetHashCode()})....OnItemRemoved....{item}");
 #endif
             _itemsDictionary.Remove(item);
+
+            FrameworkElement treeRoot = null;
+            if (this.ItemRemoved != null)
+            {
+                treeRoot = (FrameworkElement)this.PART_Root.Children[itemIndex];
+            }
             this.PART_Root.Children.RemoveAt(itemIndex);
 
+            this.ItemRemoved?.Invoke(this, treeRoot);
         }
 
         private void OnItemReplaced(object oldItem, object newItem, int index)
@@ -312,6 +323,7 @@ namespace MvvmCharting.WpfFX
 #if DEBUG_SlimItemsControl
             Debug.WriteLine($"{this.Name}({this.GetHashCode()})....OnItemReplaced....{oldItem}->{newItem}");
 #endif
+
             FrameworkElement treeRoot;
             if (this.ItemTemplate != null)
             {
@@ -320,6 +332,7 @@ namespace MvvmCharting.WpfFX
 #endif
                 treeRoot = (FrameworkElement)this.PART_Root.Children[index];
                 treeRoot.DataContext = newItem;
+
             }
             else
             {
@@ -328,8 +341,14 @@ namespace MvvmCharting.WpfFX
                 this.PART_Root.Children.Insert(index, treeRoot);
             }
 
+
+          
+
             _itemsDictionary.Remove(oldItem);
             _itemsDictionary.Add(newItem, treeRoot);
+
+            ItemReplaced?.Invoke(this, treeRoot);
+
             //treeRoot = LoadTemplateContentForItem(newItem);
             //this.PART_Root.Children.RemoveAt(index);
             //this.PART_Root.Children.Insert(index, treeRoot);
@@ -358,8 +377,10 @@ namespace MvvmCharting.WpfFX
 #if DEBUG_SlimItemsControl
             Debug.WriteLine($"{this.Name}({this.GetHashCode()})....OnRefresh....");
 #endif
-            
+
             ReloadAllItems();
+
+            this.Reset?.Invoke(this);
         }
 
         private void ClearItems()
@@ -389,7 +410,7 @@ namespace MvvmCharting.WpfFX
 
         private void ReloadAllItems()
         {
-         
+
 #if DEBUG_SlimItemsControl
             Debug.WriteLine($"{this.Name}({this.GetHashCode()})....ReloadAllItems....");
 #endif
@@ -404,7 +425,7 @@ namespace MvvmCharting.WpfFX
             {
                 return;
             }
-            
+
             if (object.ReferenceEquals(this._handledItemsSource, this.ItemsSource))
             {
                 return;

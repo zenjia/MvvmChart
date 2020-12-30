@@ -24,7 +24,7 @@ namespace Demo
                 case 2:
                     return Brushes.Blue;
                 default:
-                    throw new ArgumentOutOfRangeException(index.ToString());
+                    return Brushes.Red;  
             }
         }
 
@@ -53,7 +53,7 @@ namespace Demo
                 
             }
 
-            return null;
+            return ScatterDataTemplate;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

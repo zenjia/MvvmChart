@@ -67,7 +67,7 @@
                                  Padding="6"
                                  Margin="5"
                                  CornerRadius="4">
-                            <local:SlimItemsControl x:Name="PART_ItemsControl"
+                            <local:SlimItemsControl x:Name="PART_LegendItemsControl"
                                           ItemsSource="{TemplateBinding ItemsSource}"
                                           ItemTemplate="{TemplateBinding LegendItemTemplate}"
                                           ItemTemplateSelector="{TemplateBinding LegendItemTemplateSelector}">

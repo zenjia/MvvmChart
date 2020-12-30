@@ -73,9 +73,6 @@
     <Compile Include="View\GeneralDemoView.xaml.cs">
       <DependentUpon>GeneralDemoView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AreaSeriesDemoView.xaml.cs">
-      <DependentUpon>AreaSeriesDemoView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ViewModel\DemoDataViewModel.cs" />
     <Compile Include="ViewModel\SomePoint.cs" />
     <Compile Include="ViewModel\SomePointList.cs" />
@@ -93,10 +90,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\GeneralDemoView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\AreaSeriesDemoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

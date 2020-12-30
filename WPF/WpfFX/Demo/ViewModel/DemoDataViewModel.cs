@@ -14,11 +14,11 @@ namespace Demo
         private bool _showSeriesLine = true;
         public bool ShowSeriesLine
         {
-            get { return _showSeriesLine; }
+            get { return this._showSeriesLine; }
             set
             {
 
-                if (SetProperty(ref _showSeriesLine, value))
+                if (SetProperty(ref this._showSeriesLine, value))
                 {
                     foreach (var sr in this.ItemsSourceList)
                     {
@@ -31,10 +31,10 @@ namespace Demo
         private bool _showSeriesPoints = true;
         public bool ShowSeriesPoints
         {
-            get { return _showSeriesPoints; }
+            get { return this._showSeriesPoints; }
             set
             {
-                if (SetProperty(ref _showSeriesPoints, value))
+                if (SetProperty(ref this._showSeriesPoints, value))
                 {
                     foreach (var sr in this.ItemsSourceList)
                     {
@@ -62,79 +62,82 @@ namespace Demo
             }
         }
 
-        private int _max=30;
-        public int Max
-        {
-            get { return _max; }
-            set { _max = value; }
-        }
+        private int _max = 30;
+        private int _min = 0;
 
-
-        private int _min=0;
-        public int Min
-        {
-            get { return _min; }
-            set { _min = value; }
-        }
-
-        private SomePoint GetPoint(int i)
+        private SomePoint GetPoint(int i, double yOffset)
         {
             var v = i / 1.0;
             var y = Math.Abs(v) < 1e-10 ? 1 : Math.Sin(v) / v;
-            var pt = new SomePoint(v, y);
+      
+            var pt = new SomePoint(v, y + yOffset);
 
             return pt;
         }
 
+
+
         private void InitiateData()
         {
-            var first = new SomePointList(0);
-            for (int i = 0; i <= this.Max; i++)
+            for (int i = 0; i < 3; i++)
             {
-                var pt = GetPoint(i);
-                first.DataList.Add(pt);
+                AddList(i);
             }
 
-            this.ItemsSourceList.Add(first);
+        }
 
-            for (int i = 1; i < 3; i++)
+        private void AddList(int index)
+        {
+            var list = new SomePointList(index);
+
+            for (int j = this._min; j <= this._max; j++)
             {
-                var list = new SomePointList(i);
-                double yOffset = i * 0.5;
-                foreach (var item in first.DataList)
-                {
-                    list.DataList.Add(new SomePoint(item.t, item.Y + yOffset));
-                }
-
-                ItemsSourceList.Insert(0, list);
+                var pt = GetPoint(j, index * 0.5);
+                list.DataList.Add(pt);
             }
+
+            this.ItemsSourceList.Insert(0, list);
+        }
+
+        public void AddList()
+        {
+            int index = this.ItemsSourceList.Any() ? this.ItemsSourceList.Max(sr => sr.Index) + 1 : 0;
+
+            AddList(index);
+        }
+
+        public void RemoveList()
+        {
+            if (!this.ItemsSourceList.Any())
+            {
+                return;
+            }
+            this.ItemsSourceList.RemoveAt(0);
         }
 
         public void AddData()
         {
-            this.Max++;
-            var pt = GetPoint(this.Max);
-            int j = ItemsSourceList.Count - 1;
-            for (int i = 0; i < ItemsSourceList.Count; i++)
+            this._max++;
+            foreach (var list in this.ItemsSourceList)
             {
-                var list = ItemsSourceList[j--];
-                double yOffset = i * 0.5;
-                list.DataList.Add(new SomePoint(pt.t, pt.Y + yOffset));
+                var pt = GetPoint(this._max, list.Index * 0.5);
+                list.DataList.Add(pt);
             }
+
         }
 
         public void RemoveData()
         {
-            this.Min++;
- 
-            for (int i = 0; i < ItemsSourceList.Count; i++)
+            this._min++;
+
+            for (int i = 0; i < this.ItemsSourceList.Count; i++)
             {
-                var list = ItemsSourceList[i];
-                if (list.DataList.Count>3)
+                var list = this.ItemsSourceList[i];
+                if (list.DataList.Count > 3)
                 {
                     list.DataList.RemoveAt(0);
                 }
- 
+
             }
         }
 
@@ -147,7 +150,7 @@ namespace Demo
                 "Scatter2Template"
             };
 
-           
+
 
             this.ItemsSourceList = new ObservableCollection<SomePointList>();
 

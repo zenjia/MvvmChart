@@ -18,11 +18,6 @@
             <local:GeneralDemoView Margin="15"/>
         </TabItem>
 
- 
-        <TabItem Header="Area Series Demo" Padding="6">
-            <local:AreaSeriesDemoView Margin="15"/>
-        </TabItem>
-
         <TabItem Header="DateTime Demo" Padding="6">
             <local:DateTimeDemoView Margin="15"/>
         </TabItem>

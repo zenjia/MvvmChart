@@ -42,13 +42,13 @@ namespace MvvmCharting.Series
         /// Fired when the X value range of a series is changed. 
         /// The host chart need to know when the value range of its series changed
         /// </summary>
-        event Action<Range> XRangeChanged;
+        event Action<ISeries, Range> XRangeChanged;
 
         /// <summary>
         /// Fired when the Y value range of a series is changed. 
         /// The host chart need to know when the value range of its series changed
         /// </summary>
-        event Action<Range> YRangeChanged;
+        event Action<ISeries, Range> YRangeChanged;
 
         //event Action<object, string> PropertyChanged;
     }

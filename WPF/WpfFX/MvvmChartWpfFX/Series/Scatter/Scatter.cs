@@ -71,6 +71,14 @@ namespace MvvmCharting.WpfFX
         public static readonly DependencyProperty StretchProperty =
             Shape.StretchProperty.AddOwner(typeof(Scatter));
 
+        public bool IsSelected
+        {
+            get { return (bool)GetValue(IsSelectedProperty); }
+            set { SetValue(IsSelectedProperty, value); }
+        }
+        public static readonly DependencyProperty IsSelectedProperty =
+            DependencyProperty.Register("IsSelected", typeof(bool), typeof(Scatter), new PropertyMetadata(false));
+
 
         /// <summary>
         /// If the Template does not contains a Path, change this property will

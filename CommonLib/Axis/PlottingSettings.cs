@@ -1,6 +1,6 @@
-﻿ 
+﻿
 using MvvmCharting.Common;
- 
+
 using MvvmCharting.Drawing;
 using MvvmCharting.Drawing;
 
@@ -18,7 +18,7 @@ namespace MvvmCharting.Axis
         double GetAvailablePlottingSize();
     }
 
-    public interface ILinearPlottingSettings: IPlottingSettingsBase
+    public interface ILinearPlottingSettings : IPlottingSettingsBase
     {
         Range PlottingDataRange { get; }
     }
@@ -72,9 +72,9 @@ namespace MvvmCharting.Axis
             return this.RenderSize.NearlyEqual(obj.RenderSize, 0.0001) &&
                    this.Margin == obj.Margin &&
                    this.Padding == obj.Padding &&
-                   this.BorderThickness == obj.BorderThickness 
-                   //&&
-                   //this.PlottingDataRange == obj.PlottingDataRange
+                   this.BorderThickness == obj.BorderThickness
+                //&&
+                //this.PlottingDataRange == obj.PlottingDataRange
                 ;
         }
 
@@ -94,14 +94,14 @@ namespace MvvmCharting.Axis
         }
     }
 
-    public class PlottingSettings: PlottingSettingsBase, ILinearPlottingSettings
+    public class PlottingSettings : PlottingSettingsBase, ILinearPlottingSettings
     {
-        
- 
+
+
 
         public Range PlottingDataRange { get; }
 
- 
+
 
         public PlottingSettings(AxisType orientation,
             double renderSize,
@@ -109,11 +109,11 @@ namespace MvvmCharting.Axis
             PointNS padding,
             PointNS borderThickness,
             Range plottingDataRange)
-                :base(orientation, renderSize, margin, padding, borderThickness)
+                : base(orientation, renderSize, margin, padding, borderThickness)
         {
- 
+
             this.PlottingDataRange = plottingDataRange;
- 
+
         }
 
         public override bool Equals(object obj)
@@ -129,6 +129,11 @@ namespace MvvmCharting.Axis
         public bool Equals(PlottingSettings obj)
         {
             var plottingSettingsBase = obj as PlottingSettingsBase;
+            if (obj == null)
+            {
+                return false;
+            }
+
             return plottingSettingsBase.Equals(this) &&
                    this.PlottingDataRange == obj.PlottingDataRange;
         }

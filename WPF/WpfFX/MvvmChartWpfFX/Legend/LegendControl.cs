@@ -18,7 +18,7 @@ using System.Windows.Shapes;
 namespace MvvmCharting.WpfFX
 {
 
-    [TemplatePart(Name = "PART_ItemsControl", Type = typeof(SlimItemsControl))]
+    [TemplatePart(Name = "PART_LegendItemsControl", Type = typeof(SlimItemsControl))]
     public class LegendControl : Control
     {
         static LegendControl()
@@ -28,15 +28,15 @@ namespace MvvmCharting.WpfFX
 
         public event Action<LegendItemControl, bool> LegendItemHighlighChanged; 
 
-        private SlimItemsControl PART_ItemsControl;
+        private SlimItemsControl PART_LegendItemsControl;
 
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            this.PART_ItemsControl = (SlimItemsControl)this.GetTemplateChild("PART_ItemsControl");
-            if (this.PART_ItemsControl!=null)
+            this.PART_LegendItemsControl = (SlimItemsControl)this.GetTemplateChild("PART_LegendItemsControl");
+            if (this.PART_LegendItemsControl!=null)
             {
-                this.PART_ItemsControl.ElementGenerated += PART_ItemsControl_ElementGenerated;
+                this.PART_LegendItemsControl.ElementGenerated += PART_ItemsControl_ElementGenerated;
             }
         }
 
@@ -89,17 +89,17 @@ namespace MvvmCharting.WpfFX
             DependencyProperty.Register("LegendItemTemplateSelector", typeof(DataTemplateSelector), typeof(LegendControl), new PropertyMetadata(null));
 
 
-        public void OnItemHighlightChanged(object item, bool newValue)
-        {
-            var legendItem = PART_ItemsControl?.TryGetElementForItem(item) as LegendItemControl;
+        //public void OnItemHighlightChanged(object item, bool newValue)
+        //{
+        //    var legendItem = PART_LegendItemsControl?.TryGetElementForItem(item) as LegendItemControl;
 
  
-            if (legendItem != null)
-            {
-                legendItem.IsHighlighted = newValue;
-            }
+        //    if (legendItem != null)
+        //    {
+        //        legendItem.IsHighlighted = newValue;
+        //    }
 
 
-        }
+        //}
     }
 }

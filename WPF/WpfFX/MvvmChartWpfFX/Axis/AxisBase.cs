@@ -226,6 +226,10 @@ namespace MvvmCharting.WpfFX.Axis
 
         private void AxisBase_CanvasSettingChanged(IPlottingSettingsBase obj)
         {
+            if (obj == null)
+            {
+                return;
+            }
             switch (obj.Orientation)
             {
                 case AxisType.X:

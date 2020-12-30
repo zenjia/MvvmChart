@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using MvvmCharting.Drawing;
 using MvvmCharting.Series;
 
@@ -13,6 +17,7 @@ namespace MvvmCharting.WpfFX
     /// To achieve this, just simply pass a ISeriesGeometryBuilder object to the GeometryBuilder property.
     /// By default, the GeometryBuilder property is set to a PolyLineGeometryBuilder.
     /// </summary>
+    [TemplatePart(Name = "PART_Shape", Type = typeof(Shape))]
     public class PathSeries : SeriesBase
     {
         static PathSeries()
@@ -27,6 +32,9 @@ namespace MvvmCharting.WpfFX
  
         }
 
+   
+
+
         /// <summary>
         /// cache the created Geometry object
         /// </summary>
@@ -35,9 +43,9 @@ namespace MvvmCharting.WpfFX
 
         private void OnPathDataChanged()
         {
-            if (this.PART_Path != null)
+            if (this.PART_Shape != null)
             {
-                this.PART_Path.Data = this._pathData;
+                ((Path)this.PART_Shape).Data = this._pathData;
             }
 
         }
@@ -56,35 +64,14 @@ namespace MvvmCharting.WpfFX
             ((PathSeries)d).UpdateLineOrArea();
         }
 
-        protected virtual PointNS[] GetPreviousSeriesCoordinates()
-        {
-
-            PointNS[] previous = null;
-            switch (this.Mode)
-            {
-                case SeriesGeometryMode.Line:
-                    break;
-                case SeriesGeometryMode.Area:
-                    previous = new PointNS[2];
-                    previous[0] = new PointNS(0, 0);
-                    previous[1] = new PointNS(this.ActualWidth, 0);
-                    break;
-                case SeriesGeometryMode.ProportionalArea:
-                    throw new NotImplementedException();
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            return previous;
-        }
-
+ 
         /// <summary>
         /// This should be called when GeometryBuilder, Mode or coordinates changed
         /// </summary>
         protected override void UpdateLineOrArea()
         {
             if (this.GeometryBuilder == null ||
-                this.PART_Path == null ||
+                this.PART_Shape == null ||
                 this.ItemsSource == null ||
                 this.ItemsSource.Count == 0)
             {
@@ -94,7 +81,11 @@ namespace MvvmCharting.WpfFX
 
             var coordinates = this.GetCoordinates();
 
-            PointNS[] previous = GetPreviousSeriesCoordinates();
+           PointNS[] previous = null;
+            if (this.IsFilled)
+            {
+                previous = new[] { new PointNS(0, 0), new PointNS(this.ActualWidth, 0) };
+            }
 
             var geometry = coordinates == null
                 ? Geometry.Empty

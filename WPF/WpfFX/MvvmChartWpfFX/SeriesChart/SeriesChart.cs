@@ -26,7 +26,7 @@ namespace MvvmCharting.WpfFX
     /// A series is composed of a curve(or a area) and a collection of Scatters
     /// </summary>
     [TemplatePart(Name = "PART_SeriesItemsControl", Type = typeof(SlimItemsControl))]
-    public class SeriesChart : Control, ISeriesHost
+    public class SeriesChart : Control
     {
         private static readonly string sPART_SeriesItemsControl = "PART_SeriesItemsControl";
         static SeriesChart()
@@ -38,7 +38,7 @@ namespace MvvmCharting.WpfFX
 
         private int SeriesCount => this.PART_SeriesItemsControl?.ItemCount ?? 0;
 
-        public IEnumerable<SeriesBase> GetSeries()
+        private IEnumerable<SeriesBase> GetSeries()
         {
             if (this.PART_SeriesItemsControl == null)
             {
@@ -63,6 +63,10 @@ namespace MvvmCharting.WpfFX
             if (this.PART_SeriesItemsControl != null)
             {
                 this.PART_SeriesItemsControl.ElementGenerated += SeriesItemTemplateApplied;
+                //this.PART_SeriesItemsControl.ItemAdded += PART_SeriesItemsControl_ItemAdded;
+                this.PART_SeriesItemsControl.ItemRemoved += PART_SeriesItemsControl_ItemRemoved;
+                //this.PART_SeriesItemsControl.ItemReplaced += PART_SeriesItemsControl_ItemReplaced;
+                this.PART_SeriesItemsControl.Reset += PART_SeriesItemsControl_Reset;
 
                 this.PART_SeriesItemsControl.SetBinding(SlimItemsControl.ItemTemplateProperty,
                     new Binding(nameof(this.SeriesTemplate)) { Source = this });
@@ -75,9 +79,30 @@ namespace MvvmCharting.WpfFX
  
         }
 
+        private void PART_SeriesItemsControl_Reset(object obj)
+        {
+            UpdateGlobalValueRange();
+        }
+
+        private void PART_SeriesItemsControl_ItemReplaced(object arg1, FrameworkElement arg2)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PART_SeriesItemsControl_ItemRemoved(object arg1, FrameworkElement arg2)
+        {
+            UpdateGlobalValueRange();
+        }
+
+        private void PART_SeriesItemsControl_ItemAdded(object arg1, FrameworkElement arg2)
+        {
+            //throw new NotImplementedException();
+        }
+
         private void SeriesItemTemplateApplied(object sender, DependencyObject root)
         {
 
+ 
             if (root == null)
             {
                 return;
@@ -92,16 +117,12 @@ namespace MvvmCharting.WpfFX
 
             sr.XRangeChanged += Sr_XValueRangeChanged;
             sr.YRangeChanged += Sr_YValueRangeChanged;
-            //sr.PropertyChanged += Sr_PropertyChanged;
 
-
-            if (sr is ProportionAreaSeries)
-            {
-                ((ProportionAreaSeries)sr).Owner = this;
-            }
+            sr.PlottingXValueRange = this.PlottingXValueRange;
+            sr.PlottingYValueRange = this.PlottingYValueRange;
 
             sr.UpdateValueRange();
-
+            
 
         }
 
@@ -143,7 +164,7 @@ namespace MvvmCharting.WpfFX
             set { SetValue(SeriesItemsSourceProperty, value); }
         }
         public static readonly DependencyProperty SeriesItemsSourceProperty =
-            DependencyProperty.Register("SeriesItemsSource", typeof(IList), typeof(SeriesChart), new PropertyMetadata(null));
+            DependencyProperty.Register("SeriesItemsSource", typeof(IList), typeof(SeriesChart));
 
  
         #endregion
@@ -161,7 +182,6 @@ namespace MvvmCharting.WpfFX
                 if (this._globalYValueRange != value)
                 {
                     this._globalYValueRange = value;
-
                     this.GlobalYValueRangeChanged?.Invoke(value);
                 }
             }
@@ -179,6 +199,8 @@ namespace MvvmCharting.WpfFX
                 if (this._globalXValueRange != value)
                 {
                     this._globalXValueRange = value;
+
+            
                     this.GlobalXValueRangeChanged?.Invoke(value);
                 }
             }
@@ -187,12 +209,12 @@ namespace MvvmCharting.WpfFX
         public event Action<Range> GlobalXValueRangeChanged;
         public event Action<Range> GlobalYValueRangeChanged;
 
-        private void Sr_XValueRangeChanged(Range obj)
+        private void Sr_XValueRangeChanged(ISeries sr, Range obj)
         {
             UpdateGlobalValueRange();
         }
 
-        private void Sr_YValueRangeChanged(Range obj)
+        private void Sr_YValueRangeChanged(ISeries sr, Range obj)
         {
             UpdateGlobalValueRange();
         }
@@ -210,6 +232,7 @@ namespace MvvmCharting.WpfFX
 
             bool isXDataRangeEmplty = true;
             bool isYDataRangeEmplty = true;
+
             foreach (var sr in this.GetSeries())
             {
 

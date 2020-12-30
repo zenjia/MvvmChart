@@ -17,7 +17,7 @@
 
         public bool IsEmpty
         {
-            get { return this.Min.IsNaN() || this.Min.IsNaN() || this.Max.IsNaN(); }
+            get { return this.Min.IsNaN() || this.Max.IsNaN(); }
         }
 
         public bool IsInvalid
@@ -30,7 +30,7 @@
 
         public override string ToString()
         {
-            return $"({this.Min.ToString("F4")}, {this.Max.ToString("F4")})";
+            return $"({this.Min:F2}, {this.Max:F2})";
         }
 
         public double Span

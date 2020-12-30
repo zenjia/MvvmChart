@@ -448,7 +448,6 @@ namespace MvvmCharting.WpfFX
                 return;
             }
 
-
             var newValue = GetPlottingSettings(orientation);
             switch (orientation)
             {
