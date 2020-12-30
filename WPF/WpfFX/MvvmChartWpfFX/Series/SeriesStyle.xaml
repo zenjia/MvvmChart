@@ -4,7 +4,7 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="ScatterStyle.xaml"/>
+        <ResourceDictionary Source="Scatter/ScatterStyle.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     <system:Double x:Key="Series.Highlighted.StrokeThickness">3.5</system:Double>
@@ -34,7 +34,7 @@
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
-                                <Condition Property="IsFilled" Value="True"/>
+                                <Condition Property="IsAreaMode"  Value="True"/>
                                 <Condition Property="IsHighLighted" Value="True"/>
                             </MultiTrigger.Conditions>
                             <MultiTrigger.Setters>

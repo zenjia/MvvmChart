@@ -56,7 +56,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="View\IndexToScatterTemplateConverter.cs" />
+    <Compile Include="ViewModel\General\ChartSettingTestViewModel.cs" />
+    <Compile Include="ViewModel\Converters\SelectedSeriesShapeTypeToChartMaxConverter.cs" />
+    <Compile Include="ViewModel\Converters\SelectedSeriesShapeTypeToChartMinConverter.cs" />
+    <Compile Include="View\SeriesCustomizingDemoView.xaml.cs">
+      <DependentUpon>SeriesCustomizingDemoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\Converters\IndexToScatterTemplateConverter.cs" />
     <Compile Include="View\ScatterCustomizationDemoView.xaml.cs">
       <DependentUpon>ScatterCustomizationDemoView.xaml</DependentUpon>
     </Compile>
@@ -73,10 +79,14 @@
     <Compile Include="View\GeneralDemoView.xaml.cs">
       <DependentUpon>GeneralDemoView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\DemoDataViewModel.cs" />
-    <Compile Include="ViewModel\SomePoint.cs" />
-    <Compile Include="ViewModel\SomePointList.cs" />
-    <Compile Include="View\SeriesTemplateSelector.cs" />
+    <Compile Include="ViewModel\General\DemoDataViewModel.cs" />
+    <Compile Include="ViewModel\General\SomePoint.cs" />
+    <Compile Include="ViewModel\General\SomePointList.cs" />
+    <Compile Include="ViewModel\Converters\SeriesTemplateSelector.cs" />
+    <Page Include="View\SeriesCustomizingDemoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\ScatterCustomizationDemoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

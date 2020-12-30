@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -14,9 +13,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MvvmCharting.Axis;
-using MvvmCharting.Common;
-using MvvmCharting.WpfFX;
 
 namespace Demo
 {
@@ -50,135 +46,6 @@ namespace Demo
         }
 
      
-    }
-
-    public class SelectedSeriesShapeTypeToChartMinConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            SeriesShapeType t = (SeriesShapeType) value;
-            switch (t)
-            {
-                case SeriesShapeType.Line:
-                case SeriesShapeType.Area:
-                    return DependencyProperty.UnsetValue;
-                case SeriesShapeType.StackedArea:
-                case SeriesShapeType.StackedArea100:
-                    return 0.0;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class SelectedSeriesShapeTypeToChartMaxConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            SeriesShapeType t = (SeriesShapeType)value;
-            switch (t)
-            {
-                case SeriesShapeType.Line:
-                case SeriesShapeType.Area:
-                case SeriesShapeType.StackedArea:
-                    return DependencyProperty.UnsetValue;
-                case SeriesShapeType.StackedArea100:
-                    return 1.0;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class ChartSettingTestViewModel : BindableBase
-    {
-        public ChartSettingTestViewModel()
-        {
-            XAxisPlacements = new ObservableCollection<AxisPlacement>();
-            XAxisPlacements.Add(AxisPlacement.Bottom);
-            XAxisPlacements.Add(AxisPlacement.Top);
-
-            this.YAxisPlacements = new ObservableCollection<AxisPlacement>();
-            this.YAxisPlacements.Add(AxisPlacement.Left);
-            this.YAxisPlacements.Add(AxisPlacement.Right);
-
-            SeriesShapeTypes = new ObservableCollection<SeriesShapeType>()
-            {
-                SeriesShapeType.Line,
-                SeriesShapeType.Area,
-                SeriesShapeType.StackedArea,
-                SeriesShapeType.StackedArea100
-            };
-
-
-        }
-
-        public ObservableCollection<SeriesShapeType> SeriesShapeTypes { get; }
- 
-        public ObservableCollection<AxisPlacement> XAxisPlacements { get; }
-        public ObservableCollection<AxisPlacement> YAxisPlacements { get;  }
-
-        private SeriesShapeType _selectedSeriesShapeType;
-        public SeriesShapeType SelectedSeriesShapeType
-        {
-            get { return _selectedSeriesShapeType; }
-            set { SetProperty(ref _selectedSeriesShapeType, value); }
-        }
-
-
-        private bool _isFilled;
-        public bool IsFilled
-        {
-            get { return _isFilled; }
-            set { SetProperty(ref _isFilled, value); }
-        }
-
-
-        private AxisPlacement _selectedXPlacement = AxisPlacement.Bottom;
-        public AxisPlacement SelectedXPlacement
-        {
-            get { return this._selectedXPlacement; }
-            set { SetProperty(ref this._selectedXPlacement, value); }
-        }
-
-        private AxisPlacement _selectedYPlacement = AxisPlacement.Left;
-        public AxisPlacement SelectedYPlacement
-        {
-            get { return this._selectedYPlacement; }
-            set { SetProperty(ref this._selectedYPlacement, value); }
-        }
-
-        private bool _showBackgroundImage;
-        public bool ShowBackgroundImage
-        {
-            get { return _showBackgroundImage; }
-            set { SetProperty(ref _showBackgroundImage, value); }
-        }
-
-        private bool _showGridLine = true;
-        public bool ShowGridLine
-        {
-            get { return _showGridLine; }
-            set { SetProperty(ref _showGridLine, value); }
-        }
-
-        private bool _showLegend = true;
-        public bool ShowLegend
-        {
-            get { return _showLegend; }
-            set { SetProperty(ref _showLegend, value); }
-        }
-
     }
 
     /// <summary>

@@ -13,14 +13,6 @@
         <local:DemoDataViewModel x:Key="DemoDataViewModel"/>
         <local:ItemToScatterFillConverter x:Key="ItemToScatterFillConverter"/>
 
-
-        <local:SelectedSeriesShapeTypeToChartMaxConverter x:Key="SelectedSeriesShapeTypeToChartMaxConverter"/>
-        <local:SelectedSeriesShapeTypeToChartMinConverter x:Key="SelectedSeriesShapeTypeToChartMinConverter"/>
-
-        <mvvmCharting:PolyLineGeometryBuilder x:Key="DefaultPolyLineGeometryBuilder"/>
-        <mvvmCharting:StepLineGeometryBuilder x:Key="DefaultStepLineGeometryBuilder"/>
-        <mvvmCharting:SplineGeometryBuilder x:Key="DefaultSplineGeometryBuilder"/>
-
         <!--This is the Default Scatter Style-->
         <DataTemplate x:Key="ScatterDataTemplate">
             <mvvmCharting:Scatter Fill="{Binding Converter={StaticResource ItemToScatterFillConverter}}"/>
@@ -85,8 +77,6 @@
             <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
                                          DependentValueProperty="Y"
                                          Opacity="0.8"
-                                         SeriesShapeType="{Binding SelectedSeriesShapeType, Source={StaticResource ChartSettingTestViewModel}}"
-                                         IsFilled="{Binding IsFilled, Source={StaticResource ChartSettingTestViewModel}}"
                                          Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
                                          StrokeThickness="1.5"
                                          IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
@@ -98,11 +88,9 @@
         </DataTemplate>
 
         <DataTemplate x:Key="SeriesTemplate1" DataType="local:SomePointList">
-            <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
+            <mvvmCharting:StepLineSeries IndependentValueProperty="t"
                                          DependentValueProperty="Y"
                                          Opacity="0.8"
-                                         SeriesShapeType="{Binding SelectedSeriesShapeType, Source={StaticResource ChartSettingTestViewModel}}"
-                                         IsFilled="{Binding IsFilled, Source={StaticResource ChartSettingTestViewModel}}"
                                          Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
                                          StrokeThickness="1.5"
                                          IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
@@ -115,11 +103,9 @@
         </DataTemplate>
 
         <DataTemplate x:Key="SeriesTemplate2" DataType="local:SomePointList">
-            <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
+            <mvvmCharting:SplineSeries IndependentValueProperty="t"
                                          DependentValueProperty="Y"
                                          Opacity="0.8"
-                                         SeriesShapeType="{Binding SelectedSeriesShapeType, Source={StaticResource ChartSettingTestViewModel}}"
-                                         IsFilled="{Binding IsFilled, Source={StaticResource ChartSettingTestViewModel}}"
                                          Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
                                          StrokeThickness="1.5"
                                          IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
@@ -145,8 +131,6 @@
         </Grid.RowDefinitions>
 
         <mvvmCharting:Chart Background="Bisque"
-                            YMaximum="{Binding SelectedSeriesShapeType, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource SelectedSeriesShapeTypeToChartMaxConverter}}"
-                            YMinimum="{Binding SelectedSeriesShapeType, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource SelectedSeriesShapeTypeToChartMinConverter}}"
                             GridLineControlVisibility="{Binding ShowGridLine, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
                             LegendVisibility="{Binding ShowLegend, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
                             SeriesTemplateSelector="{StaticResource SeriesTemplateSelector}"
@@ -192,25 +176,12 @@
                               />
                     <CheckBox Content="Show Line"
                               IsChecked="{Binding ShowSeriesLine, Mode=TwoWay}"/>
-
-                    <CheckBox Content="Show Filled Line"
-                              DataContext="{Binding Source={StaticResource ChartSettingTestViewModel}}"
-                              IsChecked="{Binding IsFilled, Mode=TwoWay}"/>
-
+ 
 
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="Axis Placement">
-                <StackPanel>
-                    <TextBlock VerticalAlignment="Center" Margin="6,6,6,0" Text="SeriesShapeType: "/>
-                    <ComboBox Width="160"
-                              Margin="6,0,6,6"
-                              HorizontalAlignment="Left"
-                              ItemsSource="{Binding SeriesShapeTypes}"
-                              SelectedItem="{Binding SelectedSeriesShapeType, Mode=TwoWay}"/>
-                </StackPanel>
-            </GroupBox>
+
 
             <GroupBox Header="General Settings">
                 <StackPanel  DataContext="{Binding Source={StaticResource ChartSettingTestViewModel}}">
@@ -230,14 +201,14 @@
             <GroupBox Header="Axis Placement">
                 <StackPanel>
                     <TextBlock VerticalAlignment="Center" Margin="6,6,6,0" Text="X Axis placement: "/>
-                    <ComboBox Width="160"
+                    <ComboBox Width="100"
                               Margin="6,0,6,6"
                               HorizontalAlignment="Left"
                               ItemsSource="{Binding XAxisPlacements}"
                               SelectedItem="{Binding SelectedXPlacement, Mode=TwoWay}"/>
 
                     <TextBlock VerticalAlignment="Center" Margin="6,6,6,0" Text="Y Axis placement: "/>
-                    <ComboBox Width="160"
+                    <ComboBox Width="100"
                               Margin="6,0,6,6"
                               HorizontalAlignment="Left"
                               ItemsSource="{Binding YAxisPlacements}"

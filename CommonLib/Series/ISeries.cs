@@ -19,19 +19,19 @@ namespace MvvmCharting.Series
         /// </summary>
         Range YValueRange { get; }
 
-        void UpdateValueRange();
+        bool UpdateValueRange();
 
         /// <summary>
         /// The X value range which is used to plot the whole chart.
         /// A series need to know the plotting X range of its host chart
         /// </summary>
-        Range PlottingXValueRange { get; set; }
+        void OnPlottingXValueRangeChanged(Range newValue);
 
         /// <summary>
         /// The Y value range which is used to plot the whole chart.
         /// A series need to know the plotting Y range of its host chart
         /// </summary>
-        Range PlottingYValueRange { get; set; }
+        void OnPlottingYValueRangeChanged(Range newValue);
 
 
         bool IsHighLighted { get; set; }

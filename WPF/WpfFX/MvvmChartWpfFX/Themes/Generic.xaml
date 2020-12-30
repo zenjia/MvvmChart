@@ -8,7 +8,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/SlimItemsControl/SlimItemsControlStyle.xaml"/>
-        <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/SeriesChart/SeriesControlStyle.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/SeriesControl/SeriesControlStyle.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/Legend/LegendStyle.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/Axis/AxisStyle.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/GridLine/GridLineStyle.xaml"/>

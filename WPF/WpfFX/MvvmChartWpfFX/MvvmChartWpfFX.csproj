@@ -71,7 +71,7 @@
     <Compile Include="Axis\AxisItem\AxisItem.cs" />
     <Compile Include="Axis\CategoryAxis.cs" />
     <Compile Include="Axis\LinearAxis.cs" />
-    <Compile Include="SeriesChart\SeriesControl.cs" />
+    <Compile Include="SeriesControl\SeriesControl.cs" />
     <Compile Include="common\PointHelper.cs" />
     <Compile Include="common\SizeHelper.cs" />
     <Compile Include="Legend\LegendItemControl.cs" />
@@ -104,11 +104,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SeriesChart\SeriesControlStyle.xaml">
+    <Page Include="SeriesControl\SeriesControlStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Series\ScatterStyle.xaml">
+    <Page Include="Series\Scatter\ScatterStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -157,8 +157,6 @@
       <Name>CommonLib</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Series\SpecificScatters\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

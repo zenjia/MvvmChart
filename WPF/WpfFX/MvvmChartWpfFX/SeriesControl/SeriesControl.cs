@@ -21,28 +21,6 @@ using MvvmCharting.Series;
 
 namespace MvvmCharting.WpfFX
 {
-    //public class StackedAreaChart : SeriesChart
-    //{
-    //    public StackedAreaChart()
-    //    {
-    //        this.PlottingYValueRange = new Range(0,1);
-    //    }
-
-    //    internal override void SetPlottingValueRange(Orientation orientation, Range newValue)
-    //    {
-    //        switch (orientation)
-    //        {
-    //            case Orientation.Horizontal:
-    //                this.PlottingXValueRange = newValue;
-    //                break;
-    //            case Orientation.Vertical:
-    //                //do nothing
-    //                break;
-    //            default:
-    //                throw new ArgumentOutOfRangeException(nameof(orientation), orientation, null);
-    //        }
-    //    }
-    //}
 
     /// <summary>
     /// This is used to plot one series or a collection of series.
@@ -74,7 +52,6 @@ namespace MvvmCharting.WpfFX
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-
 
             if (this.PART_SeriesItemsControl != null)
             {
@@ -130,8 +107,8 @@ namespace MvvmCharting.WpfFX
             sr.XRangeChanged += Sr_XValueRangeChanged;
             sr.YRangeChanged += Sr_YValueRangeChanged;
 
-            sr.PlottingXValueRange = this.PlottingXValueRange;
-            sr.PlottingYValueRange = this.PlottingYValueRange;
+            sr.OnPlottingXValueRangeChanged(this.PlottingXValueRange);  
+            sr.OnPlottingYValueRangeChanged(this.PlottingYValueRange);
 
             sr.UpdateValueRange();
             
@@ -296,7 +273,7 @@ namespace MvvmCharting.WpfFX
 
                     foreach (var sr in this.GetSeries())
                     {
-                        sr.PlottingXValueRange = this.PlottingXValueRange;
+                        sr.OnPlottingXValueRangeChanged(value);  
                     }
                 }
             }
@@ -317,7 +294,7 @@ namespace MvvmCharting.WpfFX
 
                     foreach (var sr in this.GetSeries())
                     {
-                        sr.PlottingYValueRange = this.PlottingYValueRange;
+                        sr.OnPlottingYValueRangeChanged(value);
                     }
                 }
             }

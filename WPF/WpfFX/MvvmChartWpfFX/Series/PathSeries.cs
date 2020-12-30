@@ -31,6 +31,8 @@ namespace MvvmCharting.WpfFX
             OnPathDataChanged();
         }
 
+
+
         /// <summary>
         /// cache the created Geometry object
         /// </summary>
@@ -76,24 +78,30 @@ namespace MvvmCharting.WpfFX
             }
 
             var coordinates = this.GetCoordinates();
+            if (coordinates.Length < 2)
+            {
+                this._pathData = Geometry.Empty;
+                OnPathDataChanged();
+                return;
+            }
 
             PointNS[] previous;
 
-            switch (this.SeriesShapeType)
+            switch (this.SeriesMode)
             {
-                case SeriesShapeType.Line:
+                case WpfFX.SeriesMode.Line:
                     previous = null;
                     break;
-                case SeriesShapeType.Area:
-                    previous = new[] { new PointNS(0, 0), new PointNS(this.ActualWidth, 0) };
+                case WpfFX.SeriesMode.Area:
+                    previous = new[] { new PointNS(coordinates.First().X, 0), new PointNS(coordinates.Last().X, 0) };
                     break;
-                case SeriesShapeType.StackedArea:
-                case SeriesShapeType.StackedArea100:
+                case WpfFX.SeriesMode.StackedArea:
+                case WpfFX.SeriesMode.StackedArea100:
                     var ls = this.Owner.GetSeries().ToArray();
                     var index = Array.IndexOf(ls, this);
                     if (index == 0)
                     {
-                        previous = new[] { new PointNS(0, 0), new PointNS(this.ActualWidth, 0) };
+                        previous = new[] { new PointNS(coordinates.First().X, 0), new PointNS(coordinates.Last().X, 0) };
                     }
                     else
                     {
