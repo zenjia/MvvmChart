@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
@@ -16,19 +15,6 @@ using MvvmCharting.Series;
 
 namespace MvvmCharting.WpfFX
 {
-    public enum SeriesMode
-    {
-        Line,
-        Area,
-        StackedArea,
-        StackedArea100
-    }
-
-    public interface ISeriesHost
-    {
-        IEnumerable<SeriesBase> GetSeries();
-    }
-
     /// <summary>
     /// The base class for all series. It implements <see cref="ISeries"/> so it
     /// can be put at the root of the SeriesTemplate of a <see cref="Chart"/>
@@ -69,7 +55,7 @@ namespace MvvmCharting.WpfFX
 
             UpdatePixelPerUnit(Orientation.Horizontal);
             UpdatePixelPerUnit(Orientation.Vertical);
- 
+
             RecalculateCoordinate();
         }
 
@@ -121,7 +107,7 @@ namespace MvvmCharting.WpfFX
                 UpdatePixelPerUnit(Orientation.Vertical);
             }
 
- 
+
             RecalculateCoordinate();
         }
 
@@ -167,20 +153,20 @@ namespace MvvmCharting.WpfFX
             set { SetValue(SeriesModeProperty, value); }
         }
         public static readonly DependencyProperty SeriesModeProperty =
-            DependencyProperty.Register("SeriesMode", typeof(SeriesMode), typeof(SeriesBase), new PropertyMetadata(SeriesMode.Line, OnSeriesShapeTypePropertyChange));
+            DependencyProperty.Register("SeriesMode", typeof(SeriesMode), typeof(SeriesBase), new PropertyMetadata(SeriesMode.Line, OnSeriesModePropertyChange));
 
-        private static void OnSeriesShapeTypePropertyChange(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnSeriesModePropertyChange(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((SeriesBase)d).OnSeriesShapeTypeChange((SeriesMode)e.OldValue, (SeriesMode)e.NewValue);
+            ((SeriesBase)d).OnSeriesModeChange((SeriesMode)e.OldValue, (SeriesMode)e.NewValue);
         }
 
-        private void OnSeriesShapeTypeChange(SeriesMode oldValue, SeriesMode newValue)
+        private void OnSeriesModeChange(SeriesMode oldValue, SeriesMode newValue)
         {
             var valueRangeUnchanged = oldValue == SeriesMode.Line && newValue == SeriesMode.Area ||
                                       oldValue == SeriesMode.Area && newValue == SeriesMode.Line;
 
             this.IsAreaMode = newValue != SeriesMode.Line;
-            
+
             UpdateFill();
 
             if (valueRangeUnchanged)
@@ -193,7 +179,7 @@ namespace MvvmCharting.WpfFX
             UpdatePixelPerUnit(Orientation.Horizontal);
             UpdatePixelPerUnit(Orientation.Vertical);
 
- 
+
             RecalculateCoordinate();
 
         }
@@ -205,7 +191,7 @@ namespace MvvmCharting.WpfFX
                 return;
             }
 
-            if (this.SeriesMode == SeriesMode.Line || 
+            if (this.SeriesMode == SeriesMode.Line ||
                 this.SeriesMode == SeriesMode.Area)
             {
                 return;
@@ -213,11 +199,50 @@ namespace MvvmCharting.WpfFX
 
             foreach (var item in list)
             {
-               var y = GetYValueForItem(item);
-               if (y < 0)
-               {
-                   throw new MvvmChartModelDataException($"Item value of {this.SeriesMode} series cannot be negative!");
-               }
+                var y = GetYValueForItem(item);
+                if (y < 0)
+                {
+                    throw new MvvmChartModelDataException($"Item value of {this.SeriesMode} series cannot be negative!");
+                }
+            }
+        }
+
+        private void ValidateData()
+        {
+            if (this.SeriesMode == SeriesMode.Line || this.SeriesMode == SeriesMode.Area)
+            {
+                return;
+            }
+
+            SeriesBase prev = null;
+            foreach (var sr in this.Owner.GetSeries())
+            {
+                if (sr.SeriesMode != this.SeriesMode)
+                {
+                    throw new MvvmChartException($"The SeriesMode of all Series in a Chart must be same!");
+                }
+
+                if (prev != null)
+                {
+                    if (sr.ItemsSource.Count != this.ItemsSource.Count)
+                    {
+                        throw new MvvmChartModelDataException($"In {this.SeriesMode} mode, the item count of all series in a Chart must be same!");
+                    }
+
+                    for (int i = 0; i < this.ItemsSource.Count; i++)
+                    {
+                        var x1 = GetXValueForItem(sr.ItemsSource[i]);
+                        var x2 = GetXValueForItem(prev.ItemsSource[i]);
+                        if (!x1.NearlyEqual(x2))
+                        {
+                            throw new MvvmChartModelDataException($"In {this.SeriesMode} mode, the item's x value in the same index of all series in a Chart must be same!");
+                        }
+                    }
+                }
+
+
+
+                prev = sr;
             }
         }
 
@@ -345,7 +370,7 @@ namespace MvvmCharting.WpfFX
         public static readonly DependencyProperty IsSelectedProperty =
             DependencyProperty.Register("IsSelected", typeof(bool), typeof(SeriesBase), new PropertyMetadata(false));
 
-    
+
         #endregion
 
         #region ItemsSource property and handlers
@@ -375,6 +400,8 @@ namespace MvvmCharting.WpfFX
 
         private void OnItemsSourceChanged(IList oldValue, IList newValue)
         {
+            ValidateData();
+
             if (this.PART_ScatterItemsControl != null)
             {
                 this.PART_ScatterItemsControl.ItemsSource = this.ItemsSource;
@@ -389,7 +416,7 @@ namespace MvvmCharting.WpfFX
 
             if (newValue != null)
             {
-             
+
                 HandleItemsSourceCollectionChange(null, newValue);
 
                 if (newValue is INotifyCollectionChanged newItemsSource)
@@ -408,6 +435,11 @@ namespace MvvmCharting.WpfFX
                 return;
             }
 
+            if (this.SeriesMode == SeriesMode.StackedArea || this.SeriesMode == SeriesMode.StackedArea100)
+            {
+                throw new MvvmChartModelDataException($"Collection change of ItemsSource is not allowed in {this.SeriesMode} mode!");
+            }
+
             if (e.Action == NotifyCollectionChangedAction.Reset)
             {
                 //this._dataPointViewModels?.Clear();
@@ -420,13 +452,8 @@ namespace MvvmCharting.WpfFX
         {
             ValidateData(newValue);
 
-            if (!UpdateValueRange())
-            {
-                //If range is not updated, RecalculateCoordinate() will not be called,
-                //so we should call it here.
-                RecalculateCoordinate();
-            }
-
+            UpdateValueRange();
+            RecalculateCoordinate();
         }
 
         public bool UpdateValueRange()
@@ -453,8 +480,8 @@ namespace MvvmCharting.WpfFX
             }
 
             double minX = GetXValueForItem(this.ItemsSource[0]);
-            double maxX = GetXValueForItem(this.ItemsSource[this.ItemsSource.Count-1]);
-           
+            double maxX = GetXValueForItem(this.ItemsSource[this.ItemsSource.Count - 1]);
+
             var newXRange = new Range(minX, maxX);
             var newYRange = new Range(minY, maxY);
 
@@ -505,18 +532,18 @@ namespace MvvmCharting.WpfFX
                 case SeriesMode.Area:
                     return GetYValueForItem(item); ;
                 case SeriesMode.StackedArea:
- 
                     double total = 0;
                     foreach (var sr in this.Owner.GetSeries())
                     {
                         var obj = sr.ItemsSource[index];
-                        total += GetYValueForItem(obj);
+                        var y = GetYValueForItem(obj);
+                        total += y;
                         if (obj == item)
                         {
                             break;
                         }
 
-               
+
                     }
 
                     return total;
@@ -529,7 +556,7 @@ namespace MvvmCharting.WpfFX
                     {
                         var obj = sr.ItemsSource[index];
                         total += GetYValueForItem(obj);
-                      
+
                         if (!meet)
                         {
                             sum = total;
@@ -541,7 +568,7 @@ namespace MvvmCharting.WpfFX
                         }
 
                     }
-                   
+
                     return sum / total;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -763,6 +790,7 @@ namespace MvvmCharting.WpfFX
 
             Array.Resize(ref this._coordinateCache, this.ItemsSource.Count);
 
+            Debug.WriteLine(this.DataContext + $" this.ItemsSource.Count={this.ItemsSource.Count}..");
             for (int i = 0; i < this.ItemsSource.Count; i++)
             {
                 var item = this.ItemsSource[i];
@@ -771,7 +799,7 @@ namespace MvvmCharting.WpfFX
 
                 this._coordinateCache[i] = pt;
 
-                var fe = this.PART_ScatterItemsControl?.TryGetElementForItem(item);
+                var fe = this.PART_ScatterItemsControl?.TryGetChildForItem(item);
 
                 if (fe != null)
                 {
@@ -781,7 +809,7 @@ namespace MvvmCharting.WpfFX
             }
 
             //Debug.WriteLine(this.DataContext + "...RecalculateCoordinate..._coordinateCache=" +
-            //string.Join(",", this._coordinateCache.Select(x=>x.Y.ToString("F0"))));
+           // string.Join(",", this._coordinateCache.Select(x => x.Y.ToString("F0"))));
             UpdateLineOrArea();
         }
 

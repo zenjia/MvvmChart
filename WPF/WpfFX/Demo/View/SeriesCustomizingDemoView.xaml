@@ -160,6 +160,15 @@
             </GroupBox>
 
 
+            <StackPanel Margin="10,20" 
+                        DataContext="{StaticResource DemoDataViewModel}">
+                <Button Content="Add Series" Command="{Binding AddListCommand}" />
+                <Button Content="Remove Series" Command="{Binding RemoveListCommand}" Margin="0,6"/>
+
+                <Button Content="Add Item"  Command="{Binding AddItemCommand}" Margin="0,9,0,0"/>
+                <Button Content="Remove Item" Command="{Binding RemoveItemCommand}" Margin="0,6"/>
+            </StackPanel>
+
         </StackPanel>
 
 

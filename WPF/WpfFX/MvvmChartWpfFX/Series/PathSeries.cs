@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using MvvmCharting.Common;
 using MvvmCharting.Drawing;
 using MvvmCharting.Series;
 
@@ -106,6 +107,11 @@ namespace MvvmCharting.WpfFX
                     else
                     {
                         previous = ls[index - 1].GetCoordinates();
+
+                        if (previous.Length != coordinates.Length)
+                        {
+                            throw new MvvmChartException($"previous.Length({previous.Length}) != coordinates.Length({coordinates.Length})");
+                        }
                     }
 
                     break;

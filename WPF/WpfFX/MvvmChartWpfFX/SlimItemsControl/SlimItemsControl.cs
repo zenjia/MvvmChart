@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using MvvmCharting.Common;
@@ -36,12 +37,12 @@ namespace MvvmCharting.WpfFX
         /// </summary>
         public event Action<object, FrameworkElement, int> ElementGenerated;
 
-        public event Action<object, FrameworkElement> ItemRemoved;
-        public event Action<object, FrameworkElement> ItemReplaced;
-        public event Action<object, FrameworkElement> ItemAdded;
+        public event Action<object, FrameworkElement> ChildRemoved;
+        public event Action<object, FrameworkElement> ChildReplaced;
+        public event Action<object, FrameworkElement> ChildAdded;
         public event Action<object> Reset;
 
-        private Dictionary<object, FrameworkElement> _itemsDictionary = new Dictionary<object, FrameworkElement>();
+        private Dictionary<object, FrameworkElement> _itemChildMap = new Dictionary<object, FrameworkElement>();
 
         private Panel PART_Root;
         public override void OnApplyTemplate()
@@ -77,28 +78,28 @@ namespace MvvmCharting.WpfFX
         #region public routines
         public bool ContainsItem(object item)
         {
-            return this._itemsDictionary.ContainsKey(item);
+            return this._itemChildMap.ContainsKey(item);
         }
 
-        public int ItemCount => this._itemsDictionary.Count;
+        public int ItemCount => this._itemChildMap.Count;
 
-        public FrameworkElement TryGetElementForItem(object item)
+        public FrameworkElement TryGetChildForItem(object item)
         {
-            if (!this._itemsDictionary.ContainsKey(item))
+            if (!this._itemChildMap.ContainsKey(item))
             {
                 return null;
             }
-            return this._itemsDictionary[item];
+            return this._itemChildMap[item];
         }
 
-        public IEnumerable<FrameworkElement> GetAllElements()
+        public IEnumerable<FrameworkElement> GetChildren()
         {
-            if (this._itemsDictionary.Count != this.PART_Root.Children.Count)
+            if (this._itemChildMap.Count != this.PART_Root.Children.Count)
             {
                 throw new NotImplementedException();
             }
 
-            return this._itemsDictionary.Values;
+            return this.PART_Root.Children.OfType<FrameworkElement>();
         }
         #endregion
 
@@ -291,13 +292,13 @@ namespace MvvmCharting.WpfFX
 
             var treeRoot = LoadTemplateContentForItem(item);
 
-            _itemsDictionary.Add(item, treeRoot);
+            this._itemChildMap.Add(item, treeRoot);
 
             this.PART_Root.Children.Insert(index, treeRoot);
 
             this.ElementGenerated?.Invoke(this, treeRoot, index);
 
-            this.ItemAdded?.Invoke(this, treeRoot);
+            this.ChildAdded?.Invoke(this, treeRoot);
 
         }
 
@@ -306,16 +307,16 @@ namespace MvvmCharting.WpfFX
 #if DEBUG_SlimItemsControl
             Debug.WriteLine($"{this.Name}({this.GetHashCode()})....OnItemRemoved....{item}");
 #endif
-            _itemsDictionary.Remove(item);
+            this._itemChildMap.Remove(item);
 
             FrameworkElement treeRoot = null;
-            if (this.ItemRemoved != null)
+            if (this.ChildRemoved != null)
             {
                 treeRoot = (FrameworkElement)this.PART_Root.Children[itemIndex];
             }
             this.PART_Root.Children.RemoveAt(itemIndex);
 
-            this.ItemRemoved?.Invoke(this, treeRoot);
+            this.ChildRemoved?.Invoke(this, treeRoot);
         }
 
         private void OnItemReplaced(object oldItem, object newItem, int index)
@@ -344,10 +345,10 @@ namespace MvvmCharting.WpfFX
 
           
 
-            _itemsDictionary.Remove(oldItem);
-            _itemsDictionary.Add(newItem, treeRoot);
+            this._itemChildMap.Remove(oldItem);
+            this._itemChildMap.Add(newItem, treeRoot);
 
-            ItemReplaced?.Invoke(this, treeRoot);
+            this.ChildReplaced?.Invoke(this, treeRoot);
 
             //treeRoot = LoadTemplateContentForItem(newItem);
             //this.PART_Root.Children.RemoveAt(index);
@@ -392,7 +393,7 @@ namespace MvvmCharting.WpfFX
             }
 #endif
 
-            this._itemsDictionary.Clear();
+            this._itemChildMap.Clear();
 
             this.PART_Root?.Children.Clear();
 

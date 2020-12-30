@@ -86,6 +86,11 @@ namespace Demo
 
         }
 
+        public DelegateCommand AddListCommand { get; private set; }
+        public DelegateCommand RemoveListCommand { get; private set; }
+        public DelegateCommand AddItemCommand { get; private set; }
+        public DelegateCommand RemoveItemCommand { get; private set; }
+
         private void AddList(int index)
         {
             var list = new SomePointList(index);
@@ -115,7 +120,7 @@ namespace Demo
             this.ItemsSourceList.RemoveAt(0);
         }
 
-        public void AddData()
+        public void AddItem()
         {
             this._max++;
             foreach (var list in this.ItemsSourceList)
@@ -126,7 +131,7 @@ namespace Demo
 
         }
 
-        public void RemoveData()
+        public void RemoveItem()
         {
             this._min++;
 
@@ -144,6 +149,12 @@ namespace Demo
 
         public DemoDataViewModel()
         {
+
+            AddListCommand = new DelegateCommand((o)=> AddList());
+            RemoveListCommand = new DelegateCommand((o) => RemoveList());
+            AddItemCommand = new DelegateCommand((o) => AddItem());
+            RemoveItemCommand = new DelegateCommand((o) => RemoveItem());
+
             this.AvailableScatterTemplates = new ObservableCollection<string>()
             {
                 "ScatterTemplate",

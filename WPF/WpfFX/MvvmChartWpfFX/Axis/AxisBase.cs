@@ -104,7 +104,7 @@ namespace MvvmCharting.WpfFX.Axis
                 return Enumerable.Empty<IAxisItem>();
             }
 
-            return this.PART_AxisItemsControl.GetAllElements().OfType<IAxisItem>();
+            return this.PART_AxisItemsControl.GetChildren().OfType<IAxisItem>();
         }
 
         private void OnPlacementChange()

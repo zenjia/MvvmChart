@@ -46,7 +46,7 @@ namespace MvvmCharting.WpfFX
                 return Enumerable.Empty<SeriesBase>();
             }
 
-            return this.PART_SeriesItemsControl.GetAllElements().OfType<SeriesBase>();
+            return this.PART_SeriesItemsControl.GetChildren().OfType<SeriesBase>();
         }
 
         public override void OnApplyTemplate()
@@ -64,7 +64,7 @@ namespace MvvmCharting.WpfFX
             {
                 this.PART_SeriesItemsControl.ElementGenerated += SeriesItemTemplateApplied;
                 //this.PART_SeriesItemsControl.ItemAdded += PART_SeriesItemsControl_ItemAdded;
-                this.PART_SeriesItemsControl.ItemRemoved += PART_SeriesItemsControl_ItemRemoved;
+                this.PART_SeriesItemsControl.ChildRemoved += PartSeriesChildrenControlChildRemoved;
                 //this.PART_SeriesItemsControl.ItemReplaced += PART_SeriesItemsControl_ItemReplaced;
                 this.PART_SeriesItemsControl.Reset += PART_SeriesItemsControl_Reset;
 
@@ -84,7 +84,7 @@ namespace MvvmCharting.WpfFX
             UpdateGlobalValueRange();
         }
 
-        private void PART_SeriesItemsControl_ItemRemoved(object arg1, FrameworkElement arg2)
+        private void PartSeriesChildrenControlChildRemoved(object arg1, FrameworkElement arg2)
         {
             UpdateGlobalValueRange();
         }
@@ -144,6 +144,8 @@ namespace MvvmCharting.WpfFX
         }
         public static readonly DependencyProperty SeriesItemsSourceProperty =
             DependencyProperty.Register("SeriesItemsSource", typeof(IList), typeof(SeriesControl));
+
+
         #endregion
 
         #region Global Data Range

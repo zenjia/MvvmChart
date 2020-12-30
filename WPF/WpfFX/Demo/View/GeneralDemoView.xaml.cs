@@ -58,30 +58,6 @@ namespace Demo
             InitializeComponent();
         }
 
-        private void btnAddDataClick(object sender, RoutedEventArgs e)
-        {
-            DemoDataViewModel viewModel = (DemoDataViewModel) this.Resources["DemoDataViewModel"];
-            viewModel.AddData();
-        }
-
-        private void btnRemoveDataClick(object sender, RoutedEventArgs e)
-        {
-            DemoDataViewModel viewModel = (DemoDataViewModel)this.Resources["DemoDataViewModel"];
-            viewModel.RemoveData();
-        }
-
-        private void btnAddSeriesClick(object sender, RoutedEventArgs e)
-        {
-            DemoDataViewModel viewModel = (DemoDataViewModel)this.Resources["DemoDataViewModel"];
-            viewModel.AddList();
-
-        }
-
-        private void btnRemoveSeriesClick(object sender, RoutedEventArgs e)
-        {
-            DemoDataViewModel viewModel = (DemoDataViewModel)this.Resources["DemoDataViewModel"];
-            viewModel.RemoveList();
-
-        }
+        
     }
 }
