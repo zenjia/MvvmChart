@@ -5,5 +5,7 @@ namespace MvvmCharting.WpfFX
     public interface ISeriesHost
     {
         IEnumerable<SeriesBase> GetSeries();
+
+        bool IsSeriesCollectionChanging { get; }
     }
 }

@@ -68,6 +68,11 @@ namespace MvvmCharting.WpfFX
         /// </summary>
         protected override void UpdateLineOrArea()
         {
+            if (this.Owner.IsSeriesCollectionChanging)
+            {
+                return;
+            }
+
             if (this.GeometryBuilder == null ||
                 this.PART_Shape == null ||
                 this.ItemsSource == null ||
@@ -124,11 +129,8 @@ namespace MvvmCharting.WpfFX
                 : (Geometry)this.GeometryBuilder.GetGeometry(coordinates, previous);
 
 
-            if (geometry != this._pathData)
-            {
-                this._pathData = geometry;
-                OnPathDataChanged();
-            }
+            this._pathData = geometry;
+            OnPathDataChanged();
         }
     }
 }

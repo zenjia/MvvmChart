@@ -16,13 +16,13 @@
 
     </ResourceDictionary.MergedDictionaries>
 
-    <axis:LinearAxis x:Key="DefaultLinearXAxis" 
+    <axis:NumericAxis x:Key="DefaultLinearXAxis" 
                      x:Shared="False"
                      Orientation="X"
                      TickCount="7"
                      Placement="Bottom"/>
 
-    <axis:LinearAxis x:Key="DefaultLinearYAxis" 
+    <axis:NumericAxis x:Key="DefaultLinearYAxis" 
                      x:Shared="False"
                      Orientation="Y" 
                      TickCount="10"

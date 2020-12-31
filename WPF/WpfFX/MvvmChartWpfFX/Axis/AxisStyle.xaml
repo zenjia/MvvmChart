@@ -185,7 +185,7 @@
     </Style>
 
     <axis:DefaultDoubleToAxisLabelTextConverter x:Key="DefaultDoubleToAxisLabelTextConverter"/>
-    <Style TargetType="local:LinearAxis" BasedOn="{StaticResource {x:Type local:AxisBase}}">
+    <Style TargetType="local:NumericAxis" BasedOn="{StaticResource {x:Type local:AxisBase}}">
         <Setter Property="LabelTextConverter" Value="{StaticResource DefaultDoubleToAxisLabelTextConverter}"/>
     </Style>
 

@@ -7,14 +7,15 @@ using MvvmCharting.Common;
 
 namespace MvvmCharting.WpfFX.Axis
 {    
+    
     /// <summary>
     /// Represents a numeric, linear axis.
     /// </summary>
-    public class LinearAxis : AxisBase, ILinearAxis
+    public class NumericAxis : AxisBase, INumericAxis
     {
-        static LinearAxis()
+        static NumericAxis()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(LinearAxis), new FrameworkPropertyMetadata(typeof(LinearAxis)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(NumericAxis), new FrameworkPropertyMetadata(typeof(NumericAxis)));
         }
 
         public double TickInterval
@@ -23,11 +24,11 @@ namespace MvvmCharting.WpfFX.Axis
             set { SetValue(TickIntervalProperty, value); }
         }
         public static readonly DependencyProperty TickIntervalProperty =
-            DependencyProperty.Register("TickInterval", typeof(double), typeof(LinearAxis), new PropertyMetadata(double.NaN, OnTickIntervalPropertyChanged));
+            DependencyProperty.Register("TickInterval", typeof(double), typeof(NumericAxis), new PropertyMetadata(double.NaN, OnTickIntervalPropertyChanged));
 
         private static void OnTickIntervalPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((LinearAxis)d).UpdateAxisDrawingSettings(); ;
+            ((NumericAxis)d).UpdateAxisDrawingSettings(); ;
         }
 
 
@@ -37,11 +38,11 @@ namespace MvvmCharting.WpfFX.Axis
             set { SetValue(ExplicitTicksProperty, value); }
         }
         public static readonly DependencyProperty ExplicitTicksProperty =
-            DependencyProperty.Register("ExplicitTicks", typeof(IList<double>), typeof(LinearAxis), new PropertyMetadata(null, OnExplicitTicksPropertyChanged));
+            DependencyProperty.Register("ExplicitTicks", typeof(IList<double>), typeof(NumericAxis), new PropertyMetadata(null, OnExplicitTicksPropertyChanged));
 
         private static void OnExplicitTicksPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((LinearAxis)d).OnExplicitTicksChanged((IList<double>)e.OldValue, (IList<double>)e.NewValue);
+            ((NumericAxis)d).OnExplicitTicksChanged((IList<double>)e.OldValue, (IList<double>)e.NewValue);
         }
 
         private void OnExplicitTicksChanged(IList<double> oldValue, IList<double> newValue)

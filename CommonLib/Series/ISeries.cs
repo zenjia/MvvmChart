@@ -19,7 +19,7 @@ namespace MvvmCharting.Series
         /// </summary>
         Range YValueRange { get; }
 
-        bool UpdateValueRange();
+        void UpdateValueRange();
 
         /// <summary>
         /// The X value range which is used to plot the whole chart.
@@ -37,6 +37,8 @@ namespace MvvmCharting.Series
         bool IsHighLighted { get; set; }
 
         object DataContext { get; }
+
+        
 
         /// <summary>
         /// Fired when the X value range of a series is changed. 

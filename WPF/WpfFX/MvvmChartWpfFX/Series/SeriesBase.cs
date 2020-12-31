@@ -27,6 +27,7 @@ namespace MvvmCharting.WpfFX
         private static readonly string sPART_Shape = "PART_Shape";
         private static readonly string sPART_ScatterItemsControl = "PART_DataPointItemsControl";
 
+
         public event Action<ISeries, Range> XRangeChanged;
         public event Action<ISeries, Range> YRangeChanged;
 
@@ -137,13 +138,13 @@ namespace MvvmCharting.WpfFX
 
             var item = scatter.DataContext;
 
-
-            if (!this._xPixelPerUnit.IsNaN() && !this._yPixelPerUnit.IsNaN())
+            if (!this.Owner.IsSeriesCollectionChanging)
             {
-                scatter.Coordinate = GetPlotCoordinateForItem(item, index);
-
+                if (!this._xPixelPerUnit.IsNaN() && !this._yPixelPerUnit.IsNaN())
+                {
+                    scatter.Coordinate = GetPlotCoordinateForItem(item, index);
+                }
             }
-
         }
 
         #region SeriesShapeType
@@ -184,7 +185,7 @@ namespace MvvmCharting.WpfFX
 
         }
 
-        private void ValidateData(IList list)
+        private void EnsureYValuePositive(IList list)
         {
             if (list == null)
             {
@@ -207,6 +208,8 @@ namespace MvvmCharting.WpfFX
             }
         }
 
+        static string sModes = $"{SeriesMode.StackedArea} or {SeriesMode.StackedArea100}";
+
         private void ValidateData()
         {
             if (this.SeriesMode == SeriesMode.Line || this.SeriesMode == SeriesMode.Area)
@@ -214,19 +217,21 @@ namespace MvvmCharting.WpfFX
                 return;
             }
 
+           
+
             SeriesBase prev = null;
             foreach (var sr in this.Owner.GetSeries())
             {
                 if (sr.SeriesMode != this.SeriesMode)
                 {
-                    throw new MvvmChartException($"The SeriesMode of all Series in a Chart must be same!");
+                    throw new MvvmChartException($"In {sModes} mode, the SeriesMode of all Series in a Chart must be same!");
                 }
 
                 if (prev != null)
                 {
                     if (sr.ItemsSource.Count != this.ItemsSource.Count)
                     {
-                        throw new MvvmChartModelDataException($"In {this.SeriesMode} mode, the item count of all series in a Chart must be same!");
+                        throw new MvvmChartModelDataException($"In {sModes} mode, the item count of all series in a Chart must be same!");
                     }
 
                     for (int i = 0; i < this.ItemsSource.Count; i++)
@@ -235,7 +240,7 @@ namespace MvvmCharting.WpfFX
                         var x2 = GetXValueForItem(prev.ItemsSource[i]);
                         if (!x1.NearlyEqual(x2))
                         {
-                            throw new MvvmChartModelDataException($"In {this.SeriesMode} mode, the item's x value in the same index of all series in a Chart must be same!");
+                            throw new MvvmChartModelDataException($"In {sModes} mode, the item's x value in the same index of all series in a Chart must be same!");
                         }
                     }
                 }
@@ -417,7 +422,8 @@ namespace MvvmCharting.WpfFX
             if (newValue != null)
             {
 
-                HandleItemsSourceCollectionChange(null, newValue);
+                UpdateValueRange();
+                RecalculateCoordinate();
 
                 if (newValue is INotifyCollectionChanged newItemsSource)
                 {
@@ -435,10 +441,14 @@ namespace MvvmCharting.WpfFX
                 return;
             }
 
-            if (this.SeriesMode == SeriesMode.StackedArea || this.SeriesMode == SeriesMode.StackedArea100)
+            if (!this.Owner.IsSeriesCollectionChanging)
             {
-                throw new MvvmChartModelDataException($"Collection change of ItemsSource is not allowed in {this.SeriesMode} mode!");
+                if (this.SeriesMode == SeriesMode.StackedArea || this.SeriesMode == SeriesMode.StackedArea100)
+                {
+                    throw new MvvmChartModelDataException($"Collection change of ItemsSource is not allowed in {this.SeriesMode} mode when Chart.IsUpdating is false!");
+                }
             }
+
 
             if (e.Action == NotifyCollectionChangedAction.Reset)
             {
@@ -448,23 +458,28 @@ namespace MvvmCharting.WpfFX
             HandleItemsSourceCollectionChange(e.OldItems, e.NewItems);
         }
 
-        protected virtual void HandleItemsSourceCollectionChange(IList oldValue, IList newValue)
+        private void HandleItemsSourceCollectionChange(IList oldValue, IList newValue)
         {
-            ValidateData(newValue);
+            EnsureYValuePositive(newValue);
 
             UpdateValueRange();
             RecalculateCoordinate();
         }
 
-        public bool UpdateValueRange()
+        public void UpdateValueRange()
         {
+            if (this.Owner.IsSeriesCollectionChanging)
+            {
+                return;
+            }
+
             if (this.ItemsSource == null ||
                 this.ItemsSource.Count == 0)
             {
                 this.XValueRange = Range.Empty;
                 this.YValueRange = Range.Empty;
 
-                return false;
+                return;
             }
 
             double minY = double.MaxValue;
@@ -482,15 +497,10 @@ namespace MvvmCharting.WpfFX
             double minX = GetXValueForItem(this.ItemsSource[0]);
             double maxX = GetXValueForItem(this.ItemsSource[this.ItemsSource.Count - 1]);
 
-            var newXRange = new Range(minX, maxX);
-            var newYRange = new Range(minY, maxY);
-
-            bool rangeChanged = newXRange != this.XValueRange || newYRange != this.YValueRange;
-
+ 
             this.XValueRange = new Range(minX, maxX);
             this.YValueRange = new Range(minY, maxY);
-
-            return rangeChanged;
+ 
         }
 
 
@@ -774,8 +784,13 @@ namespace MvvmCharting.WpfFX
         /// This method will first update the _coordinateCache and the Coordinate of each scatter,
         /// then update the shape of the Line or Area
         /// </summary>
-        private void RecalculateCoordinate()
+        internal void RecalculateCoordinate()
         {
+            if (this.Owner.IsSeriesCollectionChanging)
+            {
+                return;
+            }
+
             UpdatePixelPerUnit(Orientation.Horizontal);
             UpdatePixelPerUnit(Orientation.Vertical);
 
@@ -789,8 +804,7 @@ namespace MvvmCharting.WpfFX
             }
 
             Array.Resize(ref this._coordinateCache, this.ItemsSource.Count);
-
-            Debug.WriteLine(this.DataContext + $" this.ItemsSource.Count={this.ItemsSource.Count}..");
+ 
             for (int i = 0; i < this.ItemsSource.Count; i++)
             {
                 var item = this.ItemsSource[i];

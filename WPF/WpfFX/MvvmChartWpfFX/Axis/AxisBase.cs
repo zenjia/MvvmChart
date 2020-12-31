@@ -11,7 +11,7 @@ using MvvmCharting.Common;
 namespace MvvmCharting.WpfFX.Axis
 {
     /// <summary>
-    /// The base class for <see cref="LinearAxis"/> and <see cref="CategoryAxis"/>.
+    /// The base class for <see cref="NumericAxis"/> and <see cref="CategoryAxis"/>.
     /// </summary>
     [TemplatePart(Name = "PART_AxisItemsControl", Type = typeof(SlimItemsControl))]
     public abstract class AxisBase : Control, IAxisNS

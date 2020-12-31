@@ -35,7 +35,7 @@
                         SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource TimeSeriesViewModel}}">
 
         <mvvmCharting:Chart.XAxis>
-            <axis:LinearAxis LabelTextConverter="{StaticResource DoubleToDateTimeStringConverter}"/>
+            <axis:NumericAxis LabelTextConverter="{StaticResource DoubleToDateTimeStringConverter}"/>
         </mvvmCharting:Chart.XAxis>
 
         <mvvmCharting:Chart.LegendItemTemplate>

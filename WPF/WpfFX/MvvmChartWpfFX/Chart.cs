@@ -67,7 +67,7 @@ namespace MvvmCharting.WpfFX
             base.OnApplyTemplate();
 
             this.PART_SeriesControl = (SeriesControl)this.GetTemplateChild("PART_SeriesControl");
-            if (this.PART_SeriesControl!=null)
+            if (this.PART_SeriesControl != null)
             {
                 this.PART_SeriesControl.GlobalXValueRangeChanged += SeriesControlGlobalXValueRangeChanged;
                 this.PART_SeriesControl.GlobalYValueRangeChanged += SeriesControlGlobalYValueRangeChanged;
@@ -79,6 +79,7 @@ namespace MvvmCharting.WpfFX
                 this.PART_SeriesControl.SetBinding(SeriesControl.SeriesItemsSourceProperty,
                     new Binding(nameof(this.SeriesItemsSource)) { Source = this });
 
+                OnIsSeriesCollectionChangingChanged();
             }
 
 
@@ -314,8 +315,8 @@ namespace MvvmCharting.WpfFX
                     this._plottingYDataRange = value;
 
                     TryUpdatePlottingSettings(AxisType.Y);
-                    this.PART_SeriesControl.SetPlottingValueRange(Orientation.Vertical, value); 
- 
+                    this.PART_SeriesControl.SetPlottingValueRange(Orientation.Vertical, value);
+
                     // OnPlottingYDataRangeChanged();
                 }
             }
@@ -426,7 +427,7 @@ namespace MvvmCharting.WpfFX
 
             return null;
         }
-        
+
         /// <summary>
         /// Detect if plotting setting changed. If true, then re-plot the axis & gridline
         /// </summary>
@@ -804,7 +805,7 @@ namespace MvvmCharting.WpfFX
                 this.Legend.ItemsSource = this.SeriesItemsSource;
                 this.Legend.LegendItemTemplate = this.LegendItemTemplate;
                 //this.Legend.LegendItemHighlighChanged += Legend_LegendItemHighlighChanged;
-                this.Legend.SetBinding(LegendControl.ItemsSourceProperty, new Binding(nameof(this.SeriesItemsSource)){Source = this});
+                this.Legend.SetBinding(LegendControl.ItemsSourceProperty, new Binding(nameof(this.SeriesItemsSource)) { Source = this });
             }
 
             if (this.PART_LegendHolder != null)
@@ -860,6 +861,36 @@ namespace MvvmCharting.WpfFX
 
         #endregion
 
+
+
+        public bool IsSeriesCollectionChanging
+        {
+            get { return (bool)GetValue(IsSeriesCollectionChangingProperty); }
+            set { SetValue(IsSeriesCollectionChangingProperty, value); }
+        }
+        public static readonly DependencyProperty IsSeriesCollectionChangingProperty =
+            DependencyProperty.Register("IsSeriesCollectionChanging", typeof(bool), typeof(Chart), new PropertyMetadata(false, OnIsSeriesCollectionChangingPropertyChanged));
+
+        private static void OnIsSeriesCollectionChangingPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((Chart)d).OnIsSeriesCollectionChangingChanged();
+        }
+
+        private void OnIsSeriesCollectionChangingChanged()
+        {
+            if (this.PART_SeriesControl != null)
+            {
+                this.PART_SeriesControl.IsSeriesCollectionChanging = this.IsSeriesCollectionChanging;
+
+                if (!this.IsSeriesCollectionChanging)
+                {
+                    this.PART_SeriesControl.UpdateSeriesCoordinates();
+                    
+                }
+            }
+        }
+
+
         /// <summary>
         /// Called when x-axis or y-axis has updated the coordinates of its items.
         /// </summary>
@@ -871,16 +902,5 @@ namespace MvvmCharting.WpfFX
         }
     }
 
-    public class StackedAreaControl : Chart
-    {
-        public StackedAreaControl()
-        {
-            this.PlottingYDataRange = new Range(0, 1);
-        }
 
-        protected override void UpdatePlottingYDataRange()
-        {
-            //do nothing here
-        }
-    }
 }

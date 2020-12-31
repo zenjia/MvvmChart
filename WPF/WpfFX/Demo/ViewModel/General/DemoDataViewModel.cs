@@ -62,6 +62,14 @@ namespace Demo
             }
         }
 
+        private bool _isModelChanging;
+        public bool IsModelChanging
+        {
+            get { return _isModelChanging; }
+            set { SetProperty(ref _isModelChanging, value); }
+        }
+
+
         private int _max = 30;
         private int _min = 0;
 
@@ -122,28 +130,46 @@ namespace Demo
 
         public void AddItem()
         {
-            this._max++;
-            foreach (var list in this.ItemsSourceList)
+            IsModelChanging = true;
+            try
             {
-                var pt = GetPoint(this._max, list.Index * 0.5);
-                list.DataList.Add(pt);
+                this._max++;
+                foreach (var list in this.ItemsSourceList)
+                {
+                    var pt = GetPoint(this._max, list.Index * 0.5);
+                    list.DataList.Add(pt);
+                }
             }
+            finally
+            {
+                IsModelChanging = false;
+            }
+
 
         }
 
         public void RemoveItem()
         {
-            this._min++;
-
-            for (int i = 0; i < this.ItemsSourceList.Count; i++)
+            IsModelChanging = true;
+            try
             {
-                var list = this.ItemsSourceList[i];
-                if (list.DataList.Count > 3)
-                {
-                    list.DataList.RemoveAt(0);
-                }
+                this._min++;
 
+                for (int i = 0; i < this.ItemsSourceList.Count; i++)
+                {
+                    var list = this.ItemsSourceList[i];
+                    if (list.DataList.Count > 3)
+                    {
+                        list.DataList.RemoveAt(0);
+                    }
+
+                }
             }
+            finally
+            {
+                IsModelChanging = false;
+            }
+
         }
 
 

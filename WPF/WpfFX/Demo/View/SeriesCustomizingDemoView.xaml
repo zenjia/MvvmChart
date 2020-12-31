@@ -92,14 +92,15 @@
                             YMaximum="{Binding SelectedSeriesMode, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource SelectedSeriesShapeTypeToChartMaxConverter}}"
                             YMinimum="{Binding SelectedSeriesMode, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource SelectedSeriesShapeTypeToChartMinConverter}}"
                             GridLineControlVisibility="{Binding ShowGridLine, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
+                            IsSeriesCollectionChanging="{Binding Source={StaticResource DemoDataViewModel}, Path=IsModelChanging, Mode=TwoWay}"
                             LegendVisibility="{Binding ShowLegend, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
                             SeriesTemplateSelector="{StaticResource SeriesTemplateSelector}"
                             SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource DemoDataViewModel}}">
             <wpfFx:Chart.XAxis>
-                <axis:LinearAxis Title="t values" Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedXPlacement}"/>
+                <axis:NumericAxis Title="t values" Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedXPlacement}"/>
             </wpfFx:Chart.XAxis>
             <wpfFx:Chart.YAxis>
-                <axis:LinearAxis Title="Y values"  Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedYPlacement}"/>
+                <axis:NumericAxis Title="Y values"  Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedYPlacement}"/>
             </wpfFx:Chart.YAxis>
 
             <wpfFx:Chart.LegendItemTemplate>

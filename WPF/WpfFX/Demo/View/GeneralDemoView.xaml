@@ -136,10 +136,10 @@
                             SeriesTemplateSelector="{StaticResource SeriesTemplateSelector}"
                             SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource DemoDataViewModel}}">
             <mvvmCharting:Chart.XAxis>
-                <axis:LinearAxis Title="t values" Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedXPlacement}"/>
+                <axis:NumericAxis Title="t values" Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedXPlacement}"/>
             </mvvmCharting:Chart.XAxis>
             <mvvmCharting:Chart.YAxis>
-                <axis:LinearAxis Title="Y values"  Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedYPlacement}"/>
+                <axis:NumericAxis Title="Y values"  Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedYPlacement}"/>
             </mvvmCharting:Chart.YAxis>
 
             <mvvmCharting:Chart.LegendItemTemplate>

@@ -37,6 +37,8 @@ namespace MvvmCharting.WpfFX
 
         private SlimItemsControl PART_SeriesItemsControl;
 
+        public bool IsSeriesCollectionChanging { get; set; }
+        
         private int SeriesCount => this.PART_SeriesItemsControl?.ItemCount ?? 0;
 
         public IEnumerable<SeriesBase> GetSeries()
@@ -318,6 +320,13 @@ namespace MvvmCharting.WpfFX
         }
         #endregion
 
-
+        internal void UpdateSeriesCoordinates()
+        {
+            foreach (var sr in this.GetSeries())
+            {
+                sr.UpdateValueRange();
+                sr.RecalculateCoordinate();
+            }
+        }
     }
 }
