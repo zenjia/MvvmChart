@@ -10,9 +10,6 @@
         Title="This a MvvmChart Demo for WPF(.NET Framework)" >
 
 
-
-
-
     <TabControl TabStripPlacement="Left" Margin="20">
 
         <TabItem Header="General Demo" Padding="6">
@@ -35,7 +32,10 @@
             <local:BigDataTestView Margin="15"/>
         </TabItem>
 
-
+        <TabItem Header="Category Axis Demo" Padding="6">
+            <wpfFx:CategoryAxisDemoView Margin="15"/>
+        </TabItem>
+        
         
     </TabControl>
 

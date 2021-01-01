@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,7 +14,7 @@ namespace MvvmCharting.WpfFX.Axis
     /// <summary>
     /// The base class for <see cref="NumericAxis"/> and <see cref="CategoryAxis"/>.
     /// </summary>
-    [TemplatePart(Name = "PART_AxisItemsControl", Type = typeof(SlimItemsControl))]
+    [TemplatePart(Name = "PART_AxisItemsControl", Type = typeof(Grid))]
     public abstract class AxisBase : Control, IAxisNS
     {
         static AxisBase()
@@ -23,46 +24,44 @@ namespace MvvmCharting.WpfFX.Axis
 
         private static readonly string sPART_AxisItemsControl = "PART_AxisItemsControl";
 
-        private SlimItemsControl PART_AxisItemsControl;
-
+        protected Grid PART_AxisItemsControl;
 
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
+            //if (this.PART_AxisItemsControl != null)
+            //{
+            //    this.PART_AxisItemsControl.ElementGenerated -= AxisItemsControlItemTemplateApplied;
+            //}
+
+            this.PART_AxisItemsControl = (Grid)GetTemplateChild(sPART_AxisItemsControl);
             if (this.PART_AxisItemsControl != null)
             {
-                this.PART_AxisItemsControl.ElementGenerated -= AxisItemsControlItemTemplateApplied;
-            }
 
-            this.PART_AxisItemsControl = (SlimItemsControl)GetTemplateChild(sPART_AxisItemsControl);
-            if (this.PART_AxisItemsControl != null)
-            {
+                //this.PART_AxisItemsControl.ElementGenerated += AxisItemsControlItemTemplateApplied;
 
-                this.PART_AxisItemsControl.ElementGenerated += AxisItemsControlItemTemplateApplied;
+                //this.PART_AxisItemsControl.SetBinding(SlimItemsControl.ItemTemplateProperty,
+                //    new Binding(nameof(this.ItemTemplate)) { Source = this });
+                //this.PART_AxisItemsControl.SetBinding(SlimItemsControl.ItemTemplateSelectorProperty,
+                //    new Binding(nameof(this.ItemTemplateSelector)) { Source = this });
 
-                this.PART_AxisItemsControl.SetBinding(SlimItemsControl.ItemTemplateProperty,
-                    new Binding(nameof(this.ItemTemplate)) { Source = this });
-                this.PART_AxisItemsControl.SetBinding(SlimItemsControl.ItemTemplateSelectorProperty,
-                    new Binding(nameof(this.ItemTemplateSelector)) { Source = this });
-
-                this.PART_AxisItemsControl.ItemsSource = this.ItemDrawingParams;
-                TryLoadAxisItemDrawingParams();
+                //this.PART_AxisItemsControl.ItemsSource = this.ItemDrawingParams;
+                TryLoadAxisItems();
             }
 
 
         }
 
-
-
-        protected AxisBase()
+        protected IEnumerable<IAxisItem> GetAllAxisItems()
         {
-            this.ItemDrawingParams = new ObservableCollection<IAxisItemDrawingBaseParams>();
+            if (this.PART_AxisItemsControl == null)
+            {
+                return Enumerable.Empty<IAxisItem>();
+            }
 
+            return this.PART_AxisItemsControl.Children.OfType<IAxisItem>();
         }
-
-
-
 
         public string Title
         {
@@ -83,7 +82,6 @@ namespace MvvmCharting.WpfFX.Axis
             DependencyProperty.Register("TitleStyle", typeof(Style), typeof(AxisBase), new PropertyMetadata(null));
 
 
-
         public AxisPlacement Placement
         {
             get { return (AxisPlacement)GetValue(PlacementProperty); }
@@ -97,30 +95,12 @@ namespace MvvmCharting.WpfFX.Axis
             ((AxisBase)d).OnPlacementChange();
         }
 
-        private IEnumerable<IAxisItem> GetAllAxisItems()
-        {
-            if (this.PART_AxisItemsControl == null)
-            {
-                return Enumerable.Empty<IAxisItem>();
-            }
-
-            return this.PART_AxisItemsControl.GetChildren().OfType<IAxisItem>();
-        }
-
         private void OnPlacementChange()
         {
-            foreach (var axisItem in GetAllAxisItems())
-            {
-                axisItem.SetAxisPlacement(this.Placement);
-            }
+ 
 
             this.AxisPlacementChanged?.Invoke(this);
         }
-
-
-
-
-
 
         public int TickCount
         {
@@ -136,25 +116,6 @@ namespace MvvmCharting.WpfFX.Axis
         }
 
 
-        public DataTemplate ItemTemplate
-        {
-            get { return (DataTemplate)GetValue(ItemTemplateProperty); }
-            set { SetValue(ItemTemplateProperty, value); }
-        }
-
-        public static readonly DependencyProperty ItemTemplateProperty =
-            ItemsControl.ItemTemplateProperty.AddOwner(typeof(AxisBase));
-
-
-        public DataTemplateSelector ItemTemplateSelector
-        {
-            get { return (DataTemplateSelector)GetValue(ItemTemplateSelectorProperty); }
-            set { SetValue(ItemTemplateSelectorProperty, value); }
-        }
-        public static readonly DependencyProperty ItemTemplateSelectorProperty =
-            ItemsControl.ItemTemplateSelectorProperty.AddOwner(typeof(AxisBase));
-
-
         /// <summary>
         /// A double to string convert.
         /// The Axis only receive double values, so its the user's responsibility to provide a proper
@@ -162,28 +123,26 @@ namespace MvvmCharting.WpfFX.Axis
         /// If the double is converted from DateTime or DateTimeOffset, then it should be
         /// convert back to DateTime or DateTimeOffset first before it can be convert to a user-formatted string
         /// </summary>
-        public IValueConverterNS LabelTextConverter
+        public IValueConverter LabelTextConverter
         {
-            get { return (IValueConverterNS)GetValue(LabelTextConverterProperty); }
+            get { return (IValueConverter)GetValue(LabelTextConverterProperty); }
             set { SetValue(LabelTextConverterProperty, value); }
         }
         public static readonly DependencyProperty LabelTextConverterProperty =
-            DependencyProperty.Register("LabelTextConverter", typeof(IValueConverterNS), typeof(AxisBase), new PropertyMetadata(null, OnLabelTextConverterPropertyChanged));
+            DependencyProperty.Register("LabelTextConverter", typeof(IValueConverter), typeof(AxisBase), new PropertyMetadata(null));
 
-        private static void OnLabelTextConverterPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+ 
+
+
+        public Style AxisItemStyle
         {
-            ((AxisBase)d).OnLabelTextConverterChanged((IValueConverterNS)e.OldValue, (IValueConverterNS)e.NewValue);
+            get { return (Style)GetValue(AxisItemStyleProperty); }
+            set { SetValue(AxisItemStyleProperty, value); }
         }
+        public static readonly DependencyProperty AxisItemStyleProperty =
+            DependencyProperty.Register("AxisItemStyle", typeof(Style), typeof(AxisBase), new PropertyMetadata(null));
 
-        private void OnLabelTextConverterChanged(IValueConverterNS oldValue, IValueConverterNS newValue)
-        {
-
-            foreach (var axisItem in GetAllAxisItems())
-            {
-                axisItem.SetLabelTextConverter(this.LabelTextConverter);
-            }
-        }
-
+ 
 
         private IAxisOwner _owner;
         public IAxisOwner Owner
@@ -200,9 +159,6 @@ namespace MvvmCharting.WpfFX.Axis
 
             }
         }
-
-
-
 
 
 
@@ -301,16 +257,12 @@ namespace MvvmCharting.WpfFX.Axis
                 {
                     this._drawingSettings = value;
 
-                    TryLoadAxisItemDrawingParams();
+                    TryLoadAxisItems();
                 }
 
 
             }
         }
-
-
-        public ObservableCollection<IAxisItemDrawingBaseParams> ItemDrawingParams { get; }
-
 
 
         protected abstract void UpdateAxisDrawingSettings();
@@ -324,7 +276,7 @@ namespace MvvmCharting.WpfFX.Axis
 
             var coordinates = GetAxisItemCoordinates();
 
-
+ 
             this.Owner.OnAxisItemsCoordinateChanged(this.Orientation, coordinates);
 
 
@@ -335,16 +287,16 @@ namespace MvvmCharting.WpfFX.Axis
 
         protected IAxisDrawingSettingsBase _currentDrawingSettings;
 
-        protected abstract bool DoLoadAxisItemDrawingParams();
+        protected abstract bool LoadAxisItems();
 
-        public bool TryLoadAxisItemDrawingParams()
+        public bool TryLoadAxisItems()
         {
             if (this.PART_AxisItemsControl == null)
             {
                 return false;
             }
 
-            bool succeed = DoLoadAxisItemDrawingParams();
+            bool succeed = LoadAxisItems();
 
             if (!succeed)
             {
@@ -371,28 +323,13 @@ namespace MvvmCharting.WpfFX.Axis
             OnAxisItemCoordinateChanged();
         }
 
-
-        private void AxisItemsControlItemTemplateApplied(object sender, DependencyObject root, int index)
+        protected void DoUpdateAxisItems(IList<object> source)
         {
-            if (!(root is IAxisItem axisItem))
-            {
-                throw new MvvmChartUnexpectedTypeException($"The root item of ItemTemplate of an axis must be based on '{typeof(AxisItem)}'!");
-            }
-
-            axisItem.SetLabelTextConverter(this.LabelTextConverter);
-            axisItem.SetAxisPlacement(this.Placement);
-
-        }
-
-
-        protected void UpdateItemDrawingParams(IList<object> source)
-        {
-
-            var oldCt = this.ItemDrawingParams.Count;
+            var oldCt = this.PART_AxisItemsControl.Children.Count;
             var newCt = source.Count;
             if (oldCt > newCt)
             {
-                this.ItemDrawingParams.RemoveRange(newCt, oldCt - newCt);
+                this.PART_AxisItemsControl.Children.RemoveRange(newCt, oldCt - newCt);
             }
 
             for (int i = 0; i < source.Count; i++)
@@ -400,22 +337,24 @@ namespace MvvmCharting.WpfFX.Axis
                 var newValue = source[i];
                 if (i < oldCt)
                 {
-                    var item = this.ItemDrawingParams[i];
-                    item.Value = newValue;
+                    var item = this.PART_AxisItemsControl.Children[i] as AxisItem;
+                    item.DataContext = newValue;
                 }
                 else
                 {
-                    IAxisItemDrawingBaseParams item = new AxisItemDrawingParam();
-                    item.Value = newValue;
-                    this.ItemDrawingParams.Add(item);
+                    AxisItem item = new AxisItem();
+                    item.DataContext = newValue;
+                    item.SetBinding(AxisItem.LabelTextConverterProperty, new Binding(nameof(this.LabelTextConverter)){Source = this});
+                    item.SetBinding(AxisItem.StyleProperty, new Binding(nameof(this.AxisItemStyle)) { Source = this });
+                    item.SetBinding(AxisItem.PlacementProperty, new Binding(nameof(this.Placement)) { Source = this });
+                    //item.SetLabelTextConverter(this.LabelTextConverter);
+                    //item.SetAxisPlacement(this.Placement);
+                    //item.Style = this.AxisItemStyle;
+                    this.PART_AxisItemsControl.Children.Add(item);
                 }
             }
 
-
-
-
         }
-
 
 
         public event Action<IAxisNS> AxisPlacementChanged;

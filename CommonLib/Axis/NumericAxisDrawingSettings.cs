@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using MvvmCharting.Common;
 
 namespace MvvmCharting.Axis
@@ -7,26 +8,27 @@ namespace MvvmCharting.Axis
     {
         double PlottingLength { get; }
 
-         double ActualTickInterval { get; }
+        double ActualTickInterval { get; }
 
-         int ActualTickCount { get; }
+        int ActualTickCount { get; }
 
-         bool CanUpdateAxisItems();
+        bool CanUpdateAxisItems();
 
-         bool CanUpdateAxisItemsCoordinate();
+        bool CanUpdateAxisItemsCoordinate();
     }
 
-    public interface ILinearAxisDrawingSettings: IAxisDrawingSettingsBase
+    public interface INumericAxisDrawingSettings : IAxisDrawingSettingsBase
     {
         Range PlottingDataRange { get; }
     }
 
     public interface ICategoryAxisDrawingSettings : IAxisDrawingSettingsBase
     {
-        
+        IList<object> PlottingItemValues { get; }
     }
 
-    public class AxisDrawingSettings: ILinearAxisDrawingSettings
+
+    public class NumericAxisDrawingSettings : INumericAxisDrawingSettings
     {
         public override string ToString()
         {
@@ -42,25 +44,25 @@ namespace MvvmCharting.Axis
 
         #region generated values
 
-        public double ActualTickInterval { get; } 
+        public double ActualTickInterval { get; }
 
         public int ActualTickCount { get; }
 
         #endregion
 
-        public AxisDrawingSettings(int tickCount, double tickInterval, Range range, double plottingLength)
+        public NumericAxisDrawingSettings(int tickCount, double tickInterval, Range range, double plottingLength)
         {
 
-            if (tickCount<0 || tickCount>ushort.MaxValue)
+            if (tickCount < 0 || tickCount > ushort.MaxValue)
             {
                 throw new NotSupportedException();
             }
 
- 
+
 
             this.PlottingDataRange = range;
 
- 
+
             this.PlottingLength = plottingLength;
 
             //calculated state:
@@ -71,21 +73,21 @@ namespace MvvmCharting.Axis
 
         public override bool Equals(object obj)
         {
-            var other = obj as AxisDrawingSettings;
+            var other = obj as NumericAxisDrawingSettings;
             if (other == null)
             {
                 return false;
             }
 
-            return this.PlottingLength.NearlyEqual(other.PlottingLength, 0.0001) && 
-                   this.PlottingDataRange==other.PlottingDataRange &&
+            return this.PlottingLength.NearlyEqual(other.PlottingLength, 0.0001) &&
+                   this.PlottingDataRange == other.PlottingDataRange &&
                    this.ActualTickCount == other.ActualTickCount &&
                    this.ActualTickInterval == other.ActualTickInterval;
         }
 
         public bool CanUpdateAxisItems()
         {
- 
+
             return !this.PlottingLength.IsNaNOrZero() && !this.ActualTickInterval.IsNaNOrZero();
         }
 
@@ -93,6 +95,6 @@ namespace MvvmCharting.Axis
         {
             return !this.PlottingLength.IsNaNOrZero() && !this.PlottingDataRange.Span.IsNaNOrZero();
         }
- 
+
     }
 }

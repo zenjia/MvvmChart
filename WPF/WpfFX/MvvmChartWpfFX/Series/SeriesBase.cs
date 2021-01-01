@@ -23,10 +23,8 @@ namespace MvvmCharting.WpfFX
     [TemplatePart(Name = "PART_Shape", Type = typeof(Shape))]
     public abstract class SeriesBase : Control, ISeries
     {
-
         private static readonly string sPART_Shape = "PART_Shape";
         private static readonly string sPART_ScatterItemsControl = "PART_DataPointItemsControl";
-
 
         public event Action<ISeries, Range> XRangeChanged;
         public event Action<ISeries, Range> YRangeChanged;
@@ -128,7 +126,7 @@ namespace MvvmCharting.WpfFX
         }
         #endregion
 
-        private void ScatterItemsControlScatterGenerated(object sender, DependencyObject root, int index)
+        private void ScatterItemsControlScatterGenerated(object sender, FrameworkElement root, int index)
         {
             var scatter = (IScatter)root;
             if (scatter == null)
@@ -208,46 +206,94 @@ namespace MvvmCharting.WpfFX
             }
         }
 
-        static string sModes = $"{SeriesMode.StackedArea} or {SeriesMode.StackedArea100}";
-
         private void ValidateData()
         {
-            if (this.SeriesMode == SeriesMode.Line || this.SeriesMode == SeriesMode.Area)
+            if (!this.Owner.IsXAxisCategory && (this.SeriesMode == SeriesMode.Line || this.SeriesMode == SeriesMode.Area))
             {
                 return;
             }
 
-           
-
-            SeriesBase prev = null;
-            foreach (var sr in this.Owner.GetSeries())
+            var seriesCount = this.Owner.SeriesCount;
+            var seriesList = this.Owner.GetSeries();
+            int stackedAreaSrCt = 0;
+            int stackedArea100SrCt = 0;
+            foreach (var sr in seriesList)
             {
-                if (sr.SeriesMode != this.SeriesMode)
+                if (sr.SeriesMode == SeriesMode.StackedArea)
                 {
-                    throw new MvvmChartException($"In {sModes} mode, the SeriesMode of all Series in a Chart must be same!");
+                    stackedAreaSrCt++;
                 }
 
-                if (prev != null)
+                if (sr.SeriesMode == SeriesMode.StackedArea100)
                 {
-                    if (sr.ItemsSource.Count != this.ItemsSource.Count)
-                    {
-                        throw new MvvmChartModelDataException($"In {sModes} mode, the item count of all series in a Chart must be same!");
-                    }
+                    stackedArea100SrCt++;
+                }
+            }
 
-                    for (int i = 0; i < this.ItemsSource.Count; i++)
+            if (stackedAreaSrCt != 0 && stackedAreaSrCt != seriesCount)
+            {
+                throw new MvvmChartException($"Series in a Chart must all or no one in '{SeriesMode.StackedArea}' mode!");
+            }
+
+            if (stackedArea100SrCt != 0 && stackedArea100SrCt != seriesCount)
+            {
+                throw new MvvmChartException($"Series in a Chart must all or no one in '{SeriesMode.StackedArea100}' mode!");
+            }
+
+            SeriesMode? mode = (stackedAreaSrCt == seriesCount)
+                ? SeriesMode.StackedArea
+                : (stackedArea100SrCt == seriesCount ? SeriesMode.StackedArea100 : (SeriesMode?)null);
+
+            string strReason = mode != null ? $"In {mode} mode" : "If the XAxis of a Chart is CategoryAxis";
+            SeriesBase prev = null;
+            foreach (var sr in seriesList)
+            {
+                if (sr.ItemsSource == null)
+                {
+                    continue;
+                }
+
+                if (prev == null)
+                {
+                    prev = sr;
+                    continue;
+                }
+
+                if (sr.ItemsSource.Count != this.ItemsSource.Count)
+                {
+                    throw new MvvmChartModelDataException($"{strReason}, the item count of all series in a Chart must be same!");
+                }
+
+                for (int i = 0; i < this.ItemsSource.Count; i++)
+                {
+                    if (this.Owner.IsXAxisCategory)
+                    {
+                        var x1 = GetXRawValueForItem(sr.ItemsSource[i]);
+                        var x2 = GetXRawValueForItem(prev.ItemsSource[i]);
+                        if (x1 == null || x2 == null)
+                        {
+                            throw new MvvmChartModelDataException("An Item's X value of the series ItemsSource cannot be null!");
+                        }
+
+                        if (!x1.Equals(x2))
+                        {
+                            throw new MvvmChartModelDataException($"{strReason}, the item's x value in the same index of all series in a Chart must be same!");
+                        }
+                    }
+                    else
                     {
                         var x1 = GetXValueForItem(sr.ItemsSource[i]);
                         var x2 = GetXValueForItem(prev.ItemsSource[i]);
+  
                         if (!x1.NearlyEqual(x2))
                         {
-                            throw new MvvmChartModelDataException($"In {sModes} mode, the item's x value in the same index of all series in a Chart must be same!");
+                            throw new MvvmChartModelDataException($"{strReason}, the item's x value in the same index of all series in a Chart must be same!");
                         }
                     }
+
                 }
 
 
-
-                prev = sr;
             }
         }
 
@@ -443,12 +489,16 @@ namespace MvvmCharting.WpfFX
 
             if (!this.Owner.IsSeriesCollectionChanging)
             {
+                //if (this.Owner.IsXAxisCategory)
+                //{
+                //    throw new MvvmChartModelDataException($"Collection change of ItemsSource is not allowed when XAxis is CategoryAxis and {nameof(this.Owner.IsSeriesCollectionChanging)} is false!");
+                //}
+
                 if (this.SeriesMode == SeriesMode.StackedArea || this.SeriesMode == SeriesMode.StackedArea100)
                 {
-                    throw new MvvmChartModelDataException($"Collection change of ItemsSource is not allowed in {this.SeriesMode} mode when Chart.IsUpdating is false!");
+                    throw new MvvmChartModelDataException($"Collection change of ItemsSource is not allowed in {this.SeriesMode} mode when {nameof(this.Owner.IsSeriesCollectionChanging)} is false!");
                 }
             }
-
 
             if (e.Action == NotifyCollectionChangedAction.Reset)
             {
@@ -494,26 +544,26 @@ namespace MvvmCharting.WpfFX
                 maxY = Math.Max(maxY, y);
             }
 
-            double minX = GetXValueForItem(this.ItemsSource[0]);
-            double maxX = GetXValueForItem(this.ItemsSource[this.ItemsSource.Count - 1]);
+            double minX;
+            double maxX;
+            if (!this.Owner.IsXAxisCategory)
+            {
+                minX = GetXValueForItem(this.ItemsSource[0]);
+                maxX = GetXValueForItem(this.ItemsSource[this.ItemsSource.Count - 1]);
 
- 
+            }
+            else
+            {
+                minX = 0;
+                maxX = this.ItemsSource.Count;
+            }
+
             this.XValueRange = new Range(minX, maxX);
             this.YValueRange = new Range(minY, maxY);
- 
+
+            //Debug.WriteLine(this.DataContext + $"...UpdateValueRange...XValueRange={XValueRange}, YValueRange={YValueRange}");
         }
 
-
-
-        protected Point GetValueFromItem(object item)
-        {
-            var t = item.GetType();
-            var x = t.GetProperty(this.IndependentValueProperty).GetValue(item);
-            var y = t.GetProperty(this.DependentValueProperty).GetValue(item);
-
-            var pt = new Point(DoubleValueConverter.ObjectToDouble(x), DoubleValueConverter.ObjectToDouble(y));
-            return pt;
-        }
 
         private double GetXValueForItem(object item)
         {
@@ -521,6 +571,15 @@ namespace MvvmCharting.WpfFX
             var x = t.GetProperty(this.IndependentValueProperty).GetValue(item);
 
             return DoubleValueConverter.ObjectToDouble(x);
+
+        }
+
+        internal object GetXRawValueForItem(object item)
+        {
+            var t = item.GetType();
+            var x = t.GetProperty(this.IndependentValueProperty).GetValue(item);
+
+            return x;
 
         }
 
@@ -770,7 +829,18 @@ namespace MvvmCharting.WpfFX
 
         private PointNS GetPlotCoordinateForItem(object item, int itemIndex)
         {
-            var x = GetXValueForItem(item);
+            double x;
+
+            if (!this.Owner.IsXAxisCategory)
+            {
+                x = GetXValueForItem(item);
+
+            }
+            else
+            {
+                x = itemIndex + 0.5;
+            }
+
             var y = GetAdjustYValueForItem(item, itemIndex);
 
             var pt = new PointNS((x - this.PlottingXValueRange.Min) * this._xPixelPerUnit,
@@ -804,7 +874,7 @@ namespace MvvmCharting.WpfFX
             }
 
             Array.Resize(ref this._coordinateCache, this.ItemsSource.Count);
- 
+
             for (int i = 0; i < this.ItemsSource.Count; i++)
             {
                 var item = this.ItemsSource[i];
@@ -823,7 +893,7 @@ namespace MvvmCharting.WpfFX
             }
 
             //Debug.WriteLine(this.DataContext + "...RecalculateCoordinate..._coordinateCache=" +
-           // string.Join(",", this._coordinateCache.Select(x => x.Y.ToString("F0"))));
+            //string.Join(",", this._coordinateCache.Select(x => x.Y.ToString("F0"))));
             UpdateLineOrArea();
         }
 

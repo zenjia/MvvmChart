@@ -31,23 +31,9 @@
                 <ControlTemplate TargetType="local:GridLineControl">
 
                     <Grid Background="{TemplateBinding Background}">
-                        <local:SlimItemsControl x:Name="PART_HorizontalGridLineItemsControl" >
-                            <local:SlimItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Line/>
-                                </DataTemplate>
-                            </local:SlimItemsControl.ItemTemplate>
-                        </local:SlimItemsControl>
-
-                        <local:SlimItemsControl x:Name="PART_VerticalGridLineItemsControl">
-                            <local:SlimItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Line/>
-                                </DataTemplate>
-                            </local:SlimItemsControl.ItemTemplate>
-                        </local:SlimItemsControl>
-
-
+                        <Grid x:Name="PART_HorizontalGridLines"/>
+                        <Grid x:Name="PART_VerticalGridLines"/>
+   
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

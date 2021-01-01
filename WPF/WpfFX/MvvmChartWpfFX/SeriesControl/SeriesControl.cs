@@ -37,9 +37,55 @@ namespace MvvmCharting.WpfFX
 
         private SlimItemsControl PART_SeriesItemsControl;
 
+        private bool _isXAxisCategory;
+        public bool IsXAxisCategory
+        {
+            get { return this._isXAxisCategory; }
+            internal set
+            {
+                if (this._isXAxisCategory != value)
+                {
+                    this._isXAxisCategory = value;
+
+                    if (value)
+                    {
+                        EnsureXValueUniformity();
+                    }
+                }
+            }
+        }
+
+        private void EnsureXValueUniformity()
+        {
+            SeriesBase firstSr = null;
+            foreach (var sr in this.GetSeries())
+            {
+                if (firstSr == null)
+                {
+                    firstSr = sr;
+                    continue;
+                }
+
+                if (sr.ItemsSource.Count != firstSr.ItemsSource.Count)
+                {
+                    throw new MvvmChartException("If the XAxis is CategoryAxis, the ItemsSource of all series should have the same length!");
+                }
+
+                for (int i = 0; i < sr.ItemsSource.Count; i++)
+                {
+                    if (sr.GetXRawValueForItem(sr.ItemsSource[i]) == firstSr.GetXRawValueForItem(firstSr.ItemsSource[i]))
+                    {
+                        throw new MvvmChartException("If the XAxis is CategoryAxis, the ItemsSource of all series should have the same x value at each index!");
+                    }
+                }
+
+
+            }
+        }
+
         public bool IsSeriesCollectionChanging { get; set; }
-        
-        private int SeriesCount => this.PART_SeriesItemsControl?.ItemCount ?? 0;
+
+        public int SeriesCount => this.PART_SeriesItemsControl?.ItemCount ?? 0;
 
         public IEnumerable<SeriesBase> GetSeries()
         {
@@ -78,7 +124,7 @@ namespace MvvmCharting.WpfFX
                     new Binding(nameof(this.SeriesItemsSource)) { Source = this });
             }
 
- 
+
         }
 
         private void PART_SeriesItemsControl_Reset(object obj)
@@ -109,11 +155,11 @@ namespace MvvmCharting.WpfFX
             sr.XRangeChanged += Sr_XValueRangeChanged;
             sr.YRangeChanged += Sr_YValueRangeChanged;
 
-            sr.OnPlottingXValueRangeChanged(this.PlottingXValueRange);  
+            sr.OnPlottingXValueRangeChanged(this.PlottingXValueRange);
             sr.OnPlottingYValueRangeChanged(this.PlottingYValueRange);
 
             sr.UpdateValueRange();
-            
+
 
         }
 
@@ -146,8 +192,6 @@ namespace MvvmCharting.WpfFX
         }
         public static readonly DependencyProperty SeriesItemsSourceProperty =
             DependencyProperty.Register("SeriesItemsSource", typeof(IList), typeof(SeriesControl));
-
-
         #endregion
 
         #region Global Data Range
@@ -181,7 +225,7 @@ namespace MvvmCharting.WpfFX
                 {
                     this._globalXValueRange = value;
 
-            
+
                     this.GlobalXValueRangeChanged?.Invoke(value);
                 }
             }
@@ -277,7 +321,7 @@ namespace MvvmCharting.WpfFX
 
                     foreach (var sr in this.GetSeries())
                     {
-                        sr.OnPlottingXValueRangeChanged(value);  
+                        sr.OnPlottingXValueRangeChanged(value);
                     }
                 }
             }

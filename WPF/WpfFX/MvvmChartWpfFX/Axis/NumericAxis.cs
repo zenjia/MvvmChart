@@ -18,6 +18,7 @@ namespace MvvmCharting.WpfFX.Axis
             DefaultStyleKeyProperty.OverrideMetadata(typeof(NumericAxis), new FrameworkPropertyMetadata(typeof(NumericAxis)));
         }
 
+        #region TickInterval
         public double TickInterval
         {
             get { return (double)GetValue(TickIntervalProperty); }
@@ -30,8 +31,9 @@ namespace MvvmCharting.WpfFX.Axis
         {
             ((NumericAxis)d).UpdateAxisDrawingSettings(); ;
         }
+        #endregion
 
-
+        #region ExplicitTicks
         public IList<double> ExplicitTicks
         {
             get { return (IList<double>)GetValue(ExplicitTicksProperty); }
@@ -47,9 +49,10 @@ namespace MvvmCharting.WpfFX.Axis
 
         private void OnExplicitTicksChanged(IList<double> oldValue, IList<double> newValue)
         {
-            TryLoadAxisItemDrawingParams();
+            TryLoadAxisItems();
         }
-         
+        #endregion
+
         protected override void UpdateAxisDrawingSettings()
         {
             if (/*!this.IsLoaded ||*/
@@ -58,28 +61,28 @@ namespace MvvmCharting.WpfFX.Axis
                 return;
             }
 
-            var range = ((ILinearPlottingSettings) this.PlottingSetting).PlottingDataRange;
+            var range = ((INumericPlottingSettings) this.PlottingSetting).PlottingDataRange;
             var length = this.PlottingSetting.GetAvailablePlottingSize();
             if (range.IsInvalid || length.IsNaNOrZero())
             {
                 throw new NotImplementedException();
             }
 
-            var axisDrawingSettings = new AxisDrawingSettings(this.TickCount, this.TickInterval, range, length);
+            var axisDrawingSettings = new NumericAxisDrawingSettings(this.TickCount, this.TickInterval, range, length);
             this.DrawingSettings = axisDrawingSettings;
         }
 
  
         protected override void DoUpdateAxisItemsCoordinate()
         {
-            var span = ((ILinearAxisDrawingSettings) this.DrawingSettings).PlottingDataRange.Span;
+            var span = ((INumericAxisDrawingSettings) this.DrawingSettings).PlottingDataRange.Span;
             var length = this.DrawingSettings.PlottingLength;
             var uLen = length / span;
 
 
-            foreach (var item in this.ItemDrawingParams)
+            foreach (IAxisItem item in this.GetAllAxisItems())
             {
-                var coordinate = ((double)item.Value - ((ILinearAxisDrawingSettings) this.DrawingSettings).PlottingDataRange.Min) * uLen;
+                var coordinate = ((double)item.DataContext - ((INumericAxisDrawingSettings) this.DrawingSettings).PlottingDataRange.Min) * uLen;
                 if (this.Orientation == AxisType.Y)
                 {
                     coordinate = length - coordinate;
@@ -91,10 +94,9 @@ namespace MvvmCharting.WpfFX.Axis
             }
         }
 
-
-        private IList<double> GetItemDataValues(double startValue, double tickInterval, int tickCount)
+        private IList<double> GetItemValues(double startValue, double tickInterval, int tickCount)
         {
-            var chartRange = ((ILinearPlottingSettings) this.PlottingSetting).PlottingDataRange;
+            var chartRange = ((INumericPlottingSettings) this.PlottingSetting).PlottingDataRange;
 
             var arr = Enumerable.Range(0, tickCount)
                 .Select(i => startValue + i * tickInterval)
@@ -104,8 +106,7 @@ namespace MvvmCharting.WpfFX.Axis
             return arr;
         }
 
-
-        protected override bool DoLoadAxisItemDrawingParams()
+        protected override bool LoadAxisItems()
         {
 
             IList<double> dataValues;
@@ -129,18 +130,15 @@ namespace MvvmCharting.WpfFX.Axis
 
                 this._currentDrawingSettings = drawingSettings;
 
-                dataValues = GetItemDataValues(((ILinearAxisDrawingSettings)drawingSettings).PlottingDataRange.Min, drawingSettings.ActualTickInterval, drawingSettings.ActualTickCount);
+                dataValues = GetItemValues(((INumericAxisDrawingSettings)drawingSettings).PlottingDataRange.Min, drawingSettings.ActualTickInterval, drawingSettings.ActualTickCount);
 
 
             }
 
-            UpdateItemDrawingParams(dataValues.Select(x=>(object)x).ToArray());
+            DoUpdateAxisItems(dataValues.Select(x=>(object)x).ToArray());
 
             return true;
         }
-
-
-      
 
         public override IEnumerable<double> GetAxisItemCoordinates()
         {
@@ -148,8 +146,9 @@ namespace MvvmCharting.WpfFX.Axis
             {
                 return null;
             }
-            var range = ((ILinearPlottingSettings) this.PlottingSetting).PlottingDataRange;
-            var coordinates = this.ItemDrawingParams.Where(x => range.IsInRange((double)x.Value)).Select(x => x.Coordinate);
+            var range = ((INumericPlottingSettings) this.PlottingSetting).PlottingDataRange;
+            var coordinates = this.PART_AxisItemsControl.Children.OfType<AxisItem>()
+                .Where(x => range.IsInRange((double)x.DataContext)).Select(x => x.Coordinate);
 
             return coordinates;
         }

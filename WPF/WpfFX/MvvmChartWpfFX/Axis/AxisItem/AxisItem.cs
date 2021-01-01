@@ -28,8 +28,7 @@ namespace MvvmCharting.WpfFX.Axis
         private FrameworkElement PART_Label;
         public AxisItem()
         {
-            this.SetBinding(CoordinateProperty, new Binding(nameof(IAxisItemDrawingBaseParams.Coordinate)));
-            this.SetBinding(ValueProperty, new Binding(nameof(IAxisItemDrawingBaseParams.Value)));
+            UpdateLabelTextBinding();
         }
 
 
@@ -54,7 +53,7 @@ namespace MvvmCharting.WpfFX.Axis
         }
 
 
- 
+
 
         public AxisPlacement Placement
         {
@@ -101,41 +100,30 @@ namespace MvvmCharting.WpfFX.Axis
             this.TryDoTranslateTransform();
         }
 
-        public void SetLabelTextConverter(IValueConverterNS newValue)
-        {
-            this.LabelTextConverter = newValue;
-        }
 
-        public void SetAxisPlacement(AxisPlacement newValue)
-        {
-            this.Placement = newValue;
-        }
+ 
 
-        public IValueConverterNS LabelTextConverter
+        public IValueConverter LabelTextConverter
         {
-            get { return (IValueConverterNS)this.GetValue(LabelTextConverterProperty); }
+            get { return (IValueConverter)this.GetValue(LabelTextConverterProperty); }
             set { this.SetValue(LabelTextConverterProperty, value); }
         }
         public static readonly DependencyProperty LabelTextConverterProperty =
-            DependencyProperty.Register("LabelTextConverter", typeof(IValueConverterNS), typeof(AxisItem), new PropertyMetadata(null, OnValueConverterPropertyChanged));
+            DependencyProperty.Register("LabelTextConverter", typeof(IValueConverter), typeof(AxisItem), new PropertyMetadata(null, OnLabelTextConverterPropertyChanged));
 
-        private static void OnValueConverterPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnLabelTextConverterPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((AxisItem)d).UpdateLabelText();
+            ((AxisItem)d).OnLabelTextConverterChanged();
+        }
+        private void OnLabelTextConverterChanged()
+        {
+            UpdateLabelTextBinding();
         }
 
-
-        private void UpdateLabelText()
+        private void UpdateLabelTextBinding()
         {
-            if (this.LabelTextConverter == null || this.Value == null)
-            {
-                return;
-            }
- 
-            this.LabelText = this.LabelTextConverter.ConverterTo(this.Value, CultureInfo.CurrentCulture)?.ToString() ?? string.Empty;
+            this.SetBinding(AxisItem.LabelTextProperty, new Binding() { Converter = this.LabelTextConverter });
         }
-
-
 
         public object Value
         {
@@ -147,7 +135,7 @@ namespace MvvmCharting.WpfFX.Axis
 
         private static void OnValuePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((AxisItem)d).UpdateLabelText();
+            ((AxisItem)d).UpdateLabelTextBinding();
         }
 
 

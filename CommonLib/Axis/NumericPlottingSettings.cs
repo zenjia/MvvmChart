@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+using System.Linq;
 using MvvmCharting.Common;
 
 using MvvmCharting.Drawing;
@@ -18,9 +20,14 @@ namespace MvvmCharting.Axis
         double GetAvailablePlottingSize();
     }
 
-    public interface ILinearPlottingSettings : IPlottingSettingsBase
+    public interface INumericPlottingSettings : IPlottingSettingsBase
     {
         Range PlottingDataRange { get; }
+    }
+
+    public interface ICategoryPlottingSettings : IPlottingSettingsBase
+    {
+        IList<object> PlottingItemValues { get; }
     }
 
     public class PlottingSettingsBase : IPlottingSettingsBase
@@ -94,7 +101,7 @@ namespace MvvmCharting.Axis
         }
     }
 
-    public class PlottingSettings : PlottingSettingsBase, ILinearPlottingSettings
+    public class NumericPlottingSettings : PlottingSettingsBase, INumericPlottingSettings
     {
 
 
@@ -103,7 +110,7 @@ namespace MvvmCharting.Axis
 
 
 
-        public PlottingSettings(AxisType orientation,
+        public NumericPlottingSettings(AxisType orientation,
             double renderSize,
             PointNS margin,
             PointNS padding,
@@ -118,7 +125,7 @@ namespace MvvmCharting.Axis
 
         public override bool Equals(object obj)
         {
-            var other = obj as PlottingSettings;
+            var other = obj as NumericPlottingSettings;
             if (other == null)
             {
                 return false;
@@ -126,7 +133,7 @@ namespace MvvmCharting.Axis
             return other.Equals(this);
         }
 
-        public bool Equals(PlottingSettings obj)
+        public bool Equals(NumericPlottingSettings obj)
         {
             var plottingSettingsBase = obj as PlottingSettingsBase;
             if (obj == null)
@@ -153,7 +160,7 @@ namespace MvvmCharting.Axis
 
         }
 
-        public static bool operator ==(PlottingSettings settings, PlottingSettings settings2)
+        public static bool operator ==(NumericPlottingSettings settings, NumericPlottingSettings settings2)
         {
             if (object.ReferenceEquals(settings, null))
             {
@@ -163,9 +170,97 @@ namespace MvvmCharting.Axis
             return settings.Equals(settings2);
         }
 
-        public static bool operator !=(PlottingSettings settings, PlottingSettings settings2)
+        public static bool operator !=(NumericPlottingSettings settings, NumericPlottingSettings settings2)
         {
             return !(settings == settings2);
         }
     }
+
+
+    public class CategoryPlottingSettings : PlottingSettingsBase, ICategoryPlottingSettings
+    {
+
+
+        public IList<object> PlottingItemValues { get; }
+
+
+
+
+        public CategoryPlottingSettings(AxisType orientation,
+            double renderSize,
+            PointNS margin,
+            PointNS padding,
+            PointNS borderThickness,
+            IList<object> plottingItemValues)
+                : base(orientation, renderSize, margin, padding, borderThickness)
+        {
+
+            this.PlottingItemValues = plottingItemValues;
+
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as CategoryPlottingSettings;
+            if (other == null)
+            {
+                return false;
+            }
+            return other.Equals(this);
+        }
+
+        public bool Equals(CategoryPlottingSettings obj)
+        {
+            var plottingSettingsBase = obj as PlottingSettingsBase;
+            if (obj == null)
+            {
+                return false;
+            }
+
+            if (!plottingSettingsBase.Equals(this))
+            {
+                return false;
+            }
+
+            if (this.PlottingItemValues == null)
+            {
+                return obj.PlottingItemValues == null;
+            }
+
+            return this.PlottingItemValues.SequenceEqual(obj.PlottingItemValues);
+        }
+
+        public static bool Validate(double length,
+            PointNS margin,
+            PointNS pading,
+            PointNS borderThickness,
+            Range plotingDataRange)
+        {
+            return !length.IsInvalid() &&
+                   !length.IsZero() &&
+                   !margin.IsInvalid() &&
+                   !pading.IsInvalid() &&
+                   !borderThickness.IsInvalid() &&
+                   !plotingDataRange.IsInvalid;
+
+        }
+
+        public static bool operator ==(CategoryPlottingSettings settings, CategoryPlottingSettings settings2)
+        {
+            if (object.ReferenceEquals(settings, null))
+            {
+                return object.ReferenceEquals(settings2, null);
+            }
+
+            return settings.Equals(settings2);
+        }
+
+        public static bool operator !=(CategoryPlottingSettings settings, CategoryPlottingSettings settings2)
+        {
+            return !(settings == settings2);
+        }
+    }
+
+
+
 }

@@ -71,6 +71,7 @@
     <Compile Include="Axis\AxisItem\AxisItem.cs" />
     <Compile Include="Axis\CategoryAxis.cs" />
     <Compile Include="Axis\NumericAxis.cs" />
+    <Compile Include="Axis\AxisItem\DefaultDoubleToAxisLabelTextConverter.cs" />
     <Compile Include="SeriesControl\SeriesControl.cs" />
     <Compile Include="common\PointHelper.cs" />
     <Compile Include="common\SizeHelper.cs" />

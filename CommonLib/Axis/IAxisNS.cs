@@ -21,9 +21,6 @@ namespace MvvmCharting.Axis
         int TickCount { get; set; }
 
 
-        /// <summary>
-        /// User provided converters for convert value to the LabelText of an <see cref="IAxisItem"/>.
-        /// </summary>
-        IValueConverterNS LabelTextConverter { get; set; }
+ 
     }
 }

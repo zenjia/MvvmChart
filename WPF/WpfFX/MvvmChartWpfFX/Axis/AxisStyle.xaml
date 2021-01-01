@@ -31,21 +31,20 @@
                         <TextBlock x:Name="PART_Label"
                                        Grid.Column="0"
                                        Grid.Row="1"
+                                       FontWeight="SemiBold"
                                        HorizontalAlignment="Center"/>
-
-
                     </Grid>
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="PART_Root" Property="RenderTransform">
                                 <Setter.Value>
-                                    <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+                                    <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>
                                 </Setter.Value>
                             </Setter>
 
                             <Setter Property="Foreground" Value="{StaticResource AxisItem.MouseOver.Foregound}"/>
-                            <Setter Property="FontWeight"  Value="Bold"/>
+                            
                         </Trigger>
                         <Trigger Property="Placement" Value="Top">
                             <Setter Property="VerticalAlignment" Value="Bottom"/>
@@ -101,11 +100,7 @@
     </Style>
 
 
-
-    <DataTemplate x:Key="DefualtAxisItemDataTemplate" DataType="axis:AxisItemDrawingParam">
-        <local:AxisItem FontWeight="Bold"/>
-    </DataTemplate>
-
+ 
 
     <Style TargetType="TextBlock" x:Key="DefaultTitleStyle">
         <Setter Property="FontWeight" Value="SemiBold"/>
@@ -114,7 +109,6 @@
 
     <Style TargetType="local:AxisBase">
         <Setter Property="TitleStyle" Value="{StaticResource DefaultTitleStyle}"/>
-        <Setter Property="ItemTemplate" Value="{StaticResource DefualtAxisItemDataTemplate}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:AxisBase">
@@ -132,8 +126,11 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
+                            <Grid x:Name="PART_AxisItemsControl" Grid.Row="0" Grid.Column="0"/>
+
+                            <!--
                             <wpfFx:SlimItemsControl x:Name="PART_AxisItemsControl"
-                                                    Grid.Row="0" Grid.Column="0"/>
+                                                    Grid.Row="0" Grid.Column="0"/>-->
 
                             <TextBlock x:Name="PART_Title" 
                                        Grid.Row="1" 
@@ -184,14 +181,14 @@
         </Setter>
     </Style>
 
-    <axis:DefaultDoubleToAxisLabelTextConverter x:Key="DefaultDoubleToAxisLabelTextConverter"/>
+    <wpfFx:DefaultDoubleToAxisLabelTextConverter x:Key="DefaultDoubleToAxisLabelTextConverter"/>
     <Style TargetType="local:NumericAxis" BasedOn="{StaticResource {x:Type local:AxisBase}}">
         <Setter Property="LabelTextConverter" Value="{StaticResource DefaultDoubleToAxisLabelTextConverter}"/>
     </Style>
 
-    <axis:DefaultObjectToAxisLabelTextConverter x:Key="DefaultObjectToAxisLabelTextConverter"/>
+    
     <Style TargetType="local:CategoryAxis" BasedOn="{StaticResource {x:Type local:AxisBase}}">
-        <Setter Property="LabelTextConverter" Value="{StaticResource DefaultObjectToAxisLabelTextConverter}"/>
+        
     </Style>
 
 </ResourceDictionary>

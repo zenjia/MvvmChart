@@ -11,12 +11,14 @@ namespace Demo
         }
 
         public double t { get; }
+        public string tt { get; }
         public double Y { get; }
 
         public SomePoint(double t, double y)
         {
             this.t = t;
             this.Y = y;
+            this.tt = $"{t}th";
         }
     }
 }

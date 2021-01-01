@@ -63,6 +63,11 @@ namespace MvvmCharting.WpfFX
 
         }
 
+        public override string ToString()
+        {
+            return this.Name ?? GetHashCode().ToString();
+
+        }
 
         public SlimItemsControl()
         {
@@ -343,7 +348,7 @@ namespace MvvmCharting.WpfFX
             }
 
 
-          
+
 
             this._itemChildMap.Remove(oldItem);
             this._itemChildMap.Add(newItem, treeRoot);

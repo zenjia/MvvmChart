@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
 using System.Windows.Shapes;
 using MvvmCharting.Axis;
 using MvvmCharting.Common;
@@ -12,8 +14,8 @@ using MvvmCharting.GridLine;
 
 namespace MvvmCharting.WpfFX
 {
-    [TemplatePart(Name = "PART_HorizontalGridLineItemsControl", Type = typeof(SlimItemsControl))]
-    [TemplatePart(Name = "PART_VerticalGridLineItemsControl", Type = typeof(SlimItemsControl))]
+    [TemplatePart(Name = "sPART_HorizontalGridLines", Type = typeof(Grid))]
+    [TemplatePart(Name = "PART_VerticalGridLines", Type = typeof(Grid))]
     public class GridLineControl : Control, IGridLineControl
     {
         static GridLineControl()
@@ -21,136 +23,96 @@ namespace MvvmCharting.WpfFX
             DefaultStyleKeyProperty.OverrideMetadata(typeof(GridLineControl), new FrameworkPropertyMetadata(typeof(GridLineControl)));
         }
 
-        private static readonly string sPART_HorizontalGridLineItemsControl = "PART_HorizontalGridLineItemsControl";
-        private static readonly string sPART_VerticalGridLineItemsControl = "PART_VerticalGridLineItemsControl";
+        private static readonly string sPART_HorizontalGridLines = "PART_HorizontalGridLines";
+        private static readonly string sPART_VerticalGridLines = "PART_VerticalGridLines";
 
         #region GridLine
 
         private double[] _horizontalTickOffsets;
         private double[] _verticalTickOffsets;
-        private SlimItemsControl PART_HorizontalGridLineItemsControl;
-        private SlimItemsControl PART_VerticalGridLineItemsControl;
+
+        private Grid PART_HorizontalGridLines;
+        private Grid PART_VerticalGridLines;
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
-            if (this.PART_HorizontalGridLineItemsControl != null)
+
+            this.PART_HorizontalGridLines = (Grid)this.GetTemplateChild(sPART_HorizontalGridLines);
+            this.PART_VerticalGridLines = (Grid)this.GetTemplateChild(sPART_VerticalGridLines);
+            if (this.PART_HorizontalGridLines != null)
             {
-                this.PART_HorizontalGridLineItemsControl.ElementGenerated -= HorizontalGridLineItemTemplateApplied;
+
+                UpdateHorizontalGridLines();
+                this.PART_HorizontalGridLines.SetBinding(UIElement.VisibilityProperty,
+                    new Binding(nameof(this.HorizontalGridLineVisibility)) { Source = this });
             }
 
-            if (this.PART_VerticalGridLineItemsControl != null)
+            if (this.PART_VerticalGridLines != null)
             {
-                this.PART_VerticalGridLineItemsControl.ElementGenerated += VerticalGridLineItemTemplateApplied;
-            }
+                UpdateVerticalGridLines();
 
-            this.PART_HorizontalGridLineItemsControl = (SlimItemsControl)GetTemplateChild(sPART_HorizontalGridLineItemsControl);
-            this.PART_VerticalGridLineItemsControl = (SlimItemsControl)GetTemplateChild(sPART_VerticalGridLineItemsControl);
-
-            if (this.PART_HorizontalGridLineItemsControl!=null)
-            {
-                this.PART_HorizontalGridLineItemsControl.ItemsSource = this.HorizontalGridLineOffsets;
-                this.PART_HorizontalGridLineItemsControl.ElementGenerated += HorizontalGridLineItemTemplateApplied;
-
-                this.PART_HorizontalGridLineItemsControl.SetBinding(UIElement.VisibilityProperty,
-                    new Binding(nameof(this.HorizontalGridLineVisiblility)) { Source = this});
-            }
-
-            if (this.PART_VerticalGridLineItemsControl!=null)
-            {
-                this.PART_VerticalGridLineItemsControl.ItemsSource = this.VerticalGridLineOffsets;
-                this.PART_VerticalGridLineItemsControl.SetBinding(UIElement.VisibilityProperty,
+                this.PART_VerticalGridLines.SetBinding(UIElement.VisibilityProperty,
                     new Binding(nameof(this.VerticalGridLineVisibility)) { Source = this });
 
-                this.PART_VerticalGridLineItemsControl.ElementGenerated += VerticalGridLineItemTemplateApplied;
 
             }
-          
-           
+
+
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
 
-            if (!this.IsLoaded)
+            if (this.IsLoaded)
             {
-                return;
+                UpdateHorizontalGridLines();
+                UpdateVerticalGridLines();
             }
 
             UpdateHorizontalGridLines();
             UpdateVerticalGridLines();
         }
 
-  
-   
-
- 
-
-        private void SetGridLineBindings(DependencyObject rootChild, Orientation orientation)
+        private void SetGridLineBindings(Line line, Orientation orientation)
         {
-            if (!(rootChild is Line))
-            {
-                throw new MvvmChartException($"The {orientation} grid line should be of type: Line!");
-            }
 
-            
-            Line line = (Line)rootChild;
-            Binding b;
             switch (orientation)
             {
                 case Orientation.Horizontal:
                     line.SetBinding(Line.Y1Property, new Binding());
                     line.SetBinding(Line.Y2Property, new Binding());
 
-                    b = new Binding(nameof(this.ActualWidth));
-                    b.Source = this;
-                    line.SetBinding(Line.X2Property, b);
-
-                    b = new Binding(nameof(this.HorizontalGridLineStyle));
-                    b.Source = this;
+                    line.SetBinding(Line.X2Property, new Binding(nameof(this.ActualWidth)) { Source = this });
+                    line.SetBinding(Line.StyleProperty, new Binding(nameof(this.HorizontalGridLineStyle)) { Source = this });
                     break;
 
                 case Orientation.Vertical:
                     line.SetBinding(Line.X1Property, new Binding());
                     line.SetBinding(Line.X2Property, new Binding());
 
-                    b = new Binding(nameof(this.ActualHeight));
-                    b.Source = this;
-                    line.SetBinding(Line.Y2Property, b);
-                    
-                    b = new Binding(nameof(this.VerticalGridLineStyle));
-                    b.Source = this;
+                    line.SetBinding(Line.Y2Property, new Binding(nameof(this.ActualHeight)) { Source = this });
+                    line.SetBinding(Line.StyleProperty, new Binding(nameof(this.VerticalGridLineStyle)) { Source = this });
                     break;
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(orientation), orientation, null);
             }
 
-            line.SetBinding(StyleProperty, b);
+
         }
-         
-        private void VerticalGridLineItemTemplateApplied(object arg1, DependencyObject rootChild, int index)
+
+
+
+
+        public Visibility HorizontalGridLineVisibility
         {
-            SetGridLineBindings(rootChild, Orientation.Vertical);
+            get { return (Visibility)GetValue(HorizontalGridLineVisibilityProperty); }
+            set { SetValue(HorizontalGridLineVisibilityProperty, value); }
         }
-
-        private void HorizontalGridLineItemTemplateApplied(object arg1, DependencyObject rootChild, int index)
-        {
-            SetGridLineBindings(rootChild, Orientation.Horizontal);
-        }
-
-
-
-
-        public Visibility HorizontalGridLineVisiblility
-        {
-            get { return (Visibility)GetValue(HorizontalGridLineVisiblilityProperty); }
-            set { SetValue(HorizontalGridLineVisiblilityProperty, value); }
-        }
-        public static readonly DependencyProperty HorizontalGridLineVisiblilityProperty =
-            DependencyProperty.Register("HorizontalGridLineVisiblility", typeof(Visibility), typeof(GridLineControl), new PropertyMetadata(Visibility.Visible));
-
+        public static readonly DependencyProperty HorizontalGridLineVisibilityProperty =
+            DependencyProperty.Register("HorizontalGridLineVisibility", typeof(Visibility), typeof(GridLineControl), new PropertyMetadata(Visibility.Visible));
 
 
         public Visibility VerticalGridLineVisibility
@@ -160,8 +122,6 @@ namespace MvvmCharting.WpfFX
         }
         public static readonly DependencyProperty VerticalGridLineVisibilityProperty =
             DependencyProperty.Register("VerticalGridLineVisibility", typeof(Visibility), typeof(GridLineControl), new PropertyMetadata(Visibility.Visible));
-
-
 
 
         public Style HorizontalGridLineStyle
@@ -184,61 +144,57 @@ namespace MvvmCharting.WpfFX
 
 
 
-
-
-
-
-        public ObservableCollection<double> HorizontalGridLineOffsets { get; } = new ObservableCollection<double>();
-        public ObservableCollection<double> VerticalGridLineOffsets { get; } = new ObservableCollection<double>();
-
-
-        private void DoUpdateGridLines(ObservableCollection<double> target, double[] source)
+        private void DoUpdateGridLines(UIElementCollection target, double[] source, Orientation orientation)
         {
             if (source == null)
             {
                 return;
             }
 
- 
             var newCt = source.Length;
             var oldCt = target.Count;
             if (oldCt > newCt)
             {
                 target.RemoveRange(newCt, oldCt - newCt);
             }
-            else
+
+            for (int i = 0; i < source.Length; i++)
             {
-                for (int i = 0; i < source.Length; i++)
+                var newValue = source[i];
+                if (i < oldCt)
                 {
-                    var newValue = source[i];
-                    if (i < oldCt)
-                    {
-                        if (!target[i].NearlyEqual(newValue, 0.01))
-                        {
-                            target[i] = newValue;
-                        }
-                       
-                    }
-                    else
-                    {
-                        target.Add(newValue);
-                    }
+                    ((Line)target[i]).DataContext = newValue;
+                }
+                else
+                {
+                    var line = new Line();
+                    line.DataContext = newValue;
+                    SetGridLineBindings(line, orientation);
+                    target.Add(line);
                 }
             }
+
 
         }
 
         private void UpdateHorizontalGridLines()
         {
 
+            if (this.PART_HorizontalGridLines != null)
+            {
+                DoUpdateGridLines(this.PART_HorizontalGridLines.Children, this._horizontalTickOffsets, Orientation.Horizontal);
 
-            DoUpdateGridLines(this.HorizontalGridLineOffsets, this._horizontalTickOffsets);
+            }
         }
 
         private void UpdateVerticalGridLines()
         {
+            if (this.PART_VerticalGridLines != null)
+            {
+                DoUpdateGridLines(this.PART_VerticalGridLines.Children, this._verticalTickOffsets, Orientation.Vertical);
 
-            DoUpdateGridLines(this.VerticalGridLineOffsets, this._verticalTickOffsets);
+            }
+
         }
         #endregion
 

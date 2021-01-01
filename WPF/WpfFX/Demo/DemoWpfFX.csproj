@@ -56,6 +56,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="View\CategoryAxisDemoView.xaml.cs">
+      <DependentUpon>CategoryAxisDemoView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\General\ChartSettingTestViewModel.cs" />
     <Compile Include="ViewModel\Converters\SelectedSeriesShapeTypeToChartMaxConverter.cs" />
     <Compile Include="ViewModel\Converters\SelectedSeriesShapeTypeToChartMinConverter.cs" />
@@ -84,6 +87,10 @@
     <Compile Include="ViewModel\General\SomePoint.cs" />
     <Compile Include="ViewModel\General\SomePointList.cs" />
     <Compile Include="ViewModel\Converters\SeriesTemplateSelector.cs" />
+    <Page Include="View\CategoryAxisDemoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\SeriesCustomizingDemoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

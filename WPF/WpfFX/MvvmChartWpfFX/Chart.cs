@@ -69,6 +69,8 @@ namespace MvvmCharting.WpfFX
             this.PART_SeriesControl = (SeriesControl)this.GetTemplateChild("PART_SeriesControl");
             if (this.PART_SeriesControl != null)
             {
+                this.PART_SeriesControl.IsXAxisCategory = this.XAxis is ICategoryAxis;
+            
                 this.PART_SeriesControl.GlobalXValueRangeChanged += SeriesControlGlobalXValueRangeChanged;
                 this.PART_SeriesControl.GlobalYValueRangeChanged += SeriesControlGlobalYValueRangeChanged;
 
@@ -378,13 +380,15 @@ namespace MvvmCharting.WpfFX
         #endregion
 
         #region PlottingSettings
-        public event Action<PlottingSettings> HorizontalSettingChanged;
-        public event Action<PlottingSettings> VerticalSettingChanged;
+        public event Action<PlottingSettingsBase> HorizontalSettingChanged;
+        public event Action<PlottingSettingsBase> VerticalSettingChanged;
 
-        private PlottingSettings _horizontalPlottingSetting;
-        private PlottingSettings _verticalPlottingSetting;
+        private PlottingSettingsBase _horizontalPlottingSetting;
+        private PlottingSettingsBase _verticalPlottingSetting;
 
-        private PlottingSettings GetPlottingSettings(AxisType orientation)
+
+ 
+        private PlottingSettingsBase GetPlottingSettings(AxisType orientation)
         {
             if (this.PART_PlottingCanvas == null)
             {
@@ -395,19 +399,27 @@ namespace MvvmCharting.WpfFX
             double length;
             PointNS magrin, pading, borderThickness;
             Range plotingDataRange;
+            IList<object> plottingItemValues = null;
+            bool isCategory = false;
             switch (orientation)
             {
                 case AxisType.X:
-
+                    isCategory = this.XAxis is ICategoryAxis;
                     length = this.PART_PlottingCanvas.ActualWidth;
                     magrin = new PointNS(this.Margin.Left, this.Margin.Right);
                     pading = new PointNS(this.Padding.Left, this.Padding.Right);
                     borderThickness = new PointNS(this.BorderThickness.Left, this.BorderThickness.Right);
                     plotingDataRange = this.PlottingXDataRange;
+
+                    var sr = this.PART_SeriesControl.GetSeries().FirstOrDefault();
+
+                    plottingItemValues = sr?.ItemsSource.OfType<object>().Select(x => sr.GetXRawValueForItem(x))
+                        .ToArray();
                     break;
 
 
                 case AxisType.Y:
+                    isCategory = this.YAxis is ICategoryAxis;
                     length = this.PART_PlottingCanvas.ActualHeight;
                     magrin = new PointNS(this.Margin.Top, this.Margin.Bottom);
                     pading = new PointNS(this.Padding.Top, this.Padding.Bottom);
@@ -418,11 +430,29 @@ namespace MvvmCharting.WpfFX
                     throw new ArgumentOutOfRangeException(nameof(orientation), orientation, null);
             }
 
-            var isValid = PlottingSettings.Validate(length, magrin, pading, borderThickness, plotingDataRange);
+
+            var isValid = NumericPlottingSettings.Validate(length, magrin, pading, borderThickness, plotingDataRange);
 
             if (isValid)
             {
-                return new PlottingSettings(orientation, length, magrin, pading, borderThickness, plotingDataRange);
+                if (isCategory)
+                {
+               
+                    if (plottingItemValues == null ||
+                        plottingItemValues.Count == 0 ||
+                        plottingItemValues.Count != plottingItemValues.Distinct().Count())
+                    {
+                        return null;
+                    }
+ 
+                    return new CategoryPlottingSettings(orientation, length, magrin, pading, borderThickness, plottingItemValues);
+
+                }
+                else
+                {
+                    return new NumericPlottingSettings(orientation, length, magrin, pading, borderThickness, plotingDataRange);
+
+                }
             }
 
             return null;
@@ -528,6 +558,12 @@ namespace MvvmCharting.WpfFX
 
             if (newValue != null)
             {
+                if (this.PART_SeriesControl!=null)
+                {
+                    this.PART_SeriesControl.IsXAxisCategory = newValue is ICategoryAxis;
+                }
+               
+
                 if (this.PART_Root.Children.Contains(newValue as UIElement))
                 {
                     return;
@@ -558,6 +594,11 @@ namespace MvvmCharting.WpfFX
         }
         private void OnYAxisPropertyChanged(IAxisNS oldValue, IAxisNS newValue)
         {
+            if (newValue is ICategoryAxis)
+            {
+                throw new MvvmChartException("CategoryAxis cannot be used as YAxis!");
+            }
+
             if (this.PART_Root == null)
             {
                 return;
@@ -885,7 +926,7 @@ namespace MvvmCharting.WpfFX
                 if (!this.IsSeriesCollectionChanging)
                 {
                     this.PART_SeriesControl.UpdateSeriesCoordinates();
-                    
+
                 }
             }
         }

@@ -20,16 +20,23 @@ using MvvmCharting;
 namespace Demo
 {
 
-    public class DoubleToDateTimeStringConverter : IValueConverterNS
+    public class DoubleToDateTimeStringConverter : IValueConverter
     {
         
-        public object ConverterTo(object value, CultureInfo culture)
+ 
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var q = (double)value;
 
             var t = DoubleValueConverter.DoubleToDateTimeOffset(q);
 
             return t.ToString("yyyy MMMM", new CultureInfo("en-US"));
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 

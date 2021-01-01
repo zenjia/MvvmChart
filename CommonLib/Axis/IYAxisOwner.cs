@@ -6,6 +6,6 @@ namespace MvvmCharting.Axis
     {
 
 
-        event Action<PlottingSettings> VerticalSettingChanged;
+        event Action<PlottingSettingsBase> VerticalSettingChanged;
     }
 }

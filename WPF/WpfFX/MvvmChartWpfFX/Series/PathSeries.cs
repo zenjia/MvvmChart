@@ -68,7 +68,7 @@ namespace MvvmCharting.WpfFX
         /// </summary>
         protected override void UpdateLineOrArea()
         {
-            if (this.Owner.IsSeriesCollectionChanging)
+            if (this.Owner?.IsSeriesCollectionChanging == true)
             {
                 return;
             }
