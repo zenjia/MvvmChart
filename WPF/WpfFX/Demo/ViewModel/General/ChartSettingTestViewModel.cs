@@ -1,7 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using MvvmCharting.Axis;
 using MvvmCharting.Common;
+using MvvmCharting.Series;
 using MvvmCharting.WpfFX;
+using MvvmCharting.WpfFX.Series;
 
 namespace Demo
 {
@@ -17,15 +19,14 @@ namespace Demo
             this.YAxisPlacements.Add(AxisPlacement.Left);
             this.YAxisPlacements.Add(AxisPlacement.Right);
 
-            this.SeriesModeList = new ObservableCollection<SeriesMode>()
+            this.SeriesModeList = new ObservableCollection<StackMode>()
             {
-                SeriesMode.Line,
-                SeriesMode.Area,
-                SeriesMode.StackedArea,
-                SeriesMode.StackedArea100
+                StackMode.None,
+                StackMode.Stacked,
+                StackMode.Stacked100
             };
 
-            SeriesGeometryBuilders=new ObservableCollection<string>()
+            this.SeriesGeometryBuilders = new ObservableCollection<string>()
             {
                 "PolyLine","StepLine","Spline"
             };
@@ -34,16 +35,16 @@ namespace Demo
 
         public ObservableCollection<string> SeriesGeometryBuilders { get; }
 
-        public ObservableCollection<SeriesMode> SeriesModeList { get; }
- 
-        public ObservableCollection<AxisPlacement> XAxisPlacements { get; }
-        public ObservableCollection<AxisPlacement> YAxisPlacements { get;  }
+        public ObservableCollection<StackMode> SeriesModeList { get; }
 
-        private SeriesMode _selectedSeriesMode;
-        public SeriesMode SelectedSeriesMode
+        public ObservableCollection<AxisPlacement> XAxisPlacements { get; }
+        public ObservableCollection<AxisPlacement> YAxisPlacements { get; }
+
+        private StackMode _selectedStackMode = StackMode.None;
+        public StackMode SelectedStackMode
         {
-            get { return this._selectedSeriesMode; }
-            set { SetProperty(ref this._selectedSeriesMode, value); }
+            get { return this._selectedStackMode; }
+            set { SetProperty(ref this._selectedStackMode, value); }
         }
 
         private string _selectedSeriesBuilder = "PolyLine";
@@ -53,7 +54,7 @@ namespace Demo
             set { SetProperty(ref this._selectedSeriesBuilder, value); }
         }
 
-         
+
 
         private AxisPlacement _selectedXPlacement = AxisPlacement.Bottom;
         public AxisPlacement SelectedXPlacement

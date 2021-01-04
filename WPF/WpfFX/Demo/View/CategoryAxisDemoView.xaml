@@ -7,6 +7,7 @@
              xmlns:demo="clr-namespace:Demo"
              xmlns:wpfFx="clr-namespace:MvvmCharting.WpfFX;assembly=MvvmChartWpfFX"
              xmlns:axis="clr-namespace:MvvmCharting.WpfFX.Axis;assembly=MvvmChartWpfFX"
+             xmlns:series="clr-namespace:MvvmCharting.WpfFX.Series;assembly=MvvmChartWpfFX"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -14,30 +15,36 @@
         <demo:DemoDataViewModel x:Key="DemoDataViewModel"/>
         <demo:ItemToScatterFillConverter x:Key="ItemToScatterFillConverter"/>
 
+        <series:PolyLineGeometryBuilder x:Key="DefaultPolyLineGeometryBuilder"/>
+        <series:StepLineGeometryBuilder x:Key="DefaultStepLineGeometryBuilder"/>
+        <series:SplineGeometryBuilder x:Key="DefaultSplineGeometryBuilder"/>
+        <local:GeometryBuilderConverter x:Key="MyGeometryBuilderConverter"
+                                        PolyLineBuilder="{StaticResource DefaultPolyLineGeometryBuilder}" 
+                                        StepLineBuilder="{StaticResource DefaultStepLineGeometryBuilder}"
+                                        SplineBuilder="{StaticResource DefaultSplineGeometryBuilder}"/>
+
         <!--This is the Default Scatter Style-->
         <DataTemplate x:Key="ScatterDataTemplate">
-            <wpfFx:Scatter Fill="{Binding Converter={StaticResource ItemToScatterFillConverter}}"/>
+            <series:Scatter Fill="{Binding Converter={StaticResource ItemToScatterFillConverter}}"/>
         </DataTemplate>
 
         <!--This change the Data from EllipseGeometry(default) to other geometry-->
         <DataTemplate x:Key="ScatterDataTemplate1">
-            <wpfFx:Scatter NeedOffsetForSize="True"
-                                  Fill="MediumSeaGreen" 
+            <series:Scatter Fill="MediumSeaGreen" 
                                   Stretch="Uniform"
                                   Opacity="0.7"
                                   Width="20" 
                                   Height="20"
                                   Data="M14.800003,0L18,8.2000122 24.699997,2.4000244 22.300003,10.800018 31.300003,9.9000244 24.199997,15.400024 32,19.800018 23,20.200012 26.600006,28.200012 19.100006,23.400024 17.199997,32 14,23.800018 7.3000031,29.600006 9.6999969,21.200012 0.69999695,22.100006 7.8000031,16.600006 0,12.100006 9,11.700012 5.3999939,3.7000122 12.899994,8.5z">
-            </wpfFx:Scatter>
+            </series:Scatter>
         </DataTemplate>
 
         <!--This change the whole Template-->
         <DataTemplate x:Key="ScatterDataTemplate2">
-            <wpfFx:Scatter Fill="Sienna" 
-                                  Opacity="0.6"
-                                  NeedOffsetForSize="True">
-                <wpfFx:Scatter.Template>
-                    <ControlTemplate TargetType="wpfFx:Scatter">
+            <series:Scatter Fill="Sienna" 
+                                  Opacity="0.6">
+                <series:Scatter.Template>
+                    <ControlTemplate TargetType="series:Scatter">
                         <Rectangle x:Name="PART_Rect" 
                                    Fill="Red" 
                                    Width="14" 
@@ -62,8 +69,8 @@
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
-                </wpfFx:Scatter.Template>
-            </wpfFx:Scatter>
+                </series:Scatter.Template>
+            </series:Scatter>
         </DataTemplate>
 
         <demo:IndexToScatterTemplateConverter x:Key="IndexToScatterTemplateConverter"
@@ -75,46 +82,130 @@
 
 
         <DataTemplate x:Key="SeriesTemplate0" DataType="demo:SomePointList">
-            <wpfFx:PolyLineSeries IndependentValueProperty="tt"
+            <series:SeriesControl IndependentValueProperty="tt"
                                          DependentValueProperty="Y"
-                                         Opacity="0.8"
-                                         Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
-                                         StrokeThickness="1.5"
-                                         IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
                                          Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
-                                         IsScatterVisible="{Binding ShowSeriesPoints}"
-                                         IsLineOrAreaVisible="{Binding ShowSeriesLine}"
+                                         IsScatterSeriesVisible="{Binding ShowScatterSeries}"
+                                         IsLineSeriesVisible="{Binding ShowLineSeries}"
+                                         IsAreaSeriesVisible="{Binding ShowAreaSeries}"
+                                         IsBarSeriesVisible="{Binding ShowBarSeries}"
                                          ItemsSource="{Binding DataList}"
-                                         ScatterTemplate="{Binding Index, Converter={StaticResource IndexToScatterTemplateConverter}}"/>
+                                         >
+                <series:SeriesControl.LineSeries>
+                    <series:LineSeries Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
+                                           StrokeThickness="1.5"
+                                           GeometryBuilder="{Binding SelectedSeriesBuilder, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource MyGeometryBuilderConverter}}"
+                                           IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
+                                           Opacity="0.8">
+                    </series:LineSeries>
+                </series:SeriesControl.LineSeries>
+                <series:SeriesControl.AreaSeries>
+                    <series:AreaSeries Opacity="0.8"
+                                               Stroke="{Binding Index, Converter={StaticResource IndexToAreaSeriesFillConverter}}"
+                                               StrokeThickness="1.5"
+                                               GeometryBuilder="{Binding SelectedSeriesBuilder, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource MyGeometryBuilderConverter}}"
+                                               IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}">
+                    </series:AreaSeries>
+
+                </series:SeriesControl.AreaSeries>
+                <series:SeriesControl.ScatterSeries>
+                    <series:ScatterSeries ScatterTemplate="{Binding Index, Converter={StaticResource IndexToScatterTemplateConverter}}"
+                                          IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"></series:ScatterSeries>
+                </series:SeriesControl.ScatterSeries>
+
+                <series:SeriesControl.BarSeries>
+                    <series:BarSeries IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
+                                      BarBrush="SandyBrown">
+        
+                    </series:BarSeries>
+                </series:SeriesControl.BarSeries>
+            </series:SeriesControl>
         </DataTemplate>
 
         <DataTemplate x:Key="SeriesTemplate1" DataType="demo:SomePointList">
-            <wpfFx:StepLineSeries IndependentValueProperty="tt"
-                                         DependentValueProperty="Y"
-                                         Opacity="0.8"
-                                         Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
-                                         StrokeThickness="1.5"
-                                         IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
-                                         Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
-                                         IsScatterVisible="{Binding ShowSeriesPoints}"
-                                         IsLineOrAreaVisible="{Binding ShowSeriesLine}"
-                                         ItemsSource="{Binding DataList}"
-                                         ScatterTemplate="{Binding Index, Converter={StaticResource IndexToScatterTemplateConverter}}"/>
+            <series:SeriesControl IndependentValueProperty="tt"
+                              DependentValueProperty="Y"
+                              Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
+                              IsScatterSeriesVisible="{Binding ShowScatterSeries}"
+                              IsLineSeriesVisible="{Binding ShowLineSeries}"
+                              IsAreaSeriesVisible="{Binding ShowAreaSeries}"
+                              IsBarSeriesVisible="{Binding ShowBarSeries}"
+                              ItemsSource="{Binding DataList}"
+                              >
+                <series:SeriesControl.LineSeries>
+                    <series:LineSeries Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
+                                           StrokeThickness="1.5"
+                                           GeometryBuilder="{Binding SelectedSeriesBuilder, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource MyGeometryBuilderConverter}}"
+                                           IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
+                                           Opacity="0.8">
+                    </series:LineSeries>
+                </series:SeriesControl.LineSeries>
+
+                <series:SeriesControl.AreaSeries>
+                    <series:AreaSeries Opacity="0.8"
+                                             Stroke="{Binding Index, Converter={StaticResource IndexToAreaSeriesFillConverter}}"
+                                             StrokeThickness="1.5"
+                                             GeometryBuilder="{Binding SelectedSeriesBuilder, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource MyGeometryBuilderConverter}}"
+                                             IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}">
+                    </series:AreaSeries>
+
+                </series:SeriesControl.AreaSeries>
+
+                <series:SeriesControl.ScatterSeries>
+                    <series:ScatterSeries ScatterTemplate="{Binding Index, Converter={StaticResource IndexToScatterTemplateConverter}}"
+                                          IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"></series:ScatterSeries>
+                </series:SeriesControl.ScatterSeries>
+
+                <series:SeriesControl.BarSeries>
+                    <series:BarSeries IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
+                                      BarBrush="CadetBlue">
+  
+                    </series:BarSeries>
+                </series:SeriesControl.BarSeries>
+            </series:SeriesControl>
 
         </DataTemplate>
 
         <DataTemplate x:Key="SeriesTemplate2" DataType="demo:SomePointList">
-            <wpfFx:SplineSeries IndependentValueProperty="tt"
-                                         DependentValueProperty="Y"
-                                         Opacity="0.8"
-                                         Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
-                                         StrokeThickness="1.5"
-                                         IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
-                                         Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
-                                         IsScatterVisible="{Binding ShowSeriesPoints}"
-                                         IsLineOrAreaVisible="{Binding ShowSeriesLine}"
-                                         ItemsSource="{Binding DataList}"
-                                         ScatterTemplate="{Binding Index, Converter={StaticResource IndexToScatterTemplateConverter}}"/>
+            <series:SeriesControl IndependentValueProperty="tt"
+                              DependentValueProperty="Y"
+                              Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
+                              IsScatterSeriesVisible="{Binding ShowScatterSeries}"
+                              IsLineSeriesVisible="{Binding ShowLineSeries}"
+                              IsAreaSeriesVisible="{Binding ShowAreaSeries}"
+                              IsBarSeriesVisible="{Binding ShowBarSeries}"
+                              ItemsSource="{Binding DataList}"
+                              >
+
+                <series:SeriesControl.LineSeries>
+                    <series:LineSeries Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
+                                     StrokeThickness="1.5"
+                                     GeometryBuilder="{Binding SelectedSeriesBuilder, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource MyGeometryBuilderConverter}}"
+                                     IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
+                                     Opacity="0.8">
+                    </series:LineSeries>
+                </series:SeriesControl.LineSeries>
+                <series:SeriesControl.AreaSeries>
+                    <series:AreaSeries Opacity="0.8"
+                                               Stroke="{Binding Index, Converter={StaticResource IndexToAreaSeriesFillConverter}}"
+                                               StrokeThickness="1.5"
+                                               GeometryBuilder="{Binding SelectedSeriesBuilder, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource MyGeometryBuilderConverter}}"
+                                               IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}">
+                    </series:AreaSeries>
+
+                </series:SeriesControl.AreaSeries>
+                <series:SeriesControl.ScatterSeries>
+                    <series:ScatterSeries ScatterTemplate="{Binding Index, Converter={StaticResource IndexToScatterTemplateConverter}}"
+                                          IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"></series:ScatterSeries>
+                </series:SeriesControl.ScatterSeries>
+
+                <series:SeriesControl.BarSeries>
+                    <series:BarSeries IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
+                                      BarBrush="LightBlue">
+     
+                    </series:BarSeries>
+                </series:SeriesControl.BarSeries>
+            </series:SeriesControl>
         </DataTemplate>
 
         <demo:SeriesTemplateSelector x:Key="SeriesTemplateSelector"
@@ -132,6 +223,8 @@
         </Grid.RowDefinitions>
 
         <wpfFx:Chart Background="Bisque"
+                     IsChartUpdating="{Binding Source={StaticResource DemoDataViewModel}, Path=IsModelChanging, Mode=TwoWay}"
+                     SeriesStackMode="{Binding SelectedStackMode, Source={StaticResource ChartSettingTestViewModel}}"
                             GridLineControlVisibility="{Binding ShowGridLine, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
                             LegendVisibility="{Binding ShowLegend, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
                             SeriesTemplateSelector="{StaticResource SeriesTemplateSelector}"
@@ -151,11 +244,11 @@
                 </DataTemplate>
             </wpfFx:Chart.LegendItemTemplate>
 
-            <wpfFx:Chart.BackgroundImage>
+            <wpfFx:Chart.BackgroundElement>
                 <Image Source="../image/Caribbean1.jpg" 
                        Stretch="Fill" 
                        Visibility="{Binding ShowBackgroundImage, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"/>
-            </wpfFx:Chart.BackgroundImage>
+            </wpfFx:Chart.BackgroundElement>
         </wpfFx:Chart>
 
 
@@ -172,13 +265,38 @@
 
             <GroupBox Header="Series Settings">
                 <StackPanel DataContext="{Binding Source={StaticResource DemoDataViewModel}}">
-                    <CheckBox Content="Show Scatters"
-                              IsChecked="{Binding ShowSeriesPoints, Mode=TwoWay}"
+                    <CheckBox Content="Show ScatterSeries"
+                              IsChecked="{Binding ShowScatterSeries, Mode=TwoWay}"
                               />
-                    <CheckBox Content="Show Line"
-                              IsChecked="{Binding ShowSeriesLine, Mode=TwoWay}"/>
+                    <CheckBox Content="Show LineSeries"
+                              IsChecked="{Binding ShowLineSeries, Mode=TwoWay}"/>
 
+                    <CheckBox Content="Show AreaSeries"
+                              IsChecked="{Binding ShowAreaSeries, Mode=TwoWay}"/>
 
+                    <CheckBox Content="Show BarSeries"
+                              IsChecked="{Binding ShowBarSeries, Mode=TwoWay}"/>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Series Geometry Type:">
+                <StackPanel>
+                    <ComboBox Width="160"
+                              Margin="6,0,6,6"
+                              HorizontalAlignment="Left"
+                              ItemsSource="{Binding SeriesGeometryBuilders}"
+                              SelectedItem="{Binding SelectedSeriesBuilder, Mode=TwoWay}"/>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Series Mode:">
+                <StackPanel>
+
+                    <ComboBox Width="160"
+                              Margin="6,0,6,6"
+                              HorizontalAlignment="Left"
+                              ItemsSource="{Binding SeriesModeList}"
+                              SelectedItem="{Binding SelectedStackMode, Mode=TwoWay}"/>
                 </StackPanel>
             </GroupBox>
 

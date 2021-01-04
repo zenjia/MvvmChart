@@ -26,6 +26,8 @@ namespace MvvmCharting.WpfFX.Axis
         private static readonly string sPART_Label = "PART_Label";
         protected FrameworkElement PART_Tick { get; private set; }
         private FrameworkElement PART_Label;
+        private double _coordinate;
+
         public AxisItem()
         {
             UpdateLabelTextBinding();
@@ -84,16 +86,18 @@ namespace MvvmCharting.WpfFX.Axis
 
         public double Coordinate
         {
-            get { return (double)this.GetValue(CoordinateProperty); }
-            set { this.SetValue(CoordinateProperty, value); }
-        }
-        public static readonly DependencyProperty CoordinateProperty =
-            DependencyProperty.Register("Coordinate", typeof(double), typeof(AxisItem), new PropertyMetadata(double.NaN, OnPositionPropertyChanged));
+            get { return this._coordinate; }
+            set
+            {
+                if (this._coordinate != value)
+                {
+                    this._coordinate = value;
+                    OnPositionChanged();
+                }
 
-        private static void OnPositionPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((AxisItem)d).OnPositionChanged();
+            }
         }
+
 
         private void OnPositionChanged()
         {
@@ -101,7 +105,7 @@ namespace MvvmCharting.WpfFX.Axis
         }
 
 
- 
+
 
         public IValueConverter LabelTextConverter
         {
@@ -124,22 +128,6 @@ namespace MvvmCharting.WpfFX.Axis
         {
             this.SetBinding(AxisItem.LabelTextProperty, new Binding() { Converter = this.LabelTextConverter });
         }
-
-        public object Value
-        {
-            get { return (object)GetValue(ValueProperty); }
-            set { SetValue(ValueProperty, value); }
-        }
-        public static readonly DependencyProperty ValueProperty =
-            DependencyProperty.Register("Value", typeof(object), typeof(AxisItem), new PropertyMetadata(null, OnValuePropertyChanged));
-
-        private static void OnValuePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((AxisItem)d).UpdateLabelTextBinding();
-        }
-
-
-
 
 
         public string LabelText

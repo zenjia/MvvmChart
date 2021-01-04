@@ -77,6 +77,16 @@
             return !point1.Equals(point2);
         }
 
+        //public static Range operator +(Range point1, Range point2)
+        //{
+        //    return new Range(point1.Min + point2.Min, point1.Max + point2.Max);
+        //}
+
+        //public static Range operator -(Range point1, Range point2)
+        //{
+        //    return new Range(point1.Min - point2.Min, point1.Max - point2.Max);
+        //}
+
         public bool IsInRange(double d)
         {
             return d <= this.Max && d >= this.Min;

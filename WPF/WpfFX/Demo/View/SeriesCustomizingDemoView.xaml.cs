@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MvvmCharting.Series;
 using MvvmCharting.WpfFX;
+using MvvmCharting.WpfFX.Series;
 
 namespace Demo.WpfFX
 {

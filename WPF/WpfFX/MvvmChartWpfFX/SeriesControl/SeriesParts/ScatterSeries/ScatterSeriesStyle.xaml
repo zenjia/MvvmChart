@@ -1,0 +1,68 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:MvvmCharting.WpfFX.Series"
+                    xmlns:wpfFx="clr-namespace:MvvmCharting.WpfFX">
+
+    <SolidColorBrush x:Key="Scatter.MouseOver.Fill" Color="RoyalBlue"/>
+    <SolidColorBrush x:Key="Scatter.Static.Fill" Color="Red"/>
+
+    <EllipseGeometry x:Key="DefaultScatterPathData" RadiusX="8" RadiusY="8" Center="8,8"/>
+
+    <Style TargetType="local:Scatter">
+        <Setter Property="Data" Value="{StaticResource DefaultScatterPathData}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Fill" Value="{StaticResource Scatter.Static.Fill}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:Scatter">
+                    <Path x:Name="PART_Path" 
+                          Stretch="{TemplateBinding Stretch}"
+                          Fill="{TemplateBinding Fill}" 
+                          Data="{TemplateBinding Data}">
+                        <Path.ToolTip>
+                            <TextBlock Text="{Binding }"/>
+                        </Path.ToolTip>
+                    </Path>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PART_Path" Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                            <Setter TargetName="PART_Path" Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Opacity" Value="0.6"/>
+                            <!--<Setter TargetName="PART_Path" Property="Fill" Value="{StaticResource Scatter.MouseOver.Fill}"/>-->
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <local:EllipseGeometryBuilder x:Key="DefaultEllipseGeometryBuilder" 
+                                  RadiusX="6" 
+                                  RadiusY="6"/>
+
+    <DataTemplate x:Key="DefaultScatterTemplate">
+        <local:Scatter Opacity="0.6"/>
+    </DataTemplate>
+
+ 
+
+    <Style TargetType="{x:Type local:ScatterSeries}">
+        <Setter Property="ScatterBrush" Value="Red"/>
+        <Setter Property="ScatterTemplate" Value="{StaticResource DefaultScatterTemplate}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:ScatterSeries}">
+                    <wpfFx:SlimItemsControl x:Name="PART_ScatterItemsControl"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+</ResourceDictionary>

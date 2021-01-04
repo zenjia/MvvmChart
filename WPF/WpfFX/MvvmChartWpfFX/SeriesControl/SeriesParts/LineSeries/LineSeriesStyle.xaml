@@ -1,0 +1,52 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:MvvmCharting.WpfFX.Series"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib"
+                    xmlns:wpfFx="clr-namespace:MvvmCharting.WpfFX">
+    <system:Double x:Key="LineSeries.Highlighted.StrokeThickness">3.5</system:Double>
+
+    <Style TargetType="{x:Type local:LineSeries}">
+        <Setter Property="Stroke" Value="CadetBlue"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:LineSeries}">
+                    <Grid>
+                        <Path x:Name="PART_Shape" 
+                              Style="{TemplateBinding LineStyle}"
+                              Stroke="{TemplateBinding Stroke}" 
+                              StrokeThickness="{TemplateBinding StrokeThickness}">
+                            <Path.ToolTip>
+                                <TextBlock Text="{Binding}"/>
+                            </Path.ToolTip>
+                        </Path>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="PART_Shape" Property="StrokeThickness" Value="{StaticResource LineSeries.Highlighted.StrokeThickness}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <local:PolyLineGeometryBuilder x:Key="DefaultPolyLineGeometryBuilder"/>
+    <local:StepLineGeometryBuilder x:Key="DefaultStepLineGeometryBuilder"/>
+    <local:SplineGeometryBuilder x:Key="DefaultSplineGeometryBuilder"/>
+
+    <Style TargetType="local:PolyLineSeries" 
+           BasedOn="{StaticResource {x:Type local:LineSeries}}">
+        <Setter Property="GeometryBuilder" Value="{StaticResource DefaultPolyLineGeometryBuilder}"/>
+    </Style>
+
+    <Style TargetType="local:StepLineSeries" 
+           BasedOn="{StaticResource {x:Type local:LineSeries}}">
+        <Setter Property="GeometryBuilder" Value="{StaticResource DefaultStepLineGeometryBuilder}"/>
+    </Style>
+
+    <Style TargetType="local:SplineSeries" 
+           BasedOn="{StaticResource {x:Type local:LineSeries}}">
+        <Setter Property="GeometryBuilder" Value="{StaticResource DefaultSplineGeometryBuilder}"/>
+    </Style>
+</ResourceDictionary>

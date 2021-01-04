@@ -6,8 +6,9 @@
         xmlns:local="clr-namespace:Demo"
         xmlns:wpfFx="clr-namespace:Demo.WpfFX"
         mc:Ignorable="d"
-        Height="800" Width="1200"
-        Title="This a MvvmChart Demo for WPF(.NET Framework)" >
+        Height="900" Width="1200"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        Title="MvvmChart Demo (WPF/.NET Framework)" >
 
 
     <TabControl TabStripPlacement="Left" Margin="20">

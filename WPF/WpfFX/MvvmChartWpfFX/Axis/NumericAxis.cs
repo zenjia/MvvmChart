@@ -6,8 +6,8 @@ using MvvmCharting.Axis;
 using MvvmCharting.Common;
 
 namespace MvvmCharting.WpfFX.Axis
-{    
-    
+{
+
     /// <summary>
     /// Represents a numeric, linear axis.
     /// </summary>
@@ -55,64 +55,46 @@ namespace MvvmCharting.WpfFX.Axis
 
         protected override void UpdateAxisDrawingSettings()
         {
-            if (/*!this.IsLoaded ||*/
-                this.PlottingSetting == null)
+            if (this.PlottingRangeSetting == null)
             {
                 return;
             }
 
-            var range = ((INumericPlottingSettings) this.PlottingSetting).PlottingDataRange;
-            var length = this.PlottingSetting.GetAvailablePlottingSize();
-            if (range.IsInvalid || length.IsNaNOrZero())
-            {
-                throw new NotImplementedException();
-            }
+            var numericPlottingSettings = (NumericPlottingRange)this.PlottingRangeSetting;
 
-            var axisDrawingSettings = new NumericAxisDrawingSettings(this.TickCount, this.TickInterval, range, length);
+
+            var length = this.Orientation == AxisType.X ? this.ActualWidth : this.ActualHeight;
+
+
+
+            var axisDrawingSettings = new NumericAxisDrawingSettings(this.TickCount, this.TickInterval,
+                numericPlottingSettings, length);
             this.DrawingSettings = axisDrawingSettings;
         }
 
- 
+
         protected override void DoUpdateAxisItemsCoordinate()
         {
-            var span = ((INumericAxisDrawingSettings) this.DrawingSettings).PlottingDataRange.Span;
-            var length = this.DrawingSettings.PlottingLength;
-            var uLen = length / span;
-
+   
 
             foreach (IAxisItem item in this.GetAllAxisItems())
             {
-                var coordinate = ((double)item.DataContext - ((INumericAxisDrawingSettings) this.DrawingSettings).PlottingDataRange.Min) * uLen;
-                if (this.Orientation == AxisType.Y)
-                {
-                    coordinate = length - coordinate;
-                }
+                var coordinate = this.DrawingSettings.CalculateCoordinate((double)item.DataContext, this.Orientation);
 
                 item.Coordinate = coordinate;
-
-
+ 
             }
         }
 
-        private IList<double> GetItemValues(double startValue, double tickInterval, int tickCount)
-        {
-            var chartRange = ((INumericPlottingSettings) this.PlottingSetting).PlottingDataRange;
 
-            var arr = Enumerable.Range(0, tickCount)
-                .Select(i => startValue + i * tickInterval)
-                .Where(x => chartRange.IsInRange(x))
-                .ToArray();
-
-            return arr;
-        }
 
         protected override bool LoadAxisItems()
         {
 
-            IList<double> dataValues;
+            IList<object> values;
             if (this.ExplicitTicks != null)
             {
-                dataValues = this.ExplicitTicks;
+                values = this.ExplicitTicks.Select(x=>(object)x).ToArray();
                 this._currentDrawingSettings = null;
             }
             else
@@ -130,27 +112,25 @@ namespace MvvmCharting.WpfFX.Axis
 
                 this._currentDrawingSettings = drawingSettings;
 
-                dataValues = GetItemValues(((INumericAxisDrawingSettings)drawingSettings).PlottingDataRange.Min, drawingSettings.ActualTickInterval, drawingSettings.ActualTickCount);
-
-
+                values = drawingSettings.GetPlottingValues().ToArray();
             }
 
-            DoUpdateAxisItems(dataValues.Select(x=>(object)x).ToArray());
+            DoUpdateAxisItems(values);
 
             return true;
         }
 
         public override IEnumerable<double> GetAxisItemCoordinates()
         {
-            if (this.PlottingSetting == null)
+            if (this.PlottingRangeSetting == null)
             {
                 return null;
             }
-            var range = ((INumericPlottingSettings) this.PlottingSetting).PlottingDataRange;
-            var coordinates = this.PART_AxisItemsControl.Children.OfType<AxisItem>()
-                .Where(x => range.IsInRange((double)x.DataContext)).Select(x => x.Coordinate);
 
-            return coordinates;
+            return this.PART_AxisItemsControl.Children.OfType<AxisItem>()
+                .Select(x => x.Coordinate);
+
+ 
         }
 
     }

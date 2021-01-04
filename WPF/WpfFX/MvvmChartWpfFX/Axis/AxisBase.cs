@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -8,9 +9,12 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using MvvmCharting.Axis;
 using MvvmCharting.Common;
+using MvvmCharting.Drawing;
 
 namespace MvvmCharting.WpfFX.Axis
 {
+ 
+
     /// <summary>
     /// The base class for <see cref="NumericAxis"/> and <see cref="CategoryAxis"/>.
     /// </summary>
@@ -25,6 +29,19 @@ namespace MvvmCharting.WpfFX.Axis
         private static readonly string sPART_AxisItemsControl = "PART_AxisItemsControl";
 
         protected Grid PART_AxisItemsControl;
+
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+ 
+            base.OnRenderSizeChanged(sizeInfo);
+ 
+            if (this.Orientation == AxisType.X && sizeInfo.WidthChanged || 
+                this.Orientation == AxisType.Y && sizeInfo.HeightChanged)
+            {
+                UpdateAxisDrawingSettings();
+            }
+
+        }
 
         public override void OnApplyTemplate()
         {
@@ -53,6 +70,7 @@ namespace MvvmCharting.WpfFX.Axis
 
         }
 
+
         protected IEnumerable<IAxisItem> GetAllAxisItems()
         {
             if (this.PART_AxisItemsControl == null)
@@ -70,8 +88,6 @@ namespace MvvmCharting.WpfFX.Axis
         }
         public static readonly DependencyProperty TitleProperty =
             DependencyProperty.Register("Title", typeof(string), typeof(AxisBase), new PropertyMetadata(null));
-
-
 
         public Style TitleStyle
         {
@@ -97,8 +113,6 @@ namespace MvvmCharting.WpfFX.Axis
 
         private void OnPlacementChange()
         {
- 
-
             this.AxisPlacementChanged?.Invoke(this);
         }
 
@@ -131,9 +145,6 @@ namespace MvvmCharting.WpfFX.Axis
         public static readonly DependencyProperty LabelTextConverterProperty =
             DependencyProperty.Register("LabelTextConverter", typeof(IValueConverter), typeof(AxisBase), new PropertyMetadata(null));
 
- 
-
-
         public Style AxisItemStyle
         {
             get { return (Style)GetValue(AxisItemStyleProperty); }
@@ -159,8 +170,6 @@ namespace MvvmCharting.WpfFX.Axis
 
             }
         }
-
-
 
         private AxisType _orientation;
         public AxisType Orientation
@@ -200,51 +209,30 @@ namespace MvvmCharting.WpfFX.Axis
             UpdateAxisDrawingSettings();
         }
 
-        private void AxisBase_CanvasSettingChanged(IPlottingSettingsBase obj)
+        private void AxisBase_CanvasSettingChanged(PlottingRangeBase obj)
         {
             if (obj == null)
             {
                 return;
             }
-            switch (obj.Orientation)
-            {
-                case AxisType.X:
-                    this.RenderSize = new Size(obj.RenderSize, this.RenderSize.Height);
-                    this.Margin = new Thickness(obj.Margin.X, this.Margin.Top, obj.Margin.Y, this.Margin.Bottom);
-                    this.Padding = new Thickness(obj.Padding.X, this.Padding.Top, obj.Padding.Y, this.Padding.Bottom);
-                    this.BorderThickness = new Thickness(obj.BorderThickness.X, this.BorderThickness.Top, obj.BorderThickness.Y, this.BorderThickness.Bottom);
 
-                    break;
-                case AxisType.Y:
-                    this.RenderSize = new Size(this.RenderSize.Width, obj.RenderSize);
-                    this.Margin = new Thickness(this.Margin.Left, obj.Margin.X, this.Margin.Right, obj.Margin.Y);
-                    this.Padding = new Thickness(this.Padding.Left, obj.Padding.X, this.Padding.Right, obj.Padding.Y);
-                    this.BorderThickness = new Thickness(this.BorderThickness.Left, obj.BorderThickness.X, this.BorderThickness.Right, obj.BorderThickness.Y);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            this.PlottingSetting = obj;
-
-
+            this.PlottingRangeSetting = obj;
         }
 
-        private IPlottingSettingsBase _plottingSetting;
-        protected IPlottingSettingsBase PlottingSetting
+        private PlottingRangeBase _plottingRangeSetting;
+        protected PlottingRangeBase PlottingRangeSetting
         {
-            get { return this._plottingSetting; }
+            get { return this._plottingRangeSetting; }
 
             set
             {
-                if (this._plottingSetting != value )
+                if (this._plottingRangeSetting != value )
                 {
-                    this._plottingSetting = value;
+                    this._plottingRangeSetting = value;
                     UpdateAxisDrawingSettings();
                 }
             }
         }
-
 
         private IAxisDrawingSettingsBase _drawingSettings;
         internal IAxisDrawingSettingsBase DrawingSettings
@@ -264,7 +252,6 @@ namespace MvvmCharting.WpfFX.Axis
             }
         }
 
-
         protected abstract void UpdateAxisDrawingSettings();
 
 
@@ -276,12 +263,7 @@ namespace MvvmCharting.WpfFX.Axis
 
             var coordinates = GetAxisItemCoordinates();
 
- 
             this.Owner.OnAxisItemsCoordinateChanged(this.Orientation, coordinates);
-
-
-
-
 
         }
 
@@ -347,9 +329,7 @@ namespace MvvmCharting.WpfFX.Axis
                     item.SetBinding(AxisItem.LabelTextConverterProperty, new Binding(nameof(this.LabelTextConverter)){Source = this});
                     item.SetBinding(AxisItem.StyleProperty, new Binding(nameof(this.AxisItemStyle)) { Source = this });
                     item.SetBinding(AxisItem.PlacementProperty, new Binding(nameof(this.Placement)) { Source = this });
-                    //item.SetLabelTextConverter(this.LabelTextConverter);
-                    //item.SetAxisPlacement(this.Placement);
-                    //item.Style = this.AxisItemStyle;
+ 
                     this.PART_AxisItemsControl.Children.Add(item);
                 }
             }

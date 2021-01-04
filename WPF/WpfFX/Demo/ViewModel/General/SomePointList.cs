@@ -38,20 +38,43 @@ namespace Demo
             set { SetProperty(ref _isHighlighted, value); }
         }
 
-        private bool _showSeriesLine = true;
-        public bool ShowSeriesLine
+        private bool _showLineSeries = true;
+        public bool ShowLineSeries
         {
-            get { return _showSeriesLine; }
-            set { SetProperty(ref _showSeriesLine, value); }
+            get { return this._showLineSeries; }
+            set { SetProperty(ref this._showLineSeries, value); }
         }
 
-        private bool _showSeriesPoints = true;
-        public bool ShowSeriesPoints
+        private bool _showAreaSeries = true;
+        public bool ShowAreaSeries
         {
-            get { return _showSeriesPoints; }
+            get { return this._showAreaSeries; }
             set
             {
-                SetProperty(ref _showSeriesPoints, value);
+               
+                SetProperty(ref this._showAreaSeries, value);
+            }
+        }
+
+        private bool _showBarSeries = false;
+        public bool ShowBarSeries
+        {
+            get { return this._showBarSeries; }
+            set
+            {
+
+                SetProperty(ref this._showBarSeries, value);
+            }
+        }
+
+
+        private bool _showScatterSeries = true;
+        public bool ShowScatterSeries
+        {
+            get { return this._showScatterSeries; }
+            set
+            {
+                SetProperty(ref this._showScatterSeries, value);
             }
         }
 

@@ -27,14 +27,12 @@ namespace Demo
             {
                 return null;
             }
-
-
- 
+             
             SomePoint pt = (SomePoint)item;
             int i = (int)pt.t;
-            int j = (int)pt.Y;
+     
 
-            if (i%2==0 && j%2==0)
+            if (i%2==0 )
             {
                 return DataTemplate1;
             }

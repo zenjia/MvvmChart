@@ -10,6 +10,7 @@ namespace MvvmCharting.WpfFX.Axis
 {
     /// <summary>
     /// Represents a discrete axis for category data type.
+    /// Only x-axis(independent axis) can be CategoryAxis.
     /// </summary>
     public class CategoryAxis : AxisBase, ICategoryAxis
     {
@@ -20,33 +21,27 @@ namespace MvvmCharting.WpfFX.Axis
 
         protected override void UpdateAxisDrawingSettings()
         {
-            if (/*!this.IsLoaded ||*/
-                this.PlottingSetting == null)
+            if (this.PlottingRangeSetting == null)
             {
                 return;
             }
 
-            var plottingItemValues = ((ICategoryPlottingSettings)this.PlottingSetting).PlottingItemValues;
-            var length = this.PlottingSetting.GetAvailablePlottingSize();
-            if (plottingItemValues == null || plottingItemValues.Count == 0)
-            {
-                throw new NotImplementedException();
-            }
-
-            var axisDrawingSettings = new CategoryAxisDrawingSettings(this.TickCount, plottingItemValues, length);
+            var length = this.Orientation == AxisType.X ? this.ActualWidth : this.ActualHeight;
+            var categoryPlottingSettings = (CategoryPlottingRange)this.PlottingRangeSetting;
+            var axisDrawingSettings = new CategoryAxisDrawingSettings(this.TickCount, categoryPlottingSettings, length);
             this.DrawingSettings = axisDrawingSettings;
         }
 
         public override IEnumerable<double> GetAxisItemCoordinates()
         {
-            if (this.PlottingSetting == null)
+            if (this.PlottingRangeSetting == null)
             {
                 return null;
             }
- 
+
             var coordinates = this.PART_AxisItemsControl.Children.OfType<AxisItem>()
                 .Select(x => x.Coordinate).ToArray();
- 
+
             return coordinates;
         }
 
@@ -65,27 +60,20 @@ namespace MvvmCharting.WpfFX.Axis
 
             this._currentDrawingSettings = drawingSettings;
 
-            IList<object> dataValues = ((ICategoryAxisDrawingSettings) drawingSettings).PlottingItemValues;// GetItemValues(((ICategoryAxisDrawingSettings)drawingSettings).PlottingDataRange.Min, drawingSettings.ActualTickInterval, drawingSettings.ActualTickCount);
+            var dataValues = drawingSettings.GetPlottingValues().ToArray();
 
-            DoUpdateAxisItems(dataValues.ToArray());
+            DoUpdateAxisItems(dataValues);
 
             return true;
         }
 
         protected override void DoUpdateAxisItemsCoordinate()
         {
-            var list = ((ICategoryAxisDrawingSettings)this.DrawingSettings).PlottingItemValues;
-            var length = this.DrawingSettings.PlottingLength;
-            var uLen = length / list.Count;
 
             int i = 0;
             foreach (IAxisItem item in this.GetAllAxisItems())
             {
-                var coordinate = (i + 0.5) * uLen;
-                if (this.Orientation == AxisType.Y)
-                {
-                    coordinate = length - coordinate;
-                }
+                var coordinate = this.DrawingSettings.CalculateCoordinate(i + 0.5, this.Orientation);
 
                 item.Coordinate = coordinate;
 

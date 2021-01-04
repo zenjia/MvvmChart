@@ -9,5 +9,15 @@ namespace MvvmCharting.WpfFX
         {
             return size.IsEmpty || (size.Width + size.Height).IsNaNOrZero();
         }
+
+        public static bool NearlyEqual(this Size size, Size other)
+        {
+            if (size.IsEmpty && other.IsEmpty)
+            {
+                return true;
+            }
+
+            return size.Width.NearlyEqual(other.Width, 0.5) && size.Height.NearlyEqual(other.Height, 0.5);
+        }
     }
 }

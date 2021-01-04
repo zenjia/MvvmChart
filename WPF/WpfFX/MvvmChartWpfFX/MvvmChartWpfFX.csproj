@@ -72,38 +72,59 @@
     <Compile Include="Axis\CategoryAxis.cs" />
     <Compile Include="Axis\NumericAxis.cs" />
     <Compile Include="Axis\AxisItem\DefaultDoubleToAxisLabelTextConverter.cs" />
-    <Compile Include="SeriesControl\SeriesControl.cs" />
+    <Compile Include="SeriesCollectionControl\SeriesCollectionControl.cs" />
     <Compile Include="common\PointHelper.cs" />
     <Compile Include="common\SizeHelper.cs" />
-    <Compile Include="Legend\LegendItemControl.cs" />
-    <Compile Include="Series\ISeriesHost.cs" />
-    <Compile Include="Series\SeriesMode.cs" />
-    <Compile Include="SlimItemsControl\SlimItemsControl.cs" />
+    <Compile Include="LegendControl\LegendItemControl.cs" />
+    <Compile Include="SeriesControl\SeriesParts\AreaSeries\AreaSeries.cs" />
+    <Compile Include="SeriesControl\SeriesParts\BarSeries\BarItem.cs" />
+    <Compile Include="SeriesControl\SeriesParts\BarSeries\BarSeries.cs" />
+    <Compile Include="SeriesControl\ISeriesControlOwner.cs" />
+    <Compile Include="common\InteractiveControl.cs" />
+    <Compile Include="SeriesControl\SeriesParts\LineSeries\LineSeries.cs" />
+    <Compile Include="SeriesControl\SeriesParts\LineSeries\LineSeriesBase.cs" />
+    <Compile Include="SeriesControl\SeriesParts\ScatterSeries\ScatterSeries.cs" />
+    <Compile Include="common\SlimItemsControl\SlimItemsControl.cs" />
     <Compile Include="common\VisualTreeHelper2.cs" />
-    <Compile Include="GeometryBuilders\ScatterGeometryBuilders\CustomGeometryBuilder.cs" />
-    <Compile Include="GeometryBuilders\ScatterGeometryBuilders\EllipseGeometryBuilder.cs" />
-    <Compile Include="GeometryBuilders\ScatterGeometryBuilders\RectangleGeometryBuilder.cs" />
-    <Compile Include="GridLine\GridLineControl.cs" />
-    <Compile Include="Legend\LegendControl.cs" />
-    <Compile Include="Series\Scatter\Scatter.cs" />
+    <Compile Include="SeriesControl\SeriesParts\ScatterSeries\ScatterGeometryBuilders\CustomGeometryBuilder.cs" />
+    <Compile Include="SeriesControl\SeriesParts\ScatterSeries\ScatterGeometryBuilders\EllipseGeometryBuilder.cs" />
+    <Compile Include="SeriesControl\SeriesParts\ScatterSeries\ScatterGeometryBuilders\RectangleGeometryBuilder.cs" />
+    <Compile Include="GridLineControl\GridLineControl.cs" />
+    <Compile Include="LegendControl\LegendControl.cs" />
+    <Compile Include="SeriesControl\SeriesParts\ScatterSeries\Scatter.cs" />
     <Compile Include="Chart.cs" />
-    <Compile Include="Series\Scatter\Scatter2.cs" />
-    <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\SplineGeometryBuilder.cs" />
-    <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\PolyLineGeometryBuilder.cs" />
-    <Compile Include="GeometryBuilders\SeriesGeomeryBuilders\StepLineGeometryBuilder.cs" />
-    <Compile Include="Series\PathSeries.cs" />
-    <Compile Include="Series\SpecificSeries\PolyLineSeries.cs" />
-    <Compile Include="Series\SpecificSeries\SplineSeries.cs" />
-    <Compile Include="Series\SpecificSeries\StepLineSeries.cs" />
+    <Compile Include="SeriesControl\SeriesParts\LineSeries\SeriesGeomeryBuilders\SplineGeometryBuilder.cs" />
+    <Compile Include="SeriesControl\SeriesParts\LineSeries\SeriesGeomeryBuilders\PolyLineGeometryBuilder.cs" />
+    <Compile Include="SeriesControl\SeriesParts\LineSeries\SeriesGeomeryBuilders\StepLineGeometryBuilder.cs" />
     <Page Include="Axis\AxisStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GridLine\GridLineStyle.xaml">
+    <Page Include="GridLineControl\GridLineStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Legend\LegendStyle.xaml">
+    <Page Include="LegendControl\LegendStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SeriesCollectionControl\SeriesCollectionControlStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SeriesControl\SeriesParts\AreaSeries\AreaSeriesStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SeriesControl\SeriesParts\BarSeries\BarSeriesStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SeriesControl\SeriesParts\LineSeries\LineSeriesStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SeriesControl\SeriesParts\ScatterSeries\ScatterSeriesStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -111,15 +132,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Series\Scatter\ScatterStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Series\SeriesStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SlimItemsControl\SlimItemsControlStyle.xaml">
+    <Page Include="common\SlimItemsControl\SlimItemsControlStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -127,7 +140,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Series\SeriesBase.cs">
+    <Compile Include="SeriesControl\SeriesControl.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

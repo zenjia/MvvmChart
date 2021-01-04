@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Demo"
              xmlns:mvvmCharting="clr-namespace:MvvmCharting.WpfFX;assembly=MvvmChartWpfFX"
              xmlns:axis="clr-namespace:MvvmCharting.WpfFX.Axis;assembly=MvvmChartWpfFX"
+             xmlns:series="clr-namespace:MvvmCharting.WpfFX.Series;assembly=MvvmChartWpfFX"
              mc:Ignorable="d" 
              d:DesignHeight="450" 
              d:DesignWidth="800">
@@ -14,16 +15,20 @@
         <local:DoubleToDateTimeStringConverter x:Key="DoubleToDateTimeStringConverter"/>
         <local:TimeSeriesViewModel x:Key="TimeSeriesViewModel"/>
         <DataTemplate x:Key="SeriesTemplate" DataType="local:TimeSeriesData">
-            <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
+            <series:SeriesControl IndependentValueProperty="t"
                                          DependentValueProperty="Y"
-                                         IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
-                                         Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
-                                         StrokeThickness="1.5"
                                          Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
-                                         IsScatterVisible="{Binding ShowSeriesPoints}"
-                                         IsLineOrAreaVisible="{Binding ShowSeriesLine}"
+                                         IsScatterSeriesVisible="{Binding ShowSeriesPoints}"
+                                         IsLineSeriesVisible="{Binding ShowSeriesLine}"
                                          ItemsSource="{Binding DataList}">
-            </mvvmCharting:PolyLineSeries>
+                <series:SeriesControl.LineSeries>
+                    <series:PolyLineSeries IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
+                                           Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
+                                           StrokeThickness="1.5">
+
+                    </series:PolyLineSeries>
+                </series:SeriesControl.LineSeries>
+            </series:SeriesControl>
         </DataTemplate>
 
 

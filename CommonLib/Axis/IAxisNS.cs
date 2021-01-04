@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using MvvmCharting.Common;
-using MvvmCharting.Axis;
-using MvvmCharting.Axis;
-
+ 
 
 namespace MvvmCharting.Axis
 {

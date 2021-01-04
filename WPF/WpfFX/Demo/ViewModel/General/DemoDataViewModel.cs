@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using MvvmCharting.Common;
 using MvvmCharting;
 
@@ -11,39 +12,87 @@ namespace Demo
 
         public ObservableCollection<SomePointList> ItemsSourceList { get; }
 
-        private bool _showSeriesLine = true;
-        public bool ShowSeriesLine
+        private bool _showLineSeries = true;
+        public bool ShowLineSeries
         {
-            get { return this._showSeriesLine; }
+            get { return this._showLineSeries; }
             set
             {
 
-                if (SetProperty(ref this._showSeriesLine, value))
+                if (SetProperty(ref this._showLineSeries, value))
                 {
                     foreach (var sr in this.ItemsSourceList)
                     {
-                        sr.ShowSeriesLine = value;
+                        sr.ShowLineSeries = value;
                     }
                 }
             }
         }
 
-        private bool _showSeriesPoints = true;
-        public bool ShowSeriesPoints
+        private bool _showScatterSeries = true;
+        public bool ShowScatterSeries
         {
-            get { return this._showSeriesPoints; }
+            get { return this._showScatterSeries; }
             set
             {
-                if (SetProperty(ref this._showSeriesPoints, value))
+                if (SetProperty(ref this._showScatterSeries, value))
                 {
                     foreach (var sr in this.ItemsSourceList)
                     {
-                        sr.ShowSeriesPoints = value;
+                        sr.ShowScatterSeries = value;
                     }
                 }
 
             }
         }
+
+        private bool _showAreaSeries = true;
+        public bool ShowAreaSeries
+        {
+            get { return this._showAreaSeries; }
+            set
+            {
+                if (SetProperty(ref this._showAreaSeries, value))
+                {
+                    foreach (var sr in this.ItemsSourceList)
+                    {
+                        sr.ShowAreaSeries = value;
+                    }
+                }
+
+            }
+        }
+
+        private bool _showBarSeries = false;
+        public bool ShowBarSeries
+        {
+            get { return this._showBarSeries; }
+            set
+            {
+                if (SetProperty(ref this._showBarSeries, value))
+                {
+                    var chartValuePaddingViewModel = (ChartValuePaddingViewModel)Application.Current.Resources["ChartValuePaddingViewModel"];
+
+
+                    if (chartValuePaddingViewModel.XMinValuePadding < 0.5)
+                    {
+                        chartValuePaddingViewModel.XMinValuePadding = 0.5;
+                    }
+
+                    if (chartValuePaddingViewModel.XMaxValuePadding < 0.5)
+                    {
+                        chartValuePaddingViewModel.XMaxValuePadding = 0.5;
+                    }
+
+                    foreach (var sr in this.ItemsSourceList)
+                    {
+                        sr.ShowBarSeries = value;
+                    }
+                }
+
+            }
+        }
+
 
         public ObservableCollection<string> AvailableScatterTemplates { get; }
 
@@ -77,7 +126,7 @@ namespace Demo
         {
             var v = i / 1.0;
             var y = Math.Abs(v) < 1e-10 ? 1 : Math.Sin(v) / v;
-      
+
             var pt = new SomePoint(v, y + 0.25 + yOffset);
 
             return pt;
@@ -176,7 +225,7 @@ namespace Demo
         public DemoDataViewModel()
         {
 
-            AddListCommand = new DelegateCommand((o)=> AddList());
+            AddListCommand = new DelegateCommand((o) => AddList());
             RemoveListCommand = new DelegateCommand((o) => RemoveList());
             AddItemCommand = new DelegateCommand((o) => AddItem());
             RemoveItemCommand = new DelegateCommand((o) => RemoveItem());

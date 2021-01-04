@@ -3,19 +3,29 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Demo"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
-             StartupUri="MainWindow.xaml">
+             StartupUri="MainWindow.xaml"
+             xmlns:ui="http://schemas.modernwpf.com/2019">
     <Application.Resources>
 
-        <local:IndexToStrokeConverter x:Key="IndexToStrokeConverter"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:ThemeResources />
+                <ui:XamlControlsResources />
+            </ResourceDictionary.MergedDictionaries>
+            <local:ChartValuePaddingViewModel x:Key="ChartValuePaddingViewModel"/>
+            <local:IndexToStrokeConverter x:Key="IndexToStrokeConverter"/>
 
-        <BooleanToVisibilityConverter x:Key="t2v"/>
- 
+            <local:IndexToAreaSeriesFillConverter x:Key="IndexToAreaSeriesFillConverter"/>
+            <BooleanToVisibilityConverter x:Key="t2v"/>
 
-        <Style TargetType="Button">
-            <Setter Property="Margin" Value="1"/>
-            <Setter Property="Padding" Value="6,3"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="VerticalAlignment" Value="Top"/>
-        </Style>
+
+            <Style TargetType="Button">
+                <Setter Property="Margin" Value="1"/>
+                <Setter Property="Padding" Value="6,3"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+            </Style>
+        </ResourceDictionary>
+
     </Application.Resources>
 </Application>

@@ -3,16 +3,17 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:MvvmCharting.WpfFX"
     xmlns:axis1="clr-namespace:MvvmCharting.Axis;assembly=CommonLib"
-    xmlns:axis="clr-namespace:MvvmCharting.WpfFX.Axis">
+    xmlns:axis="clr-namespace:MvvmCharting.WpfFX.Axis"
+    xmlns:series="clr-namespace:MvvmCharting.WpfFX.Series">
 
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/SlimItemsControl/SlimItemsControlStyle.xaml"/>
-        <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/SeriesControl/SeriesControlStyle.xaml"/>
-        <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/Legend/LegendStyle.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/common/SlimItemsControl/SlimItemsControlStyle.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/SeriesCollectionControl/SeriesCollectionControlStyle.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/LegendControl/LegendStyle.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/Axis/AxisStyle.xaml"/>
-        <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/GridLine/GridLineStyle.xaml"/>
-        <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/Series/SeriesStyle.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/GridLineControl/GridLineStyle.xaml"/>
+        <!--<ResourceDictionary Source="pack://application:,,,/MvvmChartWpfFX;component/SeriesControl/Series/SeriesStyle.xaml"/>-->
 
     </ResourceDictionary.MergedDictionaries>
 
@@ -74,7 +75,6 @@
 
                         <Border Grid.Row="1"
                                 Grid.Column="1"
-                                Padding="{TemplateBinding Padding}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 Background="{TemplateBinding Background}">
@@ -83,7 +83,7 @@
                                 <ContentControl x:Name="PART_GridLineHolder"
                                                 Visibility="{TemplateBinding GridLineControlVisibility}"/>
 
-                                <local:SeriesControl x:Name="PART_SeriesControl"/>
+                                <series:SeriesCollectionControl x:Name="Part_SeriesCollectionControl"/>
 
                                 <Line x:Name="PART_HorizontalCrossHair" />
                                 <Line x:Name="PART_VerticalCrossHair"/>
@@ -107,4 +107,6 @@
 
 
 
+
+  
 </ResourceDictionary>

@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Demo"
              xmlns:mvvmCharting="clr-namespace:MvvmCharting.WpfFX;assembly=MvvmChartWpfFX"
              xmlns:axis="clr-namespace:MvvmCharting.WpfFX.Axis;assembly=MvvmChartWpfFX"
+             xmlns:series="clr-namespace:MvvmCharting.WpfFX.Series;assembly=MvvmChartWpfFX"
 
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -13,43 +14,38 @@
     <UserControl.Resources>
         <local:BigDataViewModel x:Key="BigDataViewModel"/>
 
-        <mvvmCharting:EllipseGeometryBuilder x:Key="EllipseGeometryBuilder" RadiusX="6" RadiusY="6"/>
-
+    
         <DataTemplate x:Key="ScatterDataTemplate">
-            <mvvmCharting:Scatter >
+            <series:Scatter >
 
 
-            </mvvmCharting:Scatter>
+            </series:Scatter>
         </DataTemplate>
-
-        <DataTemplate x:Key="Scatter2DataTemplate">
-            <mvvmCharting:Scatter2 Fill="RoyalBlue" 
-                                  GeometryBuilder="{StaticResource EllipseGeometryBuilder}"
-                                  Opacity="0.6">
-
-            </mvvmCharting:Scatter2>
-        </DataTemplate>
+ 
 
 
-
-        <local:StringToScatterTemplateConverter x:Key="StringToScatterTemplateConverter"
-                                                ScatterTemplate="{StaticResource ScatterDataTemplate}"
-                                                Scatter2Template="{StaticResource Scatter2DataTemplate}"/>
-
+ 
 
         <DataTemplate x:Key="SeriesTemplate" DataType="local:SomePointList">
-            <mvvmCharting:PolyLineSeries IndependentValueProperty="t"
+            <series:SeriesControl IndependentValueProperty="t"
                                          DependentValueProperty="Y"
-                                         IsHighLighted="{Binding IsHighlighted, Mode=TwoWay}"
-                                         Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
-                                             StrokeThickness="1.5"
-                                             IsScatterVisible="{Binding ShowSeriesPoints}"
-                                             IsLineOrAreaVisible="{Binding ShowSeriesLine}"
+                                         IsScatterSeriesVisible="{Binding ShowScatterSeries}"
+                                             IsLineSeriesVisible="{Binding ShowLineSeries}"
                                              ItemsSource="{Binding DataList}"
-                                             ScatterTemplate="{Binding SelectedScatterTemplateType, Converter={StaticResource StringToScatterTemplateConverter}}"
+                                             
                                             >
+                <series:SeriesControl.LineSeries>
+                    <series:PolyLineSeries  IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
+                                            Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
+                                            StrokeThickness="1.5">
 
-            </mvvmCharting:PolyLineSeries>
+                    </series:PolyLineSeries>
+                </series:SeriesControl.LineSeries>
+                <series:SeriesControl.ScatterSeries>
+                    <series:ScatterSeries IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
+                                          ScatterTemplate="{StaticResource ScatterDataTemplate}"></series:ScatterSeries>
+                </series:SeriesControl.ScatterSeries>
+            </series:SeriesControl>
 
         </DataTemplate>
 

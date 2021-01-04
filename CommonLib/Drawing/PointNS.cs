@@ -9,7 +9,9 @@
         internal double _x;
         internal double _y;
 
-         public static bool operator ==(PointNS point1, PointNS point2)
+        public static readonly PointNS Empty = new PointNS(double.NaN, double.NaN);
+        
+        public static bool operator ==(PointNS point1, PointNS point2)
         {
             return point1.X == point2.X && point1.Y == point2.Y;
         }

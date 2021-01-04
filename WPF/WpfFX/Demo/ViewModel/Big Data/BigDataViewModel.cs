@@ -23,7 +23,7 @@ namespace Demo
                 {
                     foreach (var sr in this.ItemsSourceList)
                     {
-                        sr.ShowSeriesLine = value;
+                        sr.ShowLineSeries = value;
                     }
                 }
             }
@@ -86,7 +86,7 @@ namespace Demo
             {
                 foreach (var sr in this.ItemsSourceList)
                 {
-                    sr.ShowSeriesPoints = this.ShowSeriesPointsGlobal;
+                    sr.ShowScatterSeries = this.ShowSeriesPointsGlobal;
                 }
             }
 
