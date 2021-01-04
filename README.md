@@ -1,6 +1,8 @@
 # MvvmChart
 MvvmChart is an extremely lightweighted, MVVM support and highly customizable chart control for WPF(including DotNet.Core, and UWP).</br>
+[![Gitter](https://badges.gitter.im/MvvmChart/community.svg)](https://gitter.im/MvvmChart/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 ![](https://img.shields.io/badge/license-MIT-green)![](https://img.shields.io/badge/support-WPF-brightgreen)
+
 
 ## Features
 * Extremely **lightweighted**(The whole codebase is only 4000 lines);
