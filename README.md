@@ -19,8 +19,8 @@ MvvmChart is an extremely lightweight, MVVM support and highly customizable char
 
 ## Quick start:
    1. Create a new WPF app.
-   2. Install from NuGet Install-Package MvvmChartWpfFX 
-   3. Define view models:
+   2. Install from NuGet: **Install-Package MvvmChartWpfFX** 
+   3. Define the view models:
 ```c#
     public class SomePoint
     {
@@ -48,7 +48,7 @@ MvvmChart is an extremely lightweight, MVVM support and highly customizable char
         public List<List<SomePoint>> ItemsSourceList { get; }
     }
 ```
-  4. Define DataTemplate:
+  4. Define a DataTemplate:
 ```Xaml
         <DataTemplate x:Key="MySeriesTemplate" DataType="local:SomePointList">
             <chart:SeriesControl IndependentValueProperty="t"
@@ -91,6 +91,10 @@ MvvmChart is an extremely lightweight, MVVM support and highly customizable char
 Then everything should be ready.
 </br>
 
+![LineSeries+ScatterSeries](https://github.com/zenjia/MvvmChart/blob/master/Images/Line%2BScatter.PNG)
+![LineSeries+ScatterSeries+AreaSeries](https://github.com/zenjia/MvvmChart/blob/master/Images/Line%2BScatter%2BArea.PNG)
+![BarSeries](https://github.com/zenjia/MvvmChart/blob/master/Images/Line%2BScatter.PNG)
+
 ### Use with DateTime/DateTimeOffset data:
 MvvmChart supports DateTime/DateTimeOffset type data. When it sees the type of data is the DateTime/DateTimeOffset, it will automatically convert it to double using **DoubleValueConverter.ObjectToDouble()** method. But when displaying the axis label text, it will be the user's responsibility to write a converter to convert it back and format it to a string. In order to convert the value back correctly, the user can use  **DoubleValueConverter.DoubleToDateTime()**(for DateTime type) or **DoubleValueConverter.DoubleToDateTimeOffset()** (for DateTimeOffset type) method. </br>
 For example:</br>
@@ -132,9 +136,4 @@ Here is a screenshort from the DateTimeOffset XAxis demo:
  
 To see more samples, just download the source code, and run the Demo app(more samples will be added continually). Enjoy!
 
-## Screenshots
-![PolyLineSeries, StepLineSeries& SplineSeries without item point](https://github.com/zenjia/MvvmChart/blob/master/Images/withoutdot2.PNG)
-![PolyLineSeries, StepLineSeries& SplineSeries with item point](https://github.com/zenjia/MvvmChart/blob/master/Images/withdot2.PNG)
-![PolyLineAreaSeries without item point](https://github.com/zenjia/MvvmChart/blob/master/Images/areaWithoutDot.PNG)
-![PolyLineAreaSeries with item point](https://github.com/zenjia/MvvmChart/blob/master/Images/areaWithDot.PNG)
 
