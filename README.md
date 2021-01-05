@@ -22,7 +22,7 @@ MvvmChart is an extremely lightweight, MVVM support and highly customizable char
 ![LineSeries+ScatterSeries+BarSeries](https://github.com/zenjia/MvvmChart/blob/master/Images/Line%2BScatter%2BBar.PNG)
 
 ## Quick start:
-   1. Create a new WPF app.
+   1. Create a new WPF(.NET Framework) app.(NOTE: Only .NET Framework version WPF supported for now, .NET core version will come soon.)
    2. Install from NuGet: **Install-Package MvvmChartWpfFX** 
    3. Define the view models:
 ```c#
