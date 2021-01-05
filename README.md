@@ -12,7 +12,7 @@ MvvmChart is an extremely lightweight, MVVM support and highly customizable char
 * LineSeries and AreaSeries support three types of geometry: **Polyline**, **Stepline** and **Spinlin**e. And the geometry of a LineSeries/AreaSeries can be changed throught data binding easily.
 * support **DateTime**&**DateTimeOffset** data and **category** data.
 * Axis support various axis placement(for x-axis: Top&Bottom, for y-axis: Left&Right). Support **GridLine**, **CrossHair**, **Legend**, **BackgroundElement**...
-* Highly customizable: Almost everything can be customized through **Binding** or by dynamically changing **Styles** or **Template**. And one of the most highlighted features: user can completely change the shape of **Series** just by implementing the **ISeriesGeometryBuilder**and binding them to PathSeries.**GeometryBuilder**;
+* Highly customizable: Almost everything can be customized through **Binding** or by changing **Styles** or **Template**. And one of the most highlighted features: user can completely change the shape(Geometry) of **LineSeries**/**AreaSeries** just by implementing the **ISeriesGeometryBuilder**and binding them to PathSeries.**GeometryBuilder**;
 * Good performance: User will not lose too much performance for true MVVM support and great customizability.
 
 ## ScreeShot:
