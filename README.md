@@ -18,10 +18,9 @@ MvvmChart is an extremely lightweight, MVVM support and highly customizable char
 
 
 ## Quick start:
-   * 1. Create a new WPF app.
-   * 2. Install from NuGet Install-Package ModernWpfUI.
-   
-   First define some view models:
+   1. Create a new WPF app.
+   2. Install from NuGet Install-Package MvvmChartWpfFX 
+   3. Define view models:
 ```c#
     public class SomePoint
     {
@@ -49,7 +48,7 @@ MvvmChart is an extremely lightweight, MVVM support and highly customizable char
         public List<List<SomePoint>> ItemsSourceList { get; }
     }
 ```
-  Then in Resouces define a DataTemplate:
+  4. Define DataTemplate:
 ```Xaml
         <DataTemplate x:Key="MySeriesTemplate" DataType="local:SomePointList">
             <chart:SeriesControl IndependentValueProperty="t"
@@ -76,7 +75,7 @@ MvvmChart is an extremely lightweight, MVVM support and highly customizable char
             </chart:SeriesControl>
         </DataTemplate>
  ```
-  Finally create a Chart and reference the DataTemplate:
+  5. Finally create a Chart and reference the DataTemplate:
  ```Xaml    
         <chart:Chart Background="Bisque"
                             SeriesTemplate="{StaticResource MySeriesTemplate}"
