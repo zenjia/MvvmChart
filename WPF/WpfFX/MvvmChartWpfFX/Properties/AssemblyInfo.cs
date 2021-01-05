@@ -58,5 +58,5 @@ using System.Windows.Markup;
 [assembly: XmlnsDefinition("http://schemas.mvvmchart.com/2020", "MvvmCharting.WpfFX.Series", AssemblyName = "MvvmChartWpfFX")]
 [assembly: XmlnsDefinition("http://schemas.mvvmchart.com/2020", "MvvmCharting.WpfFX.Axis", AssemblyName = "MvvmChartWpfFX")]
 
-[assembly: XmlnsPrefix("http://schemas.mvvmchart.com/2020", "chart")]
+[assembly: XmlnsPrefix("http://schemas.mvvmchart.com/2020", "charting")]
 [assembly: NeutralResourcesLanguage("en-US")]

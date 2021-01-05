@@ -2,13 +2,13 @@
 <package >
   <metadata>
     <id>$id$</id>
-    <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
+    <version>0.5.1</version>
+    <title>MvvmChart</title>
+    <authors>naivecoder</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">MIT</license>
     <projectUrl>https://github.com/zenjia/MvvmChart</projectUrl>
-    <description>$description$</description>
+    <description>A lightweight, MVVM support Chart control for WPF/UWP</description>
     <releaseNotes>pre-release</releaseNotes>
     <copyright>$copyright$</copyright>
     <tags>Chart WPF MVVM UWP</tags>

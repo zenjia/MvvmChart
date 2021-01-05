@@ -7,7 +7,6 @@
              mc:Ignorable="d"
              xmlns:chart="http://schemas.mvvmchart.com/2020"
              xmlns:ui="http://schemas.modernwpf.com/2019">
-
     <UserControl.Resources>
         <local:ChartSettingTestViewModel x:Key="ChartSettingTestViewModel"/>
         <local:DemoDataViewModel x:Key="DemoDataViewModel"/>
@@ -20,7 +19,7 @@
 
         <!--This change the Data from EllipseGeometry(default) to other geometry-->
         <DataTemplate x:Key="ScatterDataTemplate1">
-             
+
             <chart:Scatter 
                             Fill="Goldenrod" 
                             Stretch="Uniform"
@@ -71,7 +70,6 @@
                                                ScatterDataTemplate="{StaticResource ScatterDataTemplate}"
                                                ScatterDataTemplate1="{StaticResource ScatterDataTemplate1}"
                                                ScatterDataTemplate2="{StaticResource ScatterDataTemplate2}"/>
-
         <DataTemplate x:Key="SeriesTemplate0" DataType="local:SomePointList">
             <chart:SeriesControl IndependentValueProperty="t"
                                          DependentValueProperty="Y"
@@ -114,6 +112,7 @@
                 </chart:SeriesControl.BarSeries>
             </chart:SeriesControl>
         </DataTemplate>
+
 
         <DataTemplate x:Key="SeriesTemplate1" DataType="local:SomePointList">
             <chart:SeriesControl IndependentValueProperty="t"
@@ -158,6 +157,8 @@
             </chart:SeriesControl>
 
         </DataTemplate>
+
+
 
         <DataTemplate x:Key="SeriesTemplate2" DataType="local:SomePointList">
             <chart:SeriesControl IndependentValueProperty="t"
@@ -209,8 +210,9 @@
                                       DataTemplate2="{StaticResource SeriesTemplate2}"/>
 
 
-       
+
     </UserControl.Resources>
+
 
     <Grid>
         <Grid.RowDefinitions>
@@ -219,8 +221,8 @@
         </Grid.RowDefinitions>
 
         <chart:Chart Background="Bisque"
-                            PlottingXValuePadding="{Binding XValuePadding, Source={StaticResource ChartValuePaddingViewModel}}"
-                            PlottingYValuePadding="{Binding YValuePadding, Source={StaticResource ChartValuePaddingViewModel}}"
+                            XValuePadding="{Binding XValuePadding, Source={StaticResource ChartValuePaddingViewModel}}"
+                            YValuePadding="{Binding YValuePadding, Source={StaticResource ChartValuePaddingViewModel}}"
                             IsChartUpdating="{Binding Source={StaticResource DemoDataViewModel}, Path=IsModelChanging, Mode=TwoWay}"
                             GridLineControlVisibility="{Binding ShowGridLine, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
                             LegendVisibility="{Binding ShowLegend, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"

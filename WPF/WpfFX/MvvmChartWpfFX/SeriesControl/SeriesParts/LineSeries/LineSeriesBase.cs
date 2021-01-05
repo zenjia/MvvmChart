@@ -148,7 +148,7 @@ namespace MvvmCharting.WpfFX.Series
                 this.PathData = Geometry.Empty;
                 return;
             }
-
+ 
             PointNS[] previous = this.Owner.GetPreviousSeriesCoordinates(this.IsAreaMode);
 
             this.PathData = (Geometry)this.GeometryBuilder.GetGeometry(coordinates, previous);
