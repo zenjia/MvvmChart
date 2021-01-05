@@ -325,6 +325,7 @@ namespace MvvmCharting.WpfFX.Series
             }
 
             Reset();
+            UpdateMinXValueGap();
 
             this.ScatterSeries?.UpdateItemsSource();
 
@@ -373,10 +374,12 @@ namespace MvvmCharting.WpfFX.Series
         }
         private void UpdateMinXValueGap()
         {
+            
             if (this.Owner.IsXAxisCategory)
             {
                 this.MinXValueGap = 1.0;
                 this.BarSeries?.UpdateBarWidth(this.MinXValueGap, this.XPixelPerUnit);
+
                 return;
             }
 
@@ -398,6 +401,8 @@ namespace MvvmCharting.WpfFX.Series
                     this.MinXValueGap = gap;
                 }
             }
+
+           
         }
 
         private void HandleItemsSourceCollectionChange(IList oldValue, IList newValue)

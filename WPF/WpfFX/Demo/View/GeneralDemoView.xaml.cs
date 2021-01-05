@@ -25,13 +25,11 @@ namespace Demo
                 return null;
             }
 
-
-
             SomePoint pt = (SomePoint)value;
             int i = (int)pt.t;
-            int j = (int)pt.Y;
 
-            if (i % 2 == 0 && j % 2 == 0)
+
+            if (i % 3 == 0)
             {
                 return Brushes.Red;
             }

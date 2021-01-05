@@ -17,7 +17,7 @@
 
             <local:IndexToAreaSeriesFillConverter x:Key="IndexToAreaSeriesFillConverter"/>
             <BooleanToVisibilityConverter x:Key="t2v"/>
-
+            <local:ItemToScatterFillConverter x:Key="ItemToScatterFillConverter"/>
 
             <Style TargetType="Button">
                 <Setter Property="Margin" Value="1"/>

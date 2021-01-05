@@ -12,13 +12,15 @@
 
 
     <TabControl TabStripPlacement="Left" Margin="20">
+        <TabItem Header="General Demo" Padding="6">
+            <local:GeneralDemoView Margin="15"/>
+        </TabItem>
+
         <TabItem Header="Category Axis Demo" Padding="6">
             <wpfFx:CategoryAxisDemoView Margin="15"/>
         </TabItem>
 
-        <TabItem Header="General Demo" Padding="6">
-            <local:GeneralDemoView Margin="15"/>
-        </TabItem>
+ 
 
         <TabItem Header="Series Customization" Padding="6">
             <wpfFx:SeriesCustomizingDemoView Margin="15"/>

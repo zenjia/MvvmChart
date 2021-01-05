@@ -40,7 +40,9 @@
     </DataTemplate>
 
     <Style TargetType="{x:Type local:BarSeries}">
-        <Setter Property="BarWidth" Value="32"/>
+       
+        <Setter Property="MaxBarWidth" Value="32"/>
+
         <Setter Property="BarItemTemplate" Value="{StaticResource DefaultBarItemTemplate}"/>
         <Setter Property="Template">
             <Setter.Value>

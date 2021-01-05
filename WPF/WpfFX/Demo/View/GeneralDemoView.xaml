@@ -10,7 +10,7 @@
     <UserControl.Resources>
         <local:ChartSettingTestViewModel x:Key="ChartSettingTestViewModel"/>
         <local:DemoDataViewModel x:Key="DemoDataViewModel"/>
-        <local:ItemToScatterFillConverter x:Key="ItemToScatterFillConverter"/>
+      
 
         <!--This is the Default Scatter Style-->
         <DataTemplate x:Key="ScatterDataTemplate">
@@ -90,8 +90,7 @@
                 </chart:SeriesControl.LineSeries>
 
                 <chart:SeriesControl.AreaSeries>
-                    <chart:PolyLineAreaSeries Opacity="0.8"
-                                           Stroke="{Binding Index, Converter={StaticResource IndexToAreaSeriesFillConverter}}"
+                    <chart:PolyLineAreaSeries Stroke="{Binding Index, Converter={StaticResource IndexToAreaSeriesFillConverter}}"
                                            StrokeThickness="1.5"
                                            IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}">
                     </chart:PolyLineAreaSeries>
@@ -134,8 +133,7 @@
                 </chart:SeriesControl.LineSeries>
 
                 <chart:SeriesControl.AreaSeries>
-                    <chart:StepLineAreaSeries Opacity="0.8"
-                                               Stroke="{Binding Index, Converter={StaticResource IndexToAreaSeriesFillConverter}}"
+                    <chart:StepLineAreaSeries Stroke="{Binding Index, Converter={StaticResource IndexToAreaSeriesFillConverter}}"
                                                StrokeThickness="1.5"
                                                IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}">
                     </chart:StepLineAreaSeries>
@@ -180,8 +178,7 @@
                 </chart:SeriesControl.LineSeries>
 
                 <chart:SeriesControl.AreaSeries>
-                    <chart:SplineAreaSeries Opacity="0.8"
-                                               Stroke="{Binding Index, Converter={StaticResource IndexToAreaSeriesFillConverter}}"
+                    <chart:SplineAreaSeries Stroke="{Binding Index, Converter={StaticResource IndexToAreaSeriesFillConverter}}"
                                                StrokeThickness="1.5"
                                                IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}">
                     </chart:SplineAreaSeries>

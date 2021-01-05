@@ -62,7 +62,7 @@ namespace MvvmCharting.WpfFX.Series
 
                 this.PART_BarItemsControl.SetBinding(SlimItemsControl.ItemTemplateSelectorProperty, new Binding(nameof(this.BarItemTemplateSelector)) { Source = this });
                 this.PART_BarItemsControl.SetBinding(SlimItemsControl.ItemTemplateProperty, new Binding(nameof(this.BarItemTemplate)) { Source = this });
-                UpdateBarItemWidth();
+                UpdateBarWidth();
                 UpdateItemsSource();
             }
         }
@@ -74,6 +74,8 @@ namespace MvvmCharting.WpfFX.Series
             {
                 MvvmChartException.ThrowDataTemplateRootElementException(nameof(this.BarItemTemplate), typeof(BarItem));
             }
+
+            barItem.MaxWidth = this.MaxBarWidth;
 
             if (this.BarBrush != null && barItem.Fill == null)
             {
@@ -95,6 +97,11 @@ namespace MvvmCharting.WpfFX.Series
                 barItem.SetCurrentValue(BarItem.StyleProperty, this.BarStyle);
             }
 
+            if (!this.BarWidth.IsNaN() && barItem.Width.IsInvalid())
+            {
+                barItem.SetCurrentValue(BarItem.WidthProperty, this.BarWidth);
+            }
+
             if (!this.Owner.SeriesControlOwner.IsSeriesCollectionChanging)
             {
                 if (!this.Owner.XPixelPerUnit.IsNaN() && !this.Owner.YPixelPerUnit.IsNaN())
@@ -108,7 +115,7 @@ namespace MvvmCharting.WpfFX.Series
                     var barHeight = privousCoordinates == null
                         ? coordinate.Y
                         : coordinate.Y - privousCoordinates[childIndex].Y;
- 
+
                     if (!this.BarWidth.IsNaN() && barItem.Width.IsInvalid())
                     {
                         barItem.SetCurrentValue(BarItem.WidthProperty, this.BarWidth);
@@ -281,7 +288,7 @@ namespace MvvmCharting.WpfFX.Series
         }
         private void OnBarWidthChanged()
         {
-            UpdateBarItemWidth();
+            UpdateBarWidth();
         }
 
         //private double _barWidthInternal = double.NaN;
@@ -314,14 +321,14 @@ namespace MvvmCharting.WpfFX.Series
         //    return w;
         //}
 
-        private void UpdateBarItemWidth()
+        private void UpdateBarWidth()
         {
             if (this.PART_BarItemsControl == null)
             {
                 return;
             }
 
- 
+      
             foreach (var barItem in this.PART_BarItemsControl.GetChildren().OfType<BarItem>())
             {
                 var vs = DependencyPropertyHelper.GetValueSource(barItem, BarItem.WidthProperty);
@@ -329,15 +336,15 @@ namespace MvvmCharting.WpfFX.Series
                 {
                     barItem.SetCurrentValue(BarItem.WidthProperty, this.BarWidth);
                 }
-                
+
             }
         }
 
 
         internal void SetBarWidth(double width)
         {
-            var vs = DependencyPropertyHelper.GetValueSource(this, BarWidthProperty);
-            if (vs.IsCurrent)
+            if (this.BarWidth.IsNaN() ||
+                DependencyPropertyHelper.GetValueSource(this, BarWidthProperty).IsCurrent)
             {
                 this.SetCurrentValue(BarWidthProperty, width);
             }
@@ -351,9 +358,37 @@ namespace MvvmCharting.WpfFX.Series
             }
 
             double width = minXGap * xPixelPerUnit;
+ 
             this.SetBarWidth(width);
         }
 
+
+        public double MaxBarWidth
+        {
+            get { return (double)GetValue(MaxBarWidthProperty); }
+            set { SetValue(MaxBarWidthProperty, value); }
+        }
+        public static readonly DependencyProperty MaxBarWidthProperty =
+            DependencyProperty.Register("MaxBarWidth", typeof(double), typeof(BarSeries), new PropertyMetadata(double.NaN, OnMaxBarWidthPropertyChanged));
+
+        private static void OnMaxBarWidthPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((BarSeries)d).OnMaxBarWidthChanged();
+        }
+        private void OnMaxBarWidthChanged()
+        {
+            if (this.PART_BarItemsControl == null ||
+                this.MaxBarWidth.IsNaN())
+            {
+                return;
+            }
+
+ 
+            foreach (var barItem in this.PART_BarItemsControl.GetChildren().OfType<BarItem>())
+            {
+                barItem.MaxWidth = this.MaxBarWidth;
+            }
+        }
 
         internal void UpdateBarCoordinateAndHeight(object item, PointNS coordinate, double previousYCoordinate)
         {
