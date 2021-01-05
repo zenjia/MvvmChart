@@ -88,12 +88,12 @@ MvvmChart is an extremely lightweight, MVVM support and highly customizable char
             </chart:Chart.YAxis>
         </chart:Chart>
 ```
-Then everything should be ready.
+
 </br>
 
 ![LineSeries+ScatterSeries](https://github.com/zenjia/MvvmChart/blob/master/Images/Line%2BScatter.PNG)
 ![LineSeries+ScatterSeries+AreaSeries](https://github.com/zenjia/MvvmChart/blob/master/Images/Line%2BScatter%2BArea.PNG)
-![BarSeries](https://github.com/zenjia/MvvmChart/blob/master/Images/Line%2BScatter.PNG)
+![BarSeries](https://github.com/zenjia/MvvmChart/blob/master/Images/Bar.PNG)
 
 ### Use with DateTime/DateTimeOffset data:
 MvvmChart supports DateTime/DateTimeOffset type data. When it sees the type of data is the DateTime/DateTimeOffset, it will automatically convert it to double using **DoubleValueConverter.ObjectToDouble()** method. But when displaying the axis label text, it will be the user's responsibility to write a converter to convert it back and format it to a string. In order to convert the value back correctly, the user can use  **DoubleValueConverter.DoubleToDateTime()**(for DateTime type) or **DoubleValueConverter.DoubleToDateTimeOffset()** (for DateTimeOffset type) method. </br>
