@@ -4,7 +4,7 @@
                     xmlns:wpfFx="clr-namespace:MvvmCharting.WpfFX">
 
     <SolidColorBrush x:Key="Scatter.MouseOver.Fill" Color="RoyalBlue"/>
-    <SolidColorBrush x:Key="Scatter.Static.Fill" Color="Red"/>
+    <SolidColorBrush x:Key="Scatter.Static.Fill" Color="DarkOrange"/>
 
     <EllipseGeometry x:Key="DefaultScatterPathData" RadiusX="8" RadiusY="8" Center="8,8"/>
 

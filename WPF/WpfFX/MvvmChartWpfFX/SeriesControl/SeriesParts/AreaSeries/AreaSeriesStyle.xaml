@@ -11,11 +11,13 @@
 
     <Style TargetType="{x:Type local:AreaSeries}">
         <Setter Property="Stroke" Value="CadetBlue"/>
+        <Setter Property="Opacity" Value="0.5"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:AreaSeries}">
                     <Grid>
                         <Path x:Name="PART_Shape" 
+                              Opacity="{TemplateBinding Opacity}"
                               Stroke="{TemplateBinding Stroke}" 
                               StrokeThickness="{TemplateBinding StrokeThickness}">
                             <Path.ToolTip>
@@ -26,7 +28,7 @@
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsHighlighted" Value="True">
-                            <Setter TargetName="PART_Shape" Property="Opacity" Value="0.7"/>
+                            <Setter TargetName="PART_Shape" Property="Opacity" Value="0.9"/>
                             <Setter TargetName="PART_Shape" Property="Stroke" Value="{x:Static Brushes.Chartreuse}"/>
                             <Setter TargetName="PART_Shape" Property="StrokeThickness" Value="{StaticResource AreaSeries.Highlighted.StrokeThickness}"/>
                          </Trigger>

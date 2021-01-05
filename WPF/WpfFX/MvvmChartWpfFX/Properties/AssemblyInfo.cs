@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Markup;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
@@ -51,3 +52,9 @@ using System.Windows;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+
+[assembly: XmlnsDefinition("http://schemas.mvvmchart.com/2020", "MvvmCharting.WpfFX", AssemblyName = "MvvmChartWpfFX")]
+[assembly: XmlnsDefinition("http://schemas.mvvmchart.com/2020", "MvvmCharting.WpfFX.Series", AssemblyName = "MvvmChartWpfFX")]
+[assembly: XmlnsDefinition("http://schemas.mvvmchart.com/2020", "MvvmCharting.WpfFX.Axis", AssemblyName = "MvvmChartWpfFX")]
+
+[assembly: XmlnsPrefix("http://schemas.mvvmchart.com/2020", "chart")] 
