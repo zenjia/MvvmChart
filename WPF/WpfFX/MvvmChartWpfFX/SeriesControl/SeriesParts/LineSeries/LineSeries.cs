@@ -10,7 +10,7 @@ namespace MvvmCharting.WpfFX.Series
     /// for the three specific line types: <see cref="PolyLineSeries"/>,
     /// <see cref="StepLineSeries"/> and <see cref="SplineSeries"/>
     /// </summary>
-    public class LineSeries: LineSeriesBase
+    public class LineSeries: PathSeries
     {
         static LineSeries()
         {

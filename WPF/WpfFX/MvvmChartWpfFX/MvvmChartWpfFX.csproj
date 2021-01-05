@@ -82,8 +82,10 @@
     <Compile Include="SeriesControl\SeriesParts\BarSeries\BarSeries.cs" />
     <Compile Include="SeriesControl\ISeriesControlOwner.cs" />
     <Compile Include="common\InteractiveControl.cs" />
+    <Compile Include="SeriesControl\SeriesParts\LineSeries\ILineSeriesOwner.cs" />
     <Compile Include="SeriesControl\SeriesParts\LineSeries\LineSeries.cs" />
     <Compile Include="SeriesControl\SeriesParts\LineSeries\LineSeriesBase.cs" />
+    <Compile Include="SeriesControl\SeriesParts\LineSeries\PathSeries.cs" />
     <Compile Include="SeriesControl\SeriesParts\ScatterSeries\ScatterSeries.cs" />
     <Compile Include="common\SlimItemsControl\SlimItemsControl.cs" />
     <Compile Include="common\VisualTreeHelper2.cs" />

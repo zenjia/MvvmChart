@@ -20,8 +20,7 @@
         <!--This change the Data from EllipseGeometry(default) to other geometry-->
         <DataTemplate x:Key="ScatterDataTemplate1">
 
-            <chart:Scatter 
-                            Fill="Goldenrod" 
+            <chart:Scatter Fill="Goldenrod" 
                             Stretch="Uniform"
                             Opacity="0.7"
                             Width="20" 

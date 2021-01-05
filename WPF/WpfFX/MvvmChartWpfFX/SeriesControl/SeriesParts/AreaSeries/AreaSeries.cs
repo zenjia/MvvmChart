@@ -11,7 +11,7 @@ namespace MvvmCharting.WpfFX.Series
     /// for three specific line types: <see cref="PolyLineAreaSeries"/>,
     /// <see cref="StepLineAreaSeries"/> and <see cref="SplineAreaSeries"/>
     /// </summary>
-    public class AreaSeries : LineSeriesBase
+    public class AreaSeries : PathSeries
     {
         static AreaSeries()
         {
