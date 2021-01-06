@@ -1,7 +1,7 @@
 ﻿namespace MvvmCharting.Common
 {
 
-    public struct Range
+    public partial struct Range
     {
         public static readonly Range Empty = new Range(double.NaN, double.NaN);
 

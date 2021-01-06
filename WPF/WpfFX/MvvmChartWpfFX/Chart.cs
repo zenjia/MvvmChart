@@ -48,7 +48,6 @@ namespace MvvmCharting.WpfFX
         private SeriesCollectionControl Part_SeriesCollectionControl;
         private Grid PART_Root;
         private Grid PART_PlottingCanvas;
-        //private SlimItemsControl PART_SeriesItemsControl;
 
         private Line PART_HorizontalCrossHair;
         private Line PART_VerticalCrossHair;
@@ -335,37 +334,52 @@ namespace MvvmCharting.WpfFX
         #endregion
 
         #region Plotting Range
-        /// <summary>
-        /// X value padding. <see cref="PlottingXValueRange"/> excludes <see cref="XValuePadding"/>
-        /// is <see cref="ActualPlottingXValueRange"/>
+        /// <summary> Specify the padding to the <see cref="ActualPlottingXValueRange"/>:
+        /// <list type="bullet">
+        /// <item>
+        ///   <see cref="P:XValuePadding.X"/> - padding to the <see cref="P:ActualPlottingXValueRange.Min"/> 
+        /// </item>
+        /// <item>
+        ///  <see cref="P:XValuePadding.Y"/> - padding to the <see cref="P:ActualPlottingXValueRange.Max"/> 
+        /// </item>
+        /// </list>
+        /// <see cref="PlottingXValueRange"/> is composed of <see cref="ActualPlottingXValueRange"/> plus <see cref="XValuePadding"/>
         /// </summary>
-        public Range XValuePadding
+        public Point XValuePadding
         {
-            get { return (Range)GetValue(XValuePaddingProperty); }
+            get { return (Point)GetValue(XValuePaddingProperty); }
             set { SetValue(XValuePaddingProperty, value); }
         }
         public static readonly DependencyProperty XValuePaddingProperty =
-            DependencyProperty.Register("XValuePadding", typeof(Range), typeof(Chart), new PropertyMetadata(new Range(0, 0), OnPlottingXValuePaddingPropertyChanged));
+            DependencyProperty.Register("XValuePadding", typeof(Point), typeof(Chart), new PropertyMetadata(new Point(0,0), OnPlottingXValuePaddingPropertyChanged));
 
         private static void OnPlottingXValuePaddingPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             ((Chart)d).UpdatePlottingXValueRange();
         }
 
-        /// <summary>
-        /// Y value padding. <see cref="PlottingYValueRange"/> excludes <see cref="YValuePadding"/>
-        /// is <see cref="ActualPlottingYValueRange"/>
+        /// <summary> Specify the padding to the <see cref="ActualPlottingYValueRange"/>:
+        /// <list type="bullet">
+        /// <item>
+        ///   <see cref="P:YValuePadding.X"/> - padding to the <see cref="P:ActualPlottingYValueRange.Min"/> 
+        /// </item>
+        /// <item>
+        ///  <see cref="P:YValuePadding.Y"/> - padding to the <see cref="P:ActualPlottingYValueRange.Max"/> 
+        /// </item>
+        /// </list>
+        /// <see cref="PlottingYValueRange"/> is composed of <see cref="ActualPlottingYValueRange"/> plus <see cref="YValuePadding"/>
         /// </summary>
-        public Range YValuePadding
+        public Point YValuePadding
         {
-            get { return (Range)GetValue(YValuePaddingProperty); }
+            get { return (Point)GetValue(YValuePaddingProperty); }
             set { SetValue(YValuePaddingProperty, value); }
         }
         public static readonly DependencyProperty YValuePaddingProperty =
-            DependencyProperty.Register("YValuePadding", typeof(Range), typeof(Chart), new PropertyMetadata(new Range(0, 0), OnPlottingYValuePaddingPropertyChanged));
+            DependencyProperty.Register("YValuePadding", typeof(Point), typeof(Chart), new PropertyMetadata(new Point(0, 0), OnPlottingYValuePaddingPropertyChanged));
 
         private static void OnPlottingYValuePaddingPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            
             ((Chart)d).UpdatePlottingYValueRange();
         }
 
@@ -452,8 +466,8 @@ namespace MvvmCharting.WpfFX
 
         private void UpdatePlottingXValueRange()
         {
-            var range = new Range(this.ActualPlottingXValueRange.Min - this.XValuePadding.Min,
-                this.ActualPlottingXValueRange.Max + this.XValuePadding.Max);
+            var range = new Range(this.ActualPlottingXValueRange.Min - this.XValuePadding.X,
+                this.ActualPlottingXValueRange.Max + this.XValuePadding.Y);
 
             if (range.Span <= 0)
             {
@@ -464,9 +478,8 @@ namespace MvvmCharting.WpfFX
 
         private void UpdatePlottingYValueRange()
         {
-
-            var range = new Range(this.ActualPlottingYValueRange.Min - this.YValuePadding.Min,
-                this.ActualPlottingYValueRange.Max + this.YValuePadding.Max);
+            var range = new Range(this.ActualPlottingYValueRange.Min - this.XValuePadding.X,
+                this.ActualPlottingYValueRange.Max + this.YValuePadding.Y);
 
             if (range.Span <= 0)
             {
@@ -566,7 +579,8 @@ namespace MvvmCharting.WpfFX
                     {
                         return null;
                     }
-                    valuePadding = this.XValuePadding;
+                    valuePadding = new Range(this.XValuePadding.X, this.XValuePadding.Y);
+ 
                     isCategory = this.XAxis is ICategoryAxis;
                     plotingDataRange = this.ActualPlottingXValueRange;
 
@@ -582,7 +596,7 @@ namespace MvvmCharting.WpfFX
                     {
                         return null;
                     }
-                    valuePadding = this.YValuePadding;
+                    valuePadding = new Range(this.YValuePadding.X, this.YValuePadding.Y);
                     isCategory = this.YAxis is ICategoryAxis;
                     plotingDataRange = this.ActualPlottingYValueRange;
                     break;

@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.Windows;
+using Windows.Foundation;
 using MvvmCharting.Common;
 
 namespace Demo
@@ -93,7 +95,7 @@ namespace Demo
             {
                 if (SetProperty(ref this._xValuePadding, value))
                 {
-                     
+                    
                 }
 
             }

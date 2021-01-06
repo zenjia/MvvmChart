@@ -10,7 +10,8 @@
     <UserControl.Resources>
         <local:ChartSettingTestViewModel x:Key="ChartSettingTestViewModel"/>
         <local:DemoDataViewModel x:Key="DemoDataViewModel"/>
-      
+
+        <local:RangeToPointConverter x:Key="RangeToPointConverter"/>
 
         <!--This is the Default Scatter Style-->
         <DataTemplate x:Key="ScatterDataTemplate">
@@ -217,11 +218,11 @@
         </Grid.RowDefinitions>
 
         <chart:Chart Background="Bisque"
-                            XValuePadding="{Binding XValuePadding, Source={StaticResource ChartValuePaddingViewModel}}"
-                            YValuePadding="{Binding YValuePadding, Source={StaticResource ChartValuePaddingViewModel}}"
-                            IsChartUpdating="{Binding Source={StaticResource DemoDataViewModel}, Path=IsModelChanging, Mode=TwoWay}"
-                            GridLineControlVisibility="{Binding ShowGridLine, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
-                            LegendVisibility="{Binding ShowLegend, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
+                     XValuePadding="{Binding XValuePadding, Source={StaticResource ChartValuePaddingViewModel}, Converter={StaticResource RangeToPointConverter}}"
+                     YValuePadding="{Binding YValuePadding, Source={StaticResource ChartValuePaddingViewModel}, Converter={StaticResource RangeToPointConverter}}"
+                     IsChartUpdating="{Binding Source={StaticResource DemoDataViewModel}, Path=IsModelChanging, Mode=TwoWay}"
+                     GridLineControlVisibility="{Binding ShowGridLine, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
+                     LegendVisibility="{Binding ShowLegend, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
                             SeriesTemplateSelector="{StaticResource SeriesTemplateSelector}"
                             SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource DemoDataViewModel}}">
             <chart:Chart.XAxis>
