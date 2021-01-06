@@ -27,13 +27,13 @@ namespace MvvmCharting.WpfFX.Series
         /// The X value range which is used to plot the whole chart.
         /// A series need to know the plotting X range of its host chart
         /// </summary>
-        void OnPlottingXValueRangeChanged(Range newValue);
+        void OnPlottingXValueRangeChanged(PlottingRange newValue);
 
         /// <summary>
         /// The Y value range which is used to plot the whole chart.
         /// A series need to know the plotting Y range of its host chart
         /// </summary>
-        void OnPlottingYValueRangeChanged(Range newValue);
+        void OnPlottingYValueRangeChanged(PlottingRange newValue);
 
 
         bool IsHighlighted { get; set; }

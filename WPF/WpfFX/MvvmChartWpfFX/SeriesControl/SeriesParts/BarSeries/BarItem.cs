@@ -56,7 +56,7 @@ namespace MvvmCharting.WpfFX.Series
             var x = this.Coordinate.X + xOffset;
 
           
-            var y = this.Coordinate.Y -  this.ActualHeight;
+            var y = this.Coordinate.Y -  this.ActualHeight - this.Margin.Top;
 
             var translateTransform = this.RenderTransform as TranslateTransform;
             if (translateTransform == null)
@@ -78,7 +78,7 @@ namespace MvvmCharting.WpfFX.Series
 
         public void SetBarHeight(double newValue)
         {
-            if (newValue.IsInvalid())
+            if (newValue.IsInvalid()|| newValue<0)
             {
                 return;
             }

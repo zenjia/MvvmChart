@@ -3,7 +3,7 @@
     public enum StackMode
     {
         Unspecified,
-        None,
+        NotStacked,
         Stacked,
         Stacked100
     }

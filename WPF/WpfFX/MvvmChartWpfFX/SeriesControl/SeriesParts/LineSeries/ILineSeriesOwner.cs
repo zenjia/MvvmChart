@@ -13,7 +13,7 @@ namespace MvvmCharting.WpfFX.Series
 
         Point[] GetCoordinates();
 
-        Point[] GetPreviousSeriesCoordinates(bool isAreaSeries);
+        Point[] GetPreviousCoordinates(bool isAreaSeries);
 
     }
 }

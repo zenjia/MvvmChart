@@ -67,7 +67,7 @@ namespace MvvmCharting.WpfFX.Series
 
             var coordinates = this.Owner.GetCoordinates();
  
-            Point[] previous = this.Owner.GetPreviousSeriesCoordinates(this.IsAreaMode);
+            Point[] previous = this.Owner.GetPreviousCoordinates(this.IsAreaMode);
 
             OnCoordinatesChanged(coordinates, previous);
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,7 +33,7 @@ namespace MvvmCharting.WpfFX.Series
         public event Action<ISeriesControl, Range> XRangeChanged;
         public event Action<ISeriesControl, Range> YRangeChanged;
 
-        public ISeriesControlOwner SeriesControlOwner=> this.Owner; 
+        public ISeriesControlOwner SeriesControlOwner => this.Owner;
 
         private ISeriesControlOwner _owner;
         internal ISeriesControlOwner Owner
@@ -117,7 +118,7 @@ namespace MvvmCharting.WpfFX.Series
             {
                 return;
             }
-           
+
             if (sizeInfo.WidthChanged)
             {
                 UpdateXPixelPerUnit();
@@ -142,7 +143,7 @@ namespace MvvmCharting.WpfFX.Series
                 return;
             }
 
-            if (this.Owner.StackMode == StackMode.None)
+            if (this.Owner.StackMode == StackMode.NotStacked)
             {
                 return;
             }
@@ -161,7 +162,7 @@ namespace MvvmCharting.WpfFX.Series
         {
             EnsureYValuePositive(this.ItemsSource);
 
-            if (!this.Owner.IsXAxisCategory && (this.Owner.StackMode == StackMode.None))
+            if (!this.Owner.IsXAxisCategory && (this.Owner.StackMode == StackMode.NotStacked))
             {
                 return;
             }
@@ -173,7 +174,7 @@ namespace MvvmCharting.WpfFX.Series
                 return;
             }
 
-            string strReason = this.Owner.StackMode != StackMode.None ? $"In {this.Owner.StackMode} mode" : "If the XAxis of a Chart is CategoryAxis";
+            string strReason = this.Owner.StackMode != StackMode.NotStacked ? $"In {this.Owner.StackMode} mode" : "If the XAxis of a Chart is CategoryAxis";
 
             if (firstSh.ItemsSource.Count != this.ItemsSource.Count)
             {
@@ -271,7 +272,7 @@ namespace MvvmCharting.WpfFX.Series
 
         #endregion
 
-        
+
 
         #region ItemsSource property and handlers
 
@@ -297,7 +298,7 @@ namespace MvvmCharting.WpfFX.Series
             c.OnItemsSourceChanged((IList)e.OldValue, (IList)e.NewValue);
 
         }
- 
+
         private void OnItemsSourceChanged(IList oldValue, IList newValue)
         {
             ValidateData();
@@ -342,7 +343,7 @@ namespace MvvmCharting.WpfFX.Series
                                     throw new MvvmChartModelDataException($"Collection change of ItemsSource is not allowed when XAxis is CategoryAxis and {nameof(this.Owner.IsSeriesCollectionChanging)} is false!");
                                 }*/
 
-                if (this.Owner.StackMode != StackMode.None)
+                if (this.Owner.StackMode != StackMode.NotStacked)
                 {
                     throw new MvvmChartModelDataException($"Collection change of ItemsSource is not allowed in {this.Owner.StackMode} mode when {nameof(this.Owner.IsSeriesCollectionChanging)} is false!");
                 }
@@ -367,7 +368,7 @@ namespace MvvmCharting.WpfFX.Series
         }
         private void UpdateMinXValueGap()
         {
-            
+
             if (this.Owner.IsXAxisCategory)
             {
                 this.MinXValueGap = 1.0;
@@ -395,7 +396,7 @@ namespace MvvmCharting.WpfFX.Series
                 }
             }
 
-           
+
         }
 
         private void HandleItemsSourceCollectionChange(IList oldValue, IList newValue)
@@ -405,7 +406,7 @@ namespace MvvmCharting.WpfFX.Series
             UpdateMinXValueGap();
             UpdateValueRange();
             RecalculateCoordinate();
-  
+
         }
 
         private double GetXValueForItem(object item)
@@ -440,7 +441,7 @@ namespace MvvmCharting.WpfFX.Series
         {
             switch (this.Owner.StackMode)
             {
-                case StackMode.None:
+                case StackMode.NotStacked:
 
                     return GetYValueForItem(item);
 
@@ -511,7 +512,7 @@ namespace MvvmCharting.WpfFX.Series
             }
 
 
- 
+
             double minY = double.MaxValue;
             double maxY = double.MinValue;
             double minX = double.MaxValue;
@@ -546,6 +547,7 @@ namespace MvvmCharting.WpfFX.Series
 
         }
 
+
         #endregion
 
         #region value range
@@ -562,7 +564,7 @@ namespace MvvmCharting.WpfFX.Series
                 {
                     this._yValueRange = value;
 
- 
+
                     this.YRangeChanged?.Invoke(this, this.YValueRange);
 
                 }
@@ -591,16 +593,16 @@ namespace MvvmCharting.WpfFX.Series
         #endregion
 
         #region plotting value range
-        private Range _plottingXValueRange = Range.Empty;
+        private PlottingRange _plottingXValueRange = PlottingRange.Empty;
         /// <summary>
         /// The final X value range used to plot the chart
         /// </summary>
-        protected Range PlottingXValueRange
+        protected PlottingRange PlottingXValueRange
         {
             get { return this._plottingXValueRange; }
             set
             {
-                if (!this._plottingXValueRange.Equals(value) )
+                if (!this._plottingXValueRange.Equals(value))
                 {
                     this._plottingXValueRange = value;
                     UpdateXPixelPerUnit();
@@ -609,30 +611,38 @@ namespace MvvmCharting.WpfFX.Series
             }
         }
 
-        private Range _valuePlottingYValueRange = Range.Empty;
+        private PlottingRange _valuePlottingYValueRange = PlottingRange.Empty;
         /// <summary>
         /// The final Y value range used to plot the chart
         /// </summary>
-        protected Range PlottingYValueRange
+        protected PlottingRange PlottingYValueRange
         {
             get { return this._valuePlottingYValueRange; }
             set
             {
-                if (!this._valuePlottingYValueRange.Equals(value) )
+                bool isFullRangeChanged = this.PlottingYValueRange.FullRange != value.FullRange;
+
+                if (!this._valuePlottingYValueRange.Equals(value))
                 {
                     this._valuePlottingYValueRange = value;
-                    UpdateYPixelPerUnit();
+                    if (isFullRangeChanged)
+                    {
+                        UpdateYPixelPerUnit();
+                    }
+
+
                     RecalculateCoordinate();
+
                 }
             }
         }
 
-        public virtual void OnPlottingXValueRangeChanged(Range newValue)
+        public virtual void OnPlottingXValueRangeChanged(PlottingRange newValue)
         {
             this.PlottingXValueRange = newValue;
         }
 
-        public virtual void OnPlottingYValueRangeChanged(Range newValue)
+        public virtual void OnPlottingYValueRangeChanged(PlottingRange newValue)
         {
             this.PlottingYValueRange = newValue;
         }
@@ -649,7 +659,7 @@ namespace MvvmCharting.WpfFX.Series
                 {
                     this._xPixelPerUnit = value;
                     this.BarSeries?.UpdateBarWidth(this.MinXValueGap, this.XPixelPerUnit);
- 
+
                 }
 
             }
@@ -679,7 +689,7 @@ namespace MvvmCharting.WpfFX.Series
                 return;
             }
 
-            this.XPixelPerUnit = this.ActualWidth / this.PlottingXValueRange.Span;
+            this.XPixelPerUnit = this.ActualWidth / this.PlottingXValueRange.FullRange.Span;
         }
 
         private void UpdateYPixelPerUnit()
@@ -692,7 +702,7 @@ namespace MvvmCharting.WpfFX.Series
                 return;
             }
 
-            this.YPixelPerUnit = this.ActualHeight / this.PlottingYValueRange.Span;
+            this.YPixelPerUnit = this.ActualHeight / this.PlottingYValueRange.FullRange.Span;
 
         }
 
@@ -712,8 +722,8 @@ namespace MvvmCharting.WpfFX.Series
 
             var y = GetAdjustYValueForItem(item, itemIndex);
 
-            var pt = new Point((x - this.PlottingXValueRange.Min) * this.XPixelPerUnit,
-                (y - this.PlottingYValueRange.Min) * this.YPixelPerUnit);
+            var pt = new Point((x - this.PlottingXValueRange.FullRange.Min) * this.XPixelPerUnit,
+                (y - this.PlottingYValueRange.FullRange.Min) * this.YPixelPerUnit);
 
 
             if (pt.Y < 0)
@@ -748,7 +758,8 @@ namespace MvvmCharting.WpfFX.Series
 
 
             Array.Resize(ref this._coordinateCache, this.ItemsSource.Count);
-            var previous = GetPreviousSeriesCoordinates(false);
+            var previous = GetPreviousCoordinates(false);
+            var minCoordinateY = this.YStartValue;
             for (int i = 0; i < this.ItemsSource.Count; i++)
             {
                 var item = this.ItemsSource[i];
@@ -759,7 +770,7 @@ namespace MvvmCharting.WpfFX.Series
 
                 this.ScatterSeries?.UpdateScatterCoordinate(item, pt);
 
-                double y = previous?[i].Y ?? 0;
+                double y = previous?[i].Y ?? minCoordinateY;
                 this.BarSeries?.UpdateBarCoordinateAndHeight(item, pt, y);
             }
 
@@ -768,7 +779,7 @@ namespace MvvmCharting.WpfFX.Series
 
             this.BarSeries?.UpdateBarWidth(this.MinXValueGap, this.XPixelPerUnit);
 
-        
+
         }
 
         internal void Reset()
@@ -804,19 +815,23 @@ namespace MvvmCharting.WpfFX.Series
             return this.Owner.GetPreviousSeriesHost(this);
         }
 
+        public double YStartValue => (this.PlottingYValueRange.ActualRange.Min -
+                                      this.PlottingYValueRange.FullRange.Min) * this.YPixelPerUnit;
 
-        public Point[] GetPreviousSeriesCoordinates(bool isAreaSeries)
+        public Point[] GetPreviousCoordinates(bool isAreaSeries)
         {
             var coordinates = GetCoordinates();
 
             Point[] previous = null;
 
+
             switch (this.Owner.StackMode)
             {
-                case StackMode.None:
+                case StackMode.NotStacked:
                     if (isAreaSeries)
                     {
-                        previous = new[] { new Point(coordinates.First().X, 0), new Point(coordinates.Last().X, 0) };
+                        var minY = YStartValue;
+                        previous = new[] { new Point(coordinates.First().X, minY), new Point(coordinates.Last().X, minY) };
                     }
                     break;
                 case StackMode.Stacked:
@@ -826,7 +841,8 @@ namespace MvvmCharting.WpfFX.Series
                     {
                         if (isAreaSeries)
                         {
-                            previous = new[] { new Point(coordinates.First().X, 0), new Point(coordinates.Last().X, 0) };
+                            var minY = YStartValue;
+                            previous = new[] { new Point(coordinates.First().X, minY), new Point(coordinates.Last().X, minY) };
                         }
 
                     }

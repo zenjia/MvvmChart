@@ -163,12 +163,12 @@ namespace MvvmCharting.WpfFX.Series
                 seriesHost.ValidateData();
             }
 
-            //if (!this.IsXAxisCategory && (this.StackMode == StackMode.None))
+            //if (!this.IsXAxisCategory && (this.StackMode == StackMode.NotStacked))
             //{
             //    return;
             //}
 
-            //string strReason = this.StackMode != StackMode.None ? $"In {this.StackMode} mode" : "If the XAxis of a Chart is CategoryAxis";
+            //string strReason = this.StackMode != StackMode.NotStacked ? $"In {this.StackMode} mode" : "If the XAxis of a Chart is CategoryAxis";
             //SeriesHost prev = null;
             //foreach (var seriesHost in this.GetSeries())
             //{
@@ -286,7 +286,7 @@ namespace MvvmCharting.WpfFX.Series
         #endregion
 
         #region StackMode
-        private StackMode _stackMode = StackMode.None;
+        private StackMode _stackMode = StackMode.NotStacked;
         public StackMode StackMode
         {
             get { return this._stackMode; }
@@ -396,8 +396,8 @@ namespace MvvmCharting.WpfFX.Series
 
         #region Plotting Data value Range
 
-        private Range _xPlottingRange;
-        public Range XPlottingRange
+        private PlottingRange _xPlottingRange;
+        public PlottingRange XPlottingRange
         {
             get { return this._xPlottingRange; }
             set
@@ -413,8 +413,8 @@ namespace MvvmCharting.WpfFX.Series
             }
         }
 
-        private Range _yPlottingRange;
-        public Range YPlottingRange
+        private PlottingRange _yPlottingRange;
+        public PlottingRange YPlottingRange
         {
             get { return this._yPlottingRange; }
             set
@@ -431,7 +431,7 @@ namespace MvvmCharting.WpfFX.Series
             }
         }
 
-        internal virtual void SetPlottingValueRange(Orientation orientation, Range newValue)
+        internal virtual void SetPlottingValueRange(Orientation orientation, PlottingRange newValue)
         {
 
             switch (orientation)

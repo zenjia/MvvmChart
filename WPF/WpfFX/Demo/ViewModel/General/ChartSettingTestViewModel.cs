@@ -21,7 +21,7 @@ namespace Demo
 
             this.SeriesModeList = new ObservableCollection<StackMode>()
             {
-                StackMode.None,
+                StackMode.NotStacked,
                 StackMode.Stacked,
                 StackMode.Stacked100
             };
@@ -40,7 +40,7 @@ namespace Demo
         public ObservableCollection<AxisPlacement> XAxisPlacements { get; }
         public ObservableCollection<AxisPlacement> YAxisPlacements { get; }
 
-        private StackMode _selectedStackMode = StackMode.None;
+        private StackMode _selectedStackMode = StackMode.NotStacked;
         public StackMode SelectedStackMode
         {
             get { return this._selectedStackMode; }

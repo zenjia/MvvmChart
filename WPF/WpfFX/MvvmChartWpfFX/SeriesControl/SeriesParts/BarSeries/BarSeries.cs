@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using MvvmCharting.Common; 
+using MvvmCharting.Common;
+using MvvmCharting.Series;
 
 namespace MvvmCharting.WpfFX.Series
 {
@@ -21,7 +23,8 @@ namespace MvvmCharting.WpfFX.Series
 
         Point[] GetCoordinates();
         Point GetPlotCoordinateForItem(object item, int itemIndex);
-        Point[] GetPreviousSeriesCoordinates(bool isAreaSeries);
+        Point[] GetPreviousCoordinates(bool isAreaSeries);
+        double YStartValue { get; }
     }
 
     public class BarSeries : InteractiveControl
@@ -91,24 +94,26 @@ namespace MvvmCharting.WpfFX.Series
                 barItem.SetCurrentValue(WidthProperty, this.BarWidth);
             }
 
+          
             if (!this.Owner.SeriesControlOwner.IsSeriesCollectionChanging)
             {
                 if (!this.Owner.XPixelPerUnit.IsNaN() && !this.Owner.YPixelPerUnit.IsNaN())
                 {
-
-                    var privousCoordinates = this.Owner.GetPreviousSeriesCoordinates(false);
-
-                    var item = barItem.DataContext;
-                    var coordinate = this.Owner.GetPlotCoordinateForItem(item, childIndex);
-
-                    var barHeight = privousCoordinates == null
-                        ? coordinate.Y
-                        : coordinate.Y - privousCoordinates[childIndex].Y;
-
                     if (!this.BarWidth.IsNaN() && barItem.Width.IsInvalid())
                     {
                         barItem.SetCurrentValue(WidthProperty, this.BarWidth);
                     }
+
+                    var privousCoordinates = this.Owner.GetPreviousCoordinates(false);
+
+                    var item = barItem.DataContext;
+                    var coordinate = this.Owner.GetPlotCoordinateForItem(item, childIndex);
+
+                    double barHeight = privousCoordinates == null
+                        ? coordinate.Y - this.Owner.YStartValue
+                        : coordinate.Y - privousCoordinates[childIndex].Y;
+
+
 
                     barItem.SetBarHeight(barHeight);
                     barItem.Coordinate = coordinate;
@@ -317,7 +322,7 @@ namespace MvvmCharting.WpfFX.Series
                 return;
             }
 
-      
+
             foreach (var barItem in this.PART_BarItemsControl.GetChildren().OfType<BarItem>())
             {
                 var vs = DependencyPropertyHelper.GetValueSource(barItem, WidthProperty);
@@ -347,7 +352,7 @@ namespace MvvmCharting.WpfFX.Series
             }
 
             double width = minXGap * xPixelPerUnit;
- 
+
             SetBarWidth(width);
         }
 
@@ -372,7 +377,7 @@ namespace MvvmCharting.WpfFX.Series
                 return;
             }
 
- 
+
             foreach (var barItem in this.PART_BarItemsControl.GetChildren().OfType<BarItem>())
             {
                 barItem.MaxWidth = this.MaxBarWidth;
@@ -413,18 +418,20 @@ namespace MvvmCharting.WpfFX.Series
                 throw new NotImplementedException();
             }
 
-            var previous = this.Owner.GetPreviousSeriesCoordinates(false);
-            if (previous != null && previous.Length != coordinates.Length)
+            var previous = this.Owner.GetPreviousCoordinates(false);
+
+            if (previous != null)
             {
-                throw new NotImplementedException();
+                Debug.Assert(previous.Length == coordinates.Length);
             }
 
+            double yStartValue = this.Owner.YStartValue;
             for (int i = 0; i < coordinates.Length; i++)
             {
                 var pt = coordinates[i];
                 var item = this.PART_BarItemsControl.ItemsSource[i];
 
-                double y = previous == null ? 0 : previous[i].Y;
+                double y = previous == null ? yStartValue : previous[i].Y;
                 UpdateBarCoordinateAndHeight(item, pt, y);
             }
 

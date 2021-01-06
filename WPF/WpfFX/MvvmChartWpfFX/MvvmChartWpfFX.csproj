@@ -75,6 +75,7 @@
     <Compile Include="Axis\AxisItem\DefaultDoubleToAxisLabelTextConverter.cs" />
     <Compile Include="common\IPlottable_2D.cs" />
     <Compile Include="common\ISeriesGeometryBuilder.cs" />
+    <Compile Include="common\PlottingRangeHelper.cs" />
     <Compile Include="SeriesCollectionControl\SeriesCollectionControl.cs" />
     <Compile Include="common\PointHelper.cs" />
     <Compile Include="common\SizeHelper.cs" />
