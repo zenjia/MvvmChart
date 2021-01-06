@@ -21,7 +21,7 @@ namespace Demo.WpfFX
 {
     public class GeometryBuilderConverter : IValueConverter
     {
-        public PolyLineGeometryBuilder PolyLineBuilder { get; set; }
+        public PolylineGeometryBuilder PolylineBuilder { get; set; }
         public StepLineGeometryBuilder StepLineBuilder { get; set; }
         public SplineGeometryBuilder SplineBuilder { get; set; }
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -30,7 +30,7 @@ namespace Demo.WpfFX
             switch (t)
             {
                 case "PolyLine":
-                    return PolyLineBuilder;
+                    return this.PolylineBuilder;
                 case "StepLine":
                     return StepLineBuilder;
                 case "Spline":

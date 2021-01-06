@@ -10,7 +10,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <local:DemoDataViewModel x:Key="DemoDataViewModel"/>
+        <local:DemoDataViewModel x:Key="DemoDataViewModel" SeriesCount="3" Max="30"/>
  
 
         <DataTemplate x:Key="MyCustomGeometryScatterTemplate">

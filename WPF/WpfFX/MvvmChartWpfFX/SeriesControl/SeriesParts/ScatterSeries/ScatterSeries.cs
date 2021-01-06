@@ -187,9 +187,6 @@ namespace MvvmCharting.WpfFX.Series
 
         }
 
-
-
-
-
+ 
     }
 }

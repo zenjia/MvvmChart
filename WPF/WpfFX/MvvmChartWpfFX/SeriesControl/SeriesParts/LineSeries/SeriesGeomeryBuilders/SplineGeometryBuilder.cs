@@ -140,7 +140,7 @@ namespace MvvmCharting.WpfFX.Series
         {
             if (points.Length < 2)
             {
-                return PolyLineGeometryBuilder.CreateGeometry(points, previousPoints);
+                return PolylineGeometryBuilder.CreateGeometry(points, previousPoints);
             }
 
             var curvePoints = CreateCurvePoints(points, this.Tension);

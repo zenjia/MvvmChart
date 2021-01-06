@@ -8,18 +8,18 @@
              xmlns:wpfFx="clr-namespace:MvvmCharting.WpfFX;assembly=MvvmChartWpfFX"
              xmlns:axis="clr-namespace:MvvmCharting.WpfFX.Axis;assembly=MvvmChartWpfFX"
              xmlns:series="clr-namespace:MvvmCharting.WpfFX.Series;assembly=MvvmChartWpfFX"
+             xmlns:controls="http://schemas.modernwpf.com/2019"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <demo:ChartSettingTestViewModel x:Key="ChartSettingTestViewModel"/>
-        <demo:DemoDataViewModel x:Key="DemoDataViewModel"/>
+        <demo:DemoDataViewModel x:Key="DemoDataViewModel" SeriesCount="3" Max="30"/>
 
- 
-        <series:PolyLineGeometryBuilder x:Key="DefaultPolyLineGeometryBuilder"/>
+        <series:PolylineGeometryBuilder x:Key="DefaultPolyLineGeometryBuilder"/>
         <series:StepLineGeometryBuilder x:Key="DefaultStepLineGeometryBuilder"/>
         <series:SplineGeometryBuilder x:Key="DefaultSplineGeometryBuilder"/>
         <local:GeometryBuilderConverter x:Key="MyGeometryBuilderConverter"
-                                        PolyLineBuilder="{StaticResource DefaultPolyLineGeometryBuilder}" 
+                                        PolylineBuilder="{StaticResource DefaultPolyLineGeometryBuilder}" 
                                         StepLineBuilder="{StaticResource DefaultStepLineGeometryBuilder}"
                                         SplineBuilder="{StaticResource DefaultSplineGeometryBuilder}"/>
 
@@ -218,11 +218,27 @@
 
             <StackPanel Margin="10,20" 
                         DataContext="{StaticResource DemoDataViewModel}">
-                <Button Content="Add Series" Command="{Binding AddListCommand}" />
-                <Button Content="Remove Series" Command="{Binding RemoveListCommand}" Margin="0,6"/>
+                <controls:NumberBox Header="Series count" 
+                              Value="{Binding SeriesCount, Mode=TwoWay}" 
+                              SmallChange="1" 
+                              LargeChange="1"
+                              SpinButtonPlacementMode="Inline"/>
 
-                <Button Content="Add Item"  Command="{Binding AddItemCommand}" Margin="0,9,0,0"/>
-                <Button Content="Remove Item" Command="{Binding RemoveItemCommand}" Margin="0,6"/>
+                <controls:NumberBox Header="Maximum t value" 
+                              Margin="0,15,0,0"
+                              Value="{Binding Max, Mode=TwoWay}" 
+                              SmallChange="1" 
+                              LargeChange="1"
+                              Minimum="0"
+                              SpinButtonPlacementMode="Inline"/>
+
+                <controls:NumberBox Header="Minimum t value"  
+                              Value="{Binding Min, Mode=TwoWay}" 
+                              SmallChange="1" 
+                              LargeChange="1"
+                              Minimum="0"
+                              SpinButtonPlacementMode="Inline"/>
+
             </StackPanel>
 
         </StackPanel>

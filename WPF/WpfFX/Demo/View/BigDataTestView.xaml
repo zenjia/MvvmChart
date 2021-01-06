@@ -7,24 +7,24 @@
              xmlns:mvvmCharting="clr-namespace:MvvmCharting.WpfFX;assembly=MvvmChartWpfFX"
              xmlns:axis="clr-namespace:MvvmCharting.WpfFX.Axis;assembly=MvvmChartWpfFX"
              xmlns:series="clr-namespace:MvvmCharting.WpfFX.Series;assembly=MvvmChartWpfFX"
+             xmlns:controls="http://schemas.modernwpf.com/2019"
 
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
-        <local:BigDataViewModel x:Key="BigDataViewModel"/>
+        <local:BigDataViewModel x:Key="BigDataViewModel" SeriesCount="1" Max="1000"/>
 
-    
         <DataTemplate x:Key="ScatterDataTemplate">
             <series:Scatter >
 
 
             </series:Scatter>
         </DataTemplate>
- 
 
 
- 
+
+
 
         <DataTemplate x:Key="SeriesTemplate" DataType="local:SomePointList">
             <series:SeriesControl IndependentValueProperty="t"
@@ -49,7 +49,7 @@
 
         </DataTemplate>
 
- 
+
 
 
     </UserControl.Resources>
@@ -62,8 +62,9 @@
         </Grid.RowDefinitions>
 
         <mvvmCharting:Chart Background="Bisque"
-                                  SeriesTemplate="{StaticResource SeriesTemplate}"
-                                  SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource BigDataViewModel}}">
+                            IsChartUpdating="{Binding IsModelChanging, Source={StaticResource BigDataViewModel}, Mode=TwoWay}"
+                            SeriesTemplate="{StaticResource SeriesTemplate}"
+                            SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource BigDataViewModel}}">
             <mvvmCharting:Chart.LegendItemTemplate>
                 <DataTemplate DataType="local:SomePointList">
                     <mvvmCharting:LegendItemControl 
@@ -76,35 +77,32 @@
 
         <StackPanel Grid.Row="1" Orientation="Horizontal"
                     DataContext="{Binding Source={StaticResource BigDataViewModel}}">
+
             <CheckBox Content="ShowScatter" 
                       VerticalAlignment="Center"
-                      IsChecked="{Binding Path=ShowSeriesPointsGlobal, Mode=TwoWay}"/>
+                      IsChecked="{Binding ShowScatterSeries, Mode=TwoWay}"/>
 
-            <GroupBox Margin="20" 
-                      Padding="9" 
-                      Visibility="{Binding ShowSeriesPointsGlobal, Converter={StaticResource t2v}}">
-                <StackPanel>
-                    <TextBlock Margin="6" Text="Scatter template: "/>
 
-                    <ComboBox Width="160"
-                          Margin="6"
-                          HorizontalAlignment="Left"
-                          ItemsSource="{Binding AvailableScatterTemplates}"
-                          SelectedItem="{Binding SelectedScatterTemplateType, Mode=TwoWay}"/>
-                </StackPanel>
-            </GroupBox>
 
-            <GroupBox Margin="20" Padding="9">
-                <StackPanel >
-                    <TextBlock Text="Series Data Count:" Margin="6" />
+            <StackPanel Margin="10,20" >
 
-                    <ComboBox Margin="6"
-                              HorizontalAlignment="Left"
-                              ItemsSource="{Binding AvailableSizes}"
-                              SelectedItem="{Binding SelectedDataSize, Mode=TwoWay}"/>
-                </StackPanel>
 
-            </GroupBox>
+                <controls:NumberBox Header="Maximum t value" 
+                              Margin="0,15,0,0"
+                              Value="{Binding Max, Mode=TwoWay}" 
+                              SmallChange="2000" 
+                              LargeChange="5000"
+                              Minimum="0"
+                              SpinButtonPlacementMode="Inline"/>
+
+                <controls:NumberBox Header="Minimum t value"  
+                              Value="{Binding Min, Mode=TwoWay}" 
+                              SmallChange="1000" 
+                              LargeChange="2000"
+                              Minimum="0"
+                              SpinButtonPlacementMode="Inline"/>
+
+            </StackPanel>
 
         </StackPanel>
     </Grid>

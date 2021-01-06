@@ -34,7 +34,7 @@ namespace MvvmCharting.WpfFX.Series
             var arr = ConvertToStepPoints(points);
             var arr2 = ConvertToStepPoints(previousPoints);
 
-            return PolyLineGeometryBuilder.CreateGeometry(arr, arr2);
+            return PolylineGeometryBuilder.CreateGeometry(arr, arr2);
         }
     }
 }

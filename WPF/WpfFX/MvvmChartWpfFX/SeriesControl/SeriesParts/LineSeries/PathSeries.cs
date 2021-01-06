@@ -78,7 +78,7 @@ namespace MvvmCharting.WpfFX.Series
             set { SetValue(GeometryBuilderProperty, value); }
         }
         public static readonly DependencyProperty GeometryBuilderProperty =
-            DependencyProperty.Register("GeometryBuilder", typeof(ISeriesGeometryBuilder), typeof(PathSeries), new PropertyMetadata(new PolyLineGeometryBuilder(), OnGeometryProviderPropertyChanged));
+            DependencyProperty.Register("GeometryBuilder", typeof(ISeriesGeometryBuilder), typeof(PathSeries), new PropertyMetadata(new PolylineGeometryBuilder(), OnGeometryProviderPropertyChanged));
 
         private static void OnGeometryProviderPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

@@ -26,10 +26,12 @@ namespace MvvmCharting.WpfFX.Series
    
            
         }
+
+
     }
 
     /// <summary>
-    /// Represents a line series which use <see cref="PolyLineGeometryBuilder"/> to
+    /// Represents a line series which use <see cref="PolylineGeometryBuilder"/> to
     /// create its path geometry.
     /// </summary>
     public class PolyLineSeries : LineSeries

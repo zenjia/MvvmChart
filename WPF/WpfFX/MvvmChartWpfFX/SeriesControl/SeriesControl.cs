@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
+using System.Windows.Shapes;
 using MvvmCharting.Common;
 using MvvmCharting.Series;
 
@@ -150,11 +153,19 @@ namespace MvvmCharting.WpfFX.Series
 
             foreach (var item in list)
             {
-                var y = GetYValueForItem(item);
-                if (y < 0)
-                {
-                    throw new MvvmChartModelDataException($"Item value of {this.Owner.StackMode} series cannot be negative!");
-                }
+                EnsureYValuePositive(item);
+            }
+        }
+
+        private void EnsureYValuePositive(object item)
+        {
+
+ 
+            var y = GetYValueForItem(item);
+            if (y < 0)
+            {
+                throw new MvvmChartModelDataException(
+                    $"Item value of {this.Owner.StackMode} series cannot be negative!");
             }
         }
 
@@ -299,24 +310,41 @@ namespace MvvmCharting.WpfFX.Series
 
         }
 
+
+        private void DetachCollectionChangedHandler(IList list)
+        {
+            if (list is INotifyCollectionChanged collection)
+            {
+                WeakEventManager<INotifyCollectionChanged, NotifyCollectionChangedEventArgs>
+                    .RemoveHandler(collection, "CollectionChanged", ItemsSource_CollectionChanged);
+            }
+        }
+
+        private void AttachCollectionChangedHandler(IList list)
+        {
+            if (list is INotifyCollectionChanged collection)
+            {
+                WeakEventManager<INotifyCollectionChanged, NotifyCollectionChangedEventArgs>
+                    .AddHandler(collection, "CollectionChanged", ItemsSource_CollectionChanged);
+            }
+        }
+
+        //internal void DetachCollectionChangedHandler()
+        //{
+        //    DetachCollectionChangedHandler(this.ItemsSource);
+        //}
+
+        //internal void AttachCollectionChangedHandler()
+        //{
+        //    AttachCollectionChangedHandler(this.ItemsSource);
+        //}
+
         private void OnItemsSourceChanged(IList oldValue, IList newValue)
         {
             ValidateData();
 
-            if (oldValue is INotifyCollectionChanged oldItemsSource)
-            {
-                WeakEventManager<INotifyCollectionChanged, NotifyCollectionChangedEventArgs>
-                    .RemoveHandler(oldItemsSource, "CollectionChanged", ItemsSource_CollectionChanged);
-            }
-
-            if (newValue != null)
-            {
-                if (newValue is INotifyCollectionChanged newItemsSource)
-                {
-                    WeakEventManager<INotifyCollectionChanged, NotifyCollectionChangedEventArgs>
-                        .AddHandler(newItemsSource, "CollectionChanged", ItemsSource_CollectionChanged);
-                }
-            }
+            DetachCollectionChangedHandler(oldValue);
+            AttachCollectionChangedHandler(newValue);
 
             Reset();
             UpdateMinXValueGap();
@@ -338,18 +366,92 @@ namespace MvvmCharting.WpfFX.Series
 
             if (!this.Owner.IsSeriesCollectionChanging)
             {
-                /*                if (this.Owner.IsXAxisCategory)
-                                {
-                                    throw new MvvmChartModelDataException($"Collection change of ItemsSource is not allowed when XAxis is CategoryAxis and {nameof(this.Owner.IsSeriesCollectionChanging)} is false!");
-                                }*/
-
                 if (this.Owner.StackMode != StackMode.NotStacked)
                 {
                     throw new MvvmChartModelDataException($"Collection change of ItemsSource is not allowed in {this.Owner.StackMode} mode when {nameof(this.Owner.IsSeriesCollectionChanging)} is false!");
                 }
             }
 
-            HandleItemsSourceCollectionChange(e.OldItems, e.NewItems);
+            OnCollectionChanged(e);
+            //HandleItemsSourceCollectionChange(e.OldItems, e.NewItems);
+        }
+
+        private void OnCollectionChanged(NotifyCollectionChangedEventArgs args)
+        {
+            if (args.OldItems != null && args.OldItems.Count != 1 ||
+                args.NewItems != null && args.NewItems.Count != 1)
+            {
+                throw new NotSupportedException(MvvmChartException.RangeActionsNotSupported);
+            }
+
+            switch (args.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    OnItemAdded(args.NewItems[0], args.NewStartingIndex);
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    OnItemRemoved(args.OldStartingIndex);
+                    break;
+
+                case NotifyCollectionChangedAction.Replace:
+                    OnItemReplaced(args.NewItems[0], args.NewStartingIndex);
+                    break;
+
+                case NotifyCollectionChangedAction.Move:
+                    OnItemMoved();
+                    break;
+
+                case NotifyCollectionChangedAction.Reset:
+                    break;
+
+                default:
+                    throw new NotSupportedException($"{MvvmChartException.UnexpectedCollectionChangeAction}: {args.Action}");
+            }
+
+        }
+
+ 
+        private void OnItemAdded(object newItem, int index)
+        {
+            if (this.Owner.StackMode == StackMode.NotStacked)
+            {
+                EnsureYValuePositive(newItem);
+            }
+
+            if (!this.Owner.IsSeriesCollectionChanging)
+            {
+                Refresh();
+            }
+ 
+        }
+
+        private void OnItemRemoved(int index)
+        {
+            if (!this.Owner.IsSeriesCollectionChanging)
+            {
+                Refresh();
+            }
+ 
+        }
+
+        private void OnItemReplaced(object newItem, int index)
+        {
+            if (this.Owner.StackMode == StackMode.NotStacked)
+            {
+                EnsureYValuePositive(newItem);
+            }
+
+            if (!this.Owner.IsSeriesCollectionChanging)
+            {
+                Refresh();
+            }
+ 
+        }
+
+        private void OnItemMoved()
+        {
+            throw new NotSupportedException();
         }
 
         private double _minXValueGap = double.NaN;
@@ -377,6 +479,11 @@ namespace MvvmCharting.WpfFX.Series
                 return;
             }
 
+            if (this.ItemsSource==null)
+            {
+                return;
+            }
+
             double prev = double.NaN;
             this.MinXValueGap = double.MaxValue;
             foreach (var item in this.ItemsSource)
@@ -399,15 +506,14 @@ namespace MvvmCharting.WpfFX.Series
 
         }
 
-        private void HandleItemsSourceCollectionChange(IList oldValue, IList newValue)
-        {
-            Reset();
-            EnsureYValuePositive(newValue);
-            UpdateMinXValueGap();
-            UpdateValueRange();
-            RecalculateCoordinate();
-
-        }
+        //private void HandleItemsSourceCollectionChange(IList oldValue, IList newValue)
+        //{
+        //    Reset();
+        //    EnsureYValuePositive(newValue);
+        //    UpdateMinXValueGap();
+        //    UpdateValueRange();
+        //    RecalculateCoordinate();
+        //}
 
         private double GetXValueForItem(object item)
         {
@@ -793,6 +899,10 @@ namespace MvvmCharting.WpfFX.Series
 
         internal void Refresh()
         {
+            Reset();
+ 
+            UpdateMinXValueGap();
+
             UpdateValueRange();
 
             RecalculateCoordinate();

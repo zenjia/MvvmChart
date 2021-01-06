@@ -49,16 +49,5 @@ namespace MvvmCharting
             }
         }
 
-        public PlottingRange(PlottingRange oldValue, double minPadding, double maxPadding)
-        {
-            this._actualRange = oldValue.ActualRange;
-            this._fullRange = new Range(this._actualRange.Min - minPadding, this._actualRange.Max + maxPadding);
-
-            if (this.FullRange.Span <= 0)
-            {
-                throw new MvvmChartException($"Invalid value range: {this.FullRange}");
-            }
-        }
-
     }
 }

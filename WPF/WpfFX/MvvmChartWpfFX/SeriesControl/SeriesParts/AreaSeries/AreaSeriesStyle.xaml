@@ -5,7 +5,7 @@
 
     <system:Double x:Key="AreaSeries.Highlighted.StrokeThickness">3.5</system:Double>
 
-    <local:PolyLineGeometryBuilder x:Key="DefaultPolyLineGeometryBuilder"/>
+    <local:PolylineGeometryBuilder x:Key="DefaultPolyLineGeometryBuilder"/>
     <local:StepLineGeometryBuilder x:Key="DefaultStepLineGeometryBuilder"/>
     <local:SplineGeometryBuilder x:Key="DefaultSplineGeometryBuilder"/>
 

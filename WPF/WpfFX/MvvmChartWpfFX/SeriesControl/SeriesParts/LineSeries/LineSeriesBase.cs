@@ -44,6 +44,7 @@ namespace MvvmCharting.WpfFX.Series
         public static readonly DependencyProperty LineStyleProperty =
             DependencyProperty.Register("LineStyle", typeof(Style), typeof(LineSeriesBase), new PropertyMetadata(null));
 
+
         /// <summary>
         /// Update the Shape/Geometry of a Line(for <see cref="LineSeries"/>) or
         /// a Area(for <see cref="AreaSeries"/>)

@@ -102,7 +102,7 @@
     <Compile Include="SeriesControl\SeriesParts\ScatterSeries\Scatter.cs" />
     <Compile Include="Chart.cs" />
     <Compile Include="SeriesControl\SeriesParts\LineSeries\SeriesGeomeryBuilders\SplineGeometryBuilder.cs" />
-    <Compile Include="SeriesControl\SeriesParts\LineSeries\SeriesGeomeryBuilders\PolyLineGeometryBuilder.cs" />
+    <Compile Include="SeriesControl\SeriesParts\LineSeries\SeriesGeomeryBuilders\PolylineGeometryBuilder.cs" />
     <Compile Include="SeriesControl\SeriesParts\LineSeries\SeriesGeomeryBuilders\StepLineGeometryBuilder.cs" />
     <Page Include="Axis\AxisStyle.xaml">
       <SubType>Designer</SubType>

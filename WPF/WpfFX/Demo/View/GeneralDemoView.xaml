@@ -9,7 +9,7 @@
              xmlns:ui="http://schemas.modernwpf.com/2019">
     <UserControl.Resources>
         <local:ChartSettingTestViewModel x:Key="ChartSettingTestViewModel"/>
-        <local:DemoDataViewModel x:Key="DemoDataViewModel"/>
+        <local:DemoDataViewModel x:Key="DemoDataViewModel" SeriesCount="3" Max="30"/>
 
         <local:RangeToPointConverter x:Key="RangeToPointConverter"/>
 
@@ -333,11 +333,27 @@
 
             <StackPanel Margin="10,20" 
                         DataContext="{StaticResource DemoDataViewModel}">
-                <Button Content="Add Series" Command="{Binding AddListCommand}" />
-                <Button Content="Remove Series" Command="{Binding RemoveListCommand}" Margin="0,6"/>
+                <ui:NumberBox Header="Series count" 
+                              Value="{Binding SeriesCount, Mode=TwoWay}" 
+                              SmallChange="1" 
+                              LargeChange="1"
+                              SpinButtonPlacementMode="Inline"/>
 
-                <Button Content="Add Item"  Command="{Binding AddItemCommand}" Margin="0,9,0,0"/>
-                <Button Content="Remove Item" Command="{Binding RemoveItemCommand}" Margin="0,6"/>
+                <ui:NumberBox Header="Maximum t value" 
+                              Margin="0,15,0,0"
+                              Value="{Binding Max, Mode=TwoWay}" 
+                              SmallChange="1" 
+                              LargeChange="1"
+                              Minimum="0"
+                              SpinButtonPlacementMode="Inline"/>
+
+                <ui:NumberBox Header="Minimum t value"  
+                              Value="{Binding Min, Mode=TwoWay}" 
+                              SmallChange="1" 
+                              LargeChange="1"
+                              Minimum="0"
+                              SpinButtonPlacementMode="Inline"/>
+ 
             </StackPanel>
 
 

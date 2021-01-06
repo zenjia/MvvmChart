@@ -151,8 +151,7 @@ namespace MvvmCharting.WpfFX.Series
             sr.OnPlottingXValueRangeChanged(this.XPlottingRange);
             sr.OnPlottingYValueRangeChanged(this.YPlottingRange);
 
-            //sr.UpdateValueRange();
-            ((SeriesControl)sr).Refresh();
+            sr.Refresh();
 
         }
 

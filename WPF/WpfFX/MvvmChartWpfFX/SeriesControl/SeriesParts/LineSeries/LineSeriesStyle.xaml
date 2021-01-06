@@ -31,7 +31,7 @@
         </Setter>
     </Style>
 
-    <local:PolyLineGeometryBuilder x:Key="DefaultPolyLineGeometryBuilder"/>
+    <local:PolylineGeometryBuilder x:Key="DefaultPolyLineGeometryBuilder"/>
     <local:StepLineGeometryBuilder x:Key="DefaultStepLineGeometryBuilder"/>
     <local:SplineGeometryBuilder x:Key="DefaultSplineGeometryBuilder"/>
 

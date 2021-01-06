@@ -24,8 +24,6 @@ namespace MvvmCharting.WpfFX
             DefaultStyleKeyProperty.OverrideMetadata(typeof(SlimItemsControl), new FrameworkPropertyMetadata(typeof(SlimItemsControl)));
         }
 
-        private static string RangeActionsNotSupported = "RangeActionsNotSupported";
-        private static string UnexpectedCollectionChangeAction = "UnexpectedCollectionChangeAction";
 
         /// <summary>
         /// Cached ItemsSource reference which has been added
@@ -254,13 +252,13 @@ namespace MvvmCharting.WpfFX
             {
                 case NotifyCollectionChangedAction.Add:
                     if (args.NewItems.Count != 1)
-                        throw new NotSupportedException(RangeActionsNotSupported);
+                        throw new NotSupportedException(MvvmChartException.RangeActionsNotSupported);
                     OnItemAdded(args.NewItems[0], args.NewStartingIndex);
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
                     if (args.OldItems.Count != 1)
-                        throw new NotSupportedException(RangeActionsNotSupported);
+                        throw new NotSupportedException(MvvmChartException.RangeActionsNotSupported);
                     OnItemRemoved(args.OldItems[0], args.OldStartingIndex);
                     break;
 
@@ -273,7 +271,7 @@ namespace MvvmCharting.WpfFX
                     }
 
                     if (args.OldItems.Count != 1)
-                        throw new NotSupportedException(RangeActionsNotSupported);
+                        throw new NotSupportedException(MvvmChartException.RangeActionsNotSupported);
 
                     OnItemReplaced(args.OldItems[0], args.NewItems[0], args.NewStartingIndex);
                     break;
@@ -281,7 +279,7 @@ namespace MvvmCharting.WpfFX
                 case NotifyCollectionChangedAction.Move:
 
                     if (args.OldItems.Count != 1)
-                        throw new NotSupportedException(RangeActionsNotSupported);
+                        throw new NotSupportedException(MvvmChartException.RangeActionsNotSupported);
 
                     OnItemMoved(args.OldItems[0], args.OldStartingIndex, args.NewStartingIndex);
                     break;
@@ -291,7 +289,7 @@ namespace MvvmCharting.WpfFX
                     break;
 
                 default:
-                    throw new NotSupportedException($"{UnexpectedCollectionChangeAction}: {args.Action}");
+                    throw new NotSupportedException($"{MvvmChartException.UnexpectedCollectionChangeAction}: {args.Action}");
             }
 
         }

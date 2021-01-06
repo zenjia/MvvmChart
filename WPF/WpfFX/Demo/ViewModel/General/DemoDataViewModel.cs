@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using MvvmCharting.Common;
@@ -9,7 +10,6 @@ namespace Demo
 {
     public class DemoDataViewModel : BindableBase
     {
-
         public ObservableCollection<SomePointList> ItemsSourceList { get; }
 
         private bool _showLineSeries = true;
@@ -93,24 +93,6 @@ namespace Demo
             }
         }
 
-
-        public ObservableCollection<string> AvailableScatterTemplates { get; }
-
-
-        private string _selectedScatterTemplateType;
-        public string SelectedScatterTemplateType
-        {
-            get { return this._selectedScatterTemplateType; }
-            set
-            {
-                SetProperty(ref this._selectedScatterTemplateType, value);
-                foreach (var list in this.ItemsSourceList)
-                {
-                    list.SelectedScatterTemplateType = value;
-                }
-            }
-        }
-
         private bool _isModelChanging;
         public bool IsModelChanging
         {
@@ -119,8 +101,52 @@ namespace Demo
         }
 
 
-        private int _max = 30;
+        private int _max = 0;
         private int _min = 0;
+        public int Max
+        {
+            get { return this._max; }
+            set
+            {
+                IsModelChanging = true;
+                try
+                {
+           
+                    if (SetProperty(ref this._max, value))
+                    {
+                        UpdateData();
+                    }
+                    
+                }
+                finally
+                {
+                    IsModelChanging = false;
+                }
+
+
+            }
+        }
+        public int Min
+        {
+            get { return this._min; }
+            set
+            {
+                IsModelChanging = true;
+                try
+                {
+                    if (SetProperty(ref this._min, value))
+                    {
+                        UpdateData();
+                    }
+
+                }
+                finally
+                {
+                    IsModelChanging = false;
+                }
+
+            }
+        }
 
         private SomePoint GetPoint(int i, double yOffset)
         {
@@ -133,117 +159,145 @@ namespace Demo
         }
 
 
-
-        private void InitiateData()
+        private int _minInternal;
+        private int _maxInternal;
+        internal void UpdateData()
         {
-            for (int i = 0; i < 3; i++)
-            {
-                AddList(i);
-            }
-
-        }
-
-        public DelegateCommand AddListCommand { get; private set; }
-        public DelegateCommand RemoveListCommand { get; private set; }
-        public DelegateCommand AddItemCommand { get; private set; }
-        public DelegateCommand RemoveItemCommand { get; private set; }
-
-        private void AddList(int index)
-        {
-            var list = new SomePointList(index);
-
-            for (int j = this._min; j <= this._max; j++)
-            {
-                var pt = GetPoint(j, index * 0.5);
-                list.DataList.Add(pt);
-            }
-
-            this.ItemsSourceList.Insert(0, list);
-        }
-
-        public void AddList()
-        {
-            int index = this.ItemsSourceList.Any() ? this.ItemsSourceList.Max(sr => sr.Index) + 1 : 0;
-
-            AddList(index);
-        }
-
-        public void RemoveList()
-        {
-            if (!this.ItemsSourceList.Any())
+            if (this.Max <= this.Min || this.SeriesCount == 0)
             {
                 return;
             }
-            this.ItemsSourceList.RemoveAt(0);
-        }
 
-        public void AddItem()
-        {
-            IsModelChanging = true;
-            try
+            if (this.Min > this._minInternal)
             {
-                this._max++;
-                foreach (var list in this.ItemsSourceList)
+                for (int j = this._minInternal; j < this.Min; j++)
                 {
-                    var pt = GetPoint(this._max, list.Index * 0.5);
-                    list.DataList.Add(pt);
-                }
-            }
-            finally
-            {
-                IsModelChanging = false;
-            }
-
-
-        }
-
-        public void RemoveItem()
-        {
-            IsModelChanging = true;
-            try
-            {
-                this._min++;
-
-                for (int i = 0; i < this.ItemsSourceList.Count; i++)
-                {
-                    var list = this.ItemsSourceList[i];
-                    if (list.DataList.Count > 3)
+                    foreach (var list in this.ItemsSourceList)
                     {
                         list.DataList.RemoveAt(0);
                     }
 
                 }
             }
-            finally
+            else if (this.Min < this._minInternal)
             {
-                IsModelChanging = false;
+                for (int j = this._minInternal - 1; j >= this.Min; j--)
+                {
+                    foreach (var list in this.ItemsSourceList)
+                    {
+                        var index = list.Index;
+                        var pt = GetPoint(j, index * 0.5);
+                        list.DataList.Insert(0, pt);
+                    }
+
+                }
             }
 
+            if (this.Max < this._maxInternal)
+            {
+                for (int j = this.Max; j < this._maxInternal; j++)
+                {
+                    foreach (var list in this.ItemsSourceList)
+                    {
+                        list.DataList.RemoveAt(list.DataList.Count-1);
+                    }
+
+                }
+            }
+            else if (this.Max > this._maxInternal)
+            {
+
+            
+                for (int j = this._maxInternal; j < this.Max; j++)
+                {
+                    foreach (var list in this.ItemsSourceList)
+                    {
+                        var index = list.Index;
+                        var pt = GetPoint(j, index * 0.5);
+                        list.DataList.Add(pt);
+                    }
+
+                }
+            }
+
+
+
+
+            this._minInternal = this.Min;
+            this._maxInternal = this.Max;
         }
 
+
+        private SomePointList GetList(int index)
+        {
+            var list = new SomePointList(index);
+
+            for (int j = this.Min; j < this.Max; j++)
+            {
+                var pt = GetPoint(j, index * 0.5);
+                list.DataList.Add(pt);
+            }
+
+            return list;
+        }
+
+
+
+        private int _seriesCount;
+        public int SeriesCount
+        {
+            get { return _seriesCount; }
+            set
+            {
+                if (SetProperty(ref _seriesCount, value))
+                {
+                    if (this.ItemsSourceList.Count > value)
+                    {
+                        for (int i = this.ItemsSourceList.Count - 1; i >= value; i--)
+                        {
+                            this.ItemsSourceList.RemoveAt(i);
+                        }
+                    }
+                    else if (this.ItemsSourceList.Count < value)
+                    {
+                        for (int i = this.ItemsSourceList.Count; i < value; i++)
+                        {
+                            int index = this.ItemsSourceList.Any() ? this.ItemsSourceList.Max(sr => sr.Index) + 1 : 0;
+                            var list = GetList(index);
+                            this.ItemsSourceList.Insert(0, list);
+                        }
+                    }
+
+                    this._minInternal = this.Min;
+                    this._maxInternal = this.Max;
+
+
+                }
+            }
+        }
+
+
+
+        //private int _itemCount;
+        //public int ItemCount
+        //{
+        //    get { return _itemCount; }
+        //    set
+        //    {
+        //        if (SetProperty(ref _itemCount, value))
+        //        {
+        //            this._max = value;
+        //            UpdateData();
+        //        }
+
+        //    }
+        //}
 
         public DemoDataViewModel()
         {
 
-            AddListCommand = new DelegateCommand((o) => AddList());
-            RemoveListCommand = new DelegateCommand((o) => RemoveList());
-            AddItemCommand = new DelegateCommand((o) => AddItem());
-            RemoveItemCommand = new DelegateCommand((o) => RemoveItem());
-
-            this.AvailableScatterTemplates = new ObservableCollection<string>()
-            {
-                "ScatterTemplate",
-                "Scatter2Template"
-            };
-
-
 
             this.ItemsSourceList = new ObservableCollection<SomePointList>();
-
-            this.SelectedScatterTemplateType = this.AvailableScatterTemplates.First();
-
-
-            InitiateData();
 
 
 
