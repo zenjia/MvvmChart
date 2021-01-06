@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using MvvmCharting.Axis;
-using MvvmCharting.Common;
-using MvvmCharting.Drawing;
 
 namespace MvvmCharting.WpfFX.Axis
 {
@@ -327,7 +322,7 @@ namespace MvvmCharting.WpfFX.Axis
                     AxisItem item = new AxisItem();
                     item.DataContext = newValue;
                     item.SetBinding(AxisItem.LabelTextConverterProperty, new Binding(nameof(this.LabelTextConverter)){Source = this});
-                    item.SetBinding(AxisItem.StyleProperty, new Binding(nameof(this.AxisItemStyle)) { Source = this });
+                    item.SetBinding(StyleProperty, new Binding(nameof(this.AxisItemStyle)) { Source = this });
                     item.SetBinding(AxisItem.PlacementProperty, new Binding(nameof(this.Placement)) { Source = this });
  
                     this.PART_AxisItemsControl.Children.Add(item);

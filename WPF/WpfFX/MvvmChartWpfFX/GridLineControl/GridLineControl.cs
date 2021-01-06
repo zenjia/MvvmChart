@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Media;
 using System.Windows.Shapes;
 using MvvmCharting.Axis;
-using MvvmCharting.Common;
 using MvvmCharting.GridLine;
 
 namespace MvvmCharting.WpfFX
@@ -41,13 +37,13 @@ namespace MvvmCharting.WpfFX
             base.OnApplyTemplate();
 
 
-            this.PART_HorizontalGridLines = (Grid)this.GetTemplateChild(sPART_HorizontalGridLines);
-            this.PART_VerticalGridLines = (Grid)this.GetTemplateChild(sPART_VerticalGridLines);
+            this.PART_HorizontalGridLines = (Grid)GetTemplateChild(sPART_HorizontalGridLines);
+            this.PART_VerticalGridLines = (Grid)GetTemplateChild(sPART_VerticalGridLines);
             if (this.PART_HorizontalGridLines != null)
             {
 
                 UpdateHorizontalGridLines();
-                this.PART_HorizontalGridLines.SetBinding(UIElement.VisibilityProperty,
+                this.PART_HorizontalGridLines.SetBinding(VisibilityProperty,
                     new Binding(nameof(this.HorizontalGridLineVisibility)) { Source = this });
             }
 
@@ -55,7 +51,7 @@ namespace MvvmCharting.WpfFX
             {
                 UpdateVerticalGridLines();
 
-                this.PART_VerticalGridLines.SetBinding(UIElement.VisibilityProperty,
+                this.PART_VerticalGridLines.SetBinding(VisibilityProperty,
                     new Binding(nameof(this.VerticalGridLineVisibility)) { Source = this });
 
 
@@ -88,7 +84,7 @@ namespace MvvmCharting.WpfFX
                     line.SetBinding(Line.Y2Property, new Binding());
 
                     line.SetBinding(Line.X2Property, new Binding(nameof(this.ActualWidth)) { Source = this });
-                    line.SetBinding(Line.StyleProperty, new Binding(nameof(this.HorizontalGridLineStyle)) { Source = this });
+                    line.SetBinding(StyleProperty, new Binding(nameof(this.HorizontalGridLineStyle)) { Source = this });
                     break;
 
                 case Orientation.Vertical:
@@ -96,7 +92,7 @@ namespace MvvmCharting.WpfFX
                     line.SetBinding(Line.X2Property, new Binding());
 
                     line.SetBinding(Line.Y2Property, new Binding(nameof(this.ActualHeight)) { Source = this });
-                    line.SetBinding(Line.StyleProperty, new Binding(nameof(this.VerticalGridLineStyle)) { Source = this });
+                    line.SetBinding(StyleProperty, new Binding(nameof(this.VerticalGridLineStyle)) { Source = this });
                     break;
 
                 default:

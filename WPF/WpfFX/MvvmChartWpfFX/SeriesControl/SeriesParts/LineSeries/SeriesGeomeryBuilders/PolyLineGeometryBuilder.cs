@@ -1,15 +1,12 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
-using System.Windows.Media;
-using MvvmCharting.Drawing;
-using MvvmCharting.Series;
+using System.Windows.Media; 
 
 namespace MvvmCharting.WpfFX.Series
 {
     public class PolyLineGeometryBuilder : ISeriesGeometryBuilder
     {
-        public static Geometry CreateGeometry(PointNS[] points, PointNS[] previousPoints)
+        public static Geometry CreateGeometry(Point[] points, Point[] previousPoints)
         {
  
           
@@ -45,20 +42,20 @@ namespace MvvmCharting.WpfFX.Series
             //}
 
             PathFigure figure = new PathFigure();
-            figure.StartPoint = points[0].ToPoint();
-            var polyLineSegment = new PolyLineSegment(points.ToPoints(), true);
+            figure.StartPoint = points[0];
+            var polyLineSegment = new PolyLineSegment(points, true);
             figure.Segments.Add(polyLineSegment);
 
             if (previousPoints != null)
             {
-                var lineSegment = new LineSegment(previousPoints.Last().ToPoint(), false);
+                var lineSegment = new LineSegment(previousPoints.Last(), false);
                 figure.Segments.Add(lineSegment);
 
                 //figure.StartPoint = previousPoints[0].ToPoint();
-                polyLineSegment = new PolyLineSegment(previousPoints.ToPointsReversed(), false);
+                polyLineSegment = new PolyLineSegment(previousPoints.Reversed(), false);
                 figure.Segments.Add(polyLineSegment);
 
-                lineSegment = new LineSegment(points.First().ToPoint(), false);
+                lineSegment = new LineSegment(points.First(), false);
                 figure.Segments.Add(lineSegment);
 
                 figure.IsClosed = true;
@@ -91,7 +88,7 @@ namespace MvvmCharting.WpfFX.Series
 
 
 
-        public object GetGeometry(PointNS[] points, PointNS[] previousPoints)
+        public object GetGeometry(Point[] points, Point[] previousPoints)
         {
             return CreateGeometry(points, previousPoints);
         }

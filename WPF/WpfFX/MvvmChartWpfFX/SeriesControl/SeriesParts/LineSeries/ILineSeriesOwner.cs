@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using MvvmCharting.Drawing;
+using System.Windows;
 
 namespace MvvmCharting.WpfFX.Series
 {
@@ -11,9 +11,9 @@ namespace MvvmCharting.WpfFX.Series
         double XPixelPerUnit { get; }
         double YPixelPerUnit { get; }
 
-        PointNS[] GetCoordinates();
+        Point[] GetCoordinates();
 
-        PointNS[] GetPreviousSeriesCoordinates(bool isAreaSeries);
+        Point[] GetPreviousSeriesCoordinates(bool isAreaSeries);
 
     }
 }

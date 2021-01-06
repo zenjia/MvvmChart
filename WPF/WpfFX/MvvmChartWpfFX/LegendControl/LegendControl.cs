@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -23,7 +22,7 @@ namespace MvvmCharting.WpfFX
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            this.PART_LegendItemsControl = (SlimItemsControl)this.GetTemplateChild("PART_LegendItemsControl");
+            this.PART_LegendItemsControl = (SlimItemsControl)GetTemplateChild("PART_LegendItemsControl");
  
         }
 

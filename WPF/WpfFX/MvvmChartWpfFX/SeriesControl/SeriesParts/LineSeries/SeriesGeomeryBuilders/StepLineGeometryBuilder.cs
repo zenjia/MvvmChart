@@ -1,18 +1,18 @@
-﻿using System.Windows;
-using MvvmCharting.Drawing;
-using MvvmCharting.Series;
+﻿ 
+
+using System.Windows;
 
 namespace MvvmCharting.WpfFX.Series
 {
     public class StepLineGeometryBuilder : ISeriesGeometryBuilder
     {
-        private static PointNS[] ConvertToStepPoints(PointNS[] points)
+        private static Point[] ConvertToStepPoints(Point[] points)
         {
             if (points == null)
             {
                 return null;
             }
-            var arr = new PointNS[points.Length + (points.Length - 1)];
+            var arr = new Point[points.Length + (points.Length - 1)];
 
             int j = 0;
             for (int i = 0; i < points.Length; i++)
@@ -21,7 +21,7 @@ namespace MvvmCharting.WpfFX.Series
 
                 if (i < points.Length - 1)
                 {
-                    arr[j++] = new PointNS(points[i + 1].X, points[i].Y);
+                    arr[j++] = new Point(points[i + 1].X, points[i].Y);
                 }
 
             }
@@ -29,7 +29,7 @@ namespace MvvmCharting.WpfFX.Series
             return arr;
         }
 
-        public object GetGeometry(PointNS[] points, PointNS[] previousPoints)
+        public object GetGeometry(Point[] points, Point[] previousPoints)
         {
             var arr = ConvertToStepPoints(points);
             var arr2 = ConvertToStepPoints(previousPoints);

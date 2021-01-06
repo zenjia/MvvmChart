@@ -18,7 +18,7 @@ namespace MvvmCharting.WpfFX
             base.OnPropertyChanged(e);
             if (e.Property == IsMouseOverProperty)
             {
-                this.SetCurrentValue(IsHighlightedProperty, this.IsMouseOver);
+                SetCurrentValue(IsHighlightedProperty, this.IsMouseOver);
                 //this.IsHighlighted = this.IsMouseOver;
             }
         }

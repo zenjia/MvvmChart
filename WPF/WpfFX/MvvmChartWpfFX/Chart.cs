@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,7 +9,6 @@ using System.Windows.Input;
 using System.Windows.Shapes;
 using MvvmCharting.Common;
 using MvvmCharting.Axis;
-using MvvmCharting.Drawing;
 using MvvmCharting.GridLine;
 using MvvmCharting.Series;
 using MvvmCharting.WpfFX.Series;
@@ -69,7 +66,7 @@ namespace MvvmCharting.WpfFX
         {
             base.OnApplyTemplate();
 
-            this.Part_SeriesCollectionControl = (SeriesCollectionControl)this.GetTemplateChild("Part_SeriesCollectionControl");
+            this.Part_SeriesCollectionControl = (SeriesCollectionControl)GetTemplateChild("Part_SeriesCollectionControl");
             if (this.Part_SeriesCollectionControl != null)
             {
                 this.Part_SeriesCollectionControl.IsXAxisCategory = this.XAxis is ICategoryAxis;
@@ -100,20 +97,20 @@ namespace MvvmCharting.WpfFX
             this.PART_HorizontalCrossHair = (Line)GetTemplateChild(sPART_HorizontalCrossHair);
             if (this.PART_HorizontalCrossHair != null)
             {
-                this.PART_HorizontalCrossHair.SetBinding(Control.StyleProperty,
-                    new Binding(nameof(HorizontalCrossHairLineStyle)) { Source = this });
+                this.PART_HorizontalCrossHair.SetBinding(StyleProperty,
+                    new Binding(nameof(this.HorizontalCrossHairLineStyle)) { Source = this });
                 this.PART_HorizontalCrossHair.SetBinding(Line.X2Property,
-                    new Binding(nameof(ActualWidth)) { Source = this.PART_PlottingCanvas });
+                    new Binding(nameof(this.ActualWidth)) { Source = this.PART_PlottingCanvas });
 
             }
 
             this.PART_VerticalCrossHair = (Line)GetTemplateChild(sPART_VerticalCrossHair);
             if (this.PART_VerticalCrossHair != null)
             {
-                this.PART_VerticalCrossHair.SetBinding(Control.StyleProperty,
-                    new Binding(nameof(VerticalCrossHairLineStyle)) { Source = this });
+                this.PART_VerticalCrossHair.SetBinding(StyleProperty,
+                    new Binding(nameof(this.VerticalCrossHairLineStyle)) { Source = this });
                 this.PART_VerticalCrossHair.SetBinding(Line.Y2Property,
-                    new Binding(nameof(ActualHeight)) { Source = this.PART_PlottingCanvas });
+                    new Binding(nameof(this.ActualHeight)) { Source = this.PART_PlottingCanvas });
             }
 
             this.PART_GridLineHolder = (ContentControl)GetTemplateChild(sPART_GridLineHolder);
@@ -320,14 +317,14 @@ namespace MvvmCharting.WpfFX
         {
             if (!this.IsChartUpdating)
             {
-                this.SetCurrentValue(Chart.IsChartUpdatingProperty, true);
+                SetCurrentValue(IsChartUpdatingProperty, true);
                 try
                 {
                     action.Invoke();
                 }
                 finally
                 {
-                    this.SetCurrentValue(Chart.IsChartUpdatingProperty, false);
+                    SetCurrentValue(IsChartUpdatingProperty, false);
                 }
             }
             else
@@ -426,12 +423,12 @@ namespace MvvmCharting.WpfFX
         private Range _actualPlottingXValueRange = Range.Empty;
         public Range ActualPlottingXValueRange
         {
-            get { return _actualPlottingXValueRange; }
+            get { return this._actualPlottingXValueRange; }
             private set
             {
-                if (_actualPlottingXValueRange != value)
+                if (this._actualPlottingXValueRange != value)
                 {
-                    _actualPlottingXValueRange = value;
+                    this._actualPlottingXValueRange = value;
                     UpdatePlottingXValueRange();
                 }
 
@@ -441,12 +438,12 @@ namespace MvvmCharting.WpfFX
         private Range _actualPlottingYValueRange = Range.Empty;
         public Range ActualPlottingYValueRange
         {
-            get { return _actualPlottingYValueRange; }
+            get { return this._actualPlottingYValueRange; }
             private set
             {
-                if (_actualPlottingYValueRange != value)
+                if (this._actualPlottingYValueRange != value)
                 {
-                    _actualPlottingYValueRange = value;
+                    this._actualPlottingYValueRange = value;
                     UpdatePlottingYValueRange();
                 }
 

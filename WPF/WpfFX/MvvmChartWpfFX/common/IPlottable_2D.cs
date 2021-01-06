@@ -1,8 +1,7 @@
-using MvvmCharting.Drawing;
+﻿using System.Windows;
 
-
-namespace MvvmCharting.Common
-{    
+namespace MvvmCharting.WpfFX
+{
     /// <summary>
     /// Represents a UIElement that can be plotted(positioned) in a
     /// 2-dimension space
@@ -10,6 +9,6 @@ namespace MvvmCharting.Common
     public interface IPlottable_2D
     {
 
-        PointNS Coordinate { get; set; }
+        Point Coordinate { get; set; }
     }
 }

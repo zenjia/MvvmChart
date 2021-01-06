@@ -1,20 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Specialized;
-using System.Configuration;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Media;
-using System.Windows.Shapes;
 using MvvmCharting.Common;
-using MvvmCharting.Drawing;
 using MvvmCharting.Series;
-using MvvmCharting.WpfFX.Series;
-using static System.Double;
+
 
 namespace MvvmCharting.WpfFX.Series
 {
@@ -82,36 +75,36 @@ namespace MvvmCharting.WpfFX.Series
         {
             base.OnApplyTemplate();
 
-            this.PART_LineSeriesHolder = (ContentControl)this.GetTemplateChild("PART_LineSeriesHolder");
+            this.PART_LineSeriesHolder = (ContentControl)GetTemplateChild("PART_LineSeriesHolder");
             if (this.PART_LineSeriesHolder != null)
             {
 
                 this.PART_LineSeriesHolder.Content = this.LineSeries;
-                this.PART_LineSeriesHolder.SetBinding(UIElement.VisibilityProperty,
+                this.PART_LineSeriesHolder.SetBinding(VisibilityProperty,
                     new Binding(nameof(this.IsLineSeriesVisible)) { Source = this, Converter = B2v });
             }
 
-            this.PART_AreaSeriesHolder = (ContentControl)this.GetTemplateChild("PART_AreaSeriesHolder");
+            this.PART_AreaSeriesHolder = (ContentControl)GetTemplateChild("PART_AreaSeriesHolder");
             if (this.PART_AreaSeriesHolder != null)
             {
                 this.PART_AreaSeriesHolder.Content = this.AreaSeries;
-                this.PART_AreaSeriesHolder.SetBinding(UIElement.VisibilityProperty,
+                this.PART_AreaSeriesHolder.SetBinding(VisibilityProperty,
                     new Binding(nameof(this.IsAreaSeriesVisible)) { Source = this, Converter = B2v });
             }
 
-            this.PART_ScatterSeriesHolder = (ContentControl)this.GetTemplateChild("PART_ScatterSeriesHolder");
+            this.PART_ScatterSeriesHolder = (ContentControl)GetTemplateChild("PART_ScatterSeriesHolder");
             if (this.PART_ScatterSeriesHolder != null)
             {
                 this.PART_ScatterSeriesHolder.Content = this.ScatterSeries;
-                this.PART_ScatterSeriesHolder.SetBinding(UIElement.VisibilityProperty,
+                this.PART_ScatterSeriesHolder.SetBinding(VisibilityProperty,
                     new Binding(nameof(this.IsScatterSeriesVisible)) { Source = this, Converter = B2v });
             }
 
-            this.PART_BarSeriesHolder = (ContentControl)this.GetTemplateChild("PART_BarSeriesHolder");
+            this.PART_BarSeriesHolder = (ContentControl)GetTemplateChild("PART_BarSeriesHolder");
             if (this.PART_BarSeriesHolder != null)
             {
                 this.PART_BarSeriesHolder.Content = this.BarSeries;
-                this.PART_BarSeriesHolder.SetBinding(UIElement.VisibilityProperty,
+                this.PART_BarSeriesHolder.SetBinding(VisibilityProperty,
                     new Binding(nameof(this.IsBarSeriesVisible)) { Source = this, Converter = B2v });
             }
         }
@@ -358,7 +351,7 @@ namespace MvvmCharting.WpfFX.Series
             HandleItemsSourceCollectionChange(e.OldItems, e.NewItems);
         }
 
-        private double _minXValueGap = NaN;
+        private double _minXValueGap = double.NaN;
         public double MinXValueGap
         {
             get { return this._minXValueGap; }
@@ -383,8 +376,8 @@ namespace MvvmCharting.WpfFX.Series
                 return;
             }
 
-            double prev = NaN;
-            this.MinXValueGap = MaxValue;
+            double prev = double.NaN;
+            this.MinXValueGap = double.MaxValue;
             foreach (var item in this.ItemsSource)
             {
                 if (prev.IsNaN())
@@ -519,10 +512,10 @@ namespace MvvmCharting.WpfFX.Series
 
 
  
-            double minY = MaxValue;
-            double maxY = MinValue;
-            double minX = MaxValue;
-            double maxX = MinValue;
+            double minY = double.MaxValue;
+            double maxY = double.MinValue;
+            double minX = double.MaxValue;
+            double maxX = double.MinValue;
             for (int i = 0; i < this.ItemsSource.Count; i++)
             {
                 var item = this.ItemsSource[i];
@@ -682,7 +675,7 @@ namespace MvvmCharting.WpfFX.Series
             if (this.PlottingXValueRange.IsEmpty ||
                 this.RenderSize.IsInvalid())
             {
-                this.XPixelPerUnit = NaN;
+                this.XPixelPerUnit = double.NaN;
                 return;
             }
 
@@ -694,7 +687,7 @@ namespace MvvmCharting.WpfFX.Series
             if (this.PlottingYValueRange.IsEmpty ||
                 this.RenderSize.IsInvalid())
             {
-                this.YPixelPerUnit = NaN;
+                this.YPixelPerUnit = double.NaN;
 
                 return;
             }
@@ -703,7 +696,7 @@ namespace MvvmCharting.WpfFX.Series
 
         }
 
-        public PointNS GetPlotCoordinateForItem(object item, int itemIndex)
+        public Point GetPlotCoordinateForItem(object item, int itemIndex)
         {
             double x;
 
@@ -719,7 +712,7 @@ namespace MvvmCharting.WpfFX.Series
 
             var y = GetAdjustYValueForItem(item, itemIndex);
 
-            var pt = new PointNS((x - this.PlottingXValueRange.Min) * this.XPixelPerUnit,
+            var pt = new Point((x - this.PlottingXValueRange.Min) * this.XPixelPerUnit,
                 (y - this.PlottingYValueRange.Min) * this.YPixelPerUnit);
 
 
@@ -755,7 +748,7 @@ namespace MvvmCharting.WpfFX.Series
 
 
             Array.Resize(ref this._coordinateCache, this.ItemsSource.Count);
-            var previous = this.GetPreviousSeriesCoordinates(false);
+            var previous = GetPreviousSeriesCoordinates(false);
             for (int i = 0; i < this.ItemsSource.Count; i++)
             {
                 var item = this.ItemsSource[i];
@@ -798,9 +791,9 @@ namespace MvvmCharting.WpfFX.Series
         /// <summary>
         /// cache the coordinate for performance
         /// </summary>
-        private PointNS[] _coordinateCache;
+        private Point[] _coordinateCache;
 
-        public PointNS[] GetCoordinates()
+        public Point[] GetCoordinates()
         {
             return this._coordinateCache;
         }
@@ -812,18 +805,18 @@ namespace MvvmCharting.WpfFX.Series
         }
 
 
-        public PointNS[] GetPreviousSeriesCoordinates(bool isAreaSeries)
+        public Point[] GetPreviousSeriesCoordinates(bool isAreaSeries)
         {
             var coordinates = GetCoordinates();
 
-            PointNS[] previous = null;
+            Point[] previous = null;
 
             switch (this.Owner.StackMode)
             {
                 case StackMode.None:
                     if (isAreaSeries)
                     {
-                        previous = new[] { new PointNS(coordinates.First().X, 0), new PointNS(coordinates.Last().X, 0) };
+                        previous = new[] { new Point(coordinates.First().X, 0), new Point(coordinates.Last().X, 0) };
                     }
                     break;
                 case StackMode.Stacked:
@@ -833,7 +826,7 @@ namespace MvvmCharting.WpfFX.Series
                     {
                         if (isAreaSeries)
                         {
-                            previous = new[] { new PointNS(coordinates.First().X, 0), new PointNS(coordinates.Last().X, 0) };
+                            previous = new[] { new Point(coordinates.First().X, 0), new Point(coordinates.Last().X, 0) };
                         }
 
                     }

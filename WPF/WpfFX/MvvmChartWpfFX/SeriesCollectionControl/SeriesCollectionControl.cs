@@ -4,18 +4,9 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using MvvmCharting.Axis;
 using MvvmCharting.Common;
 using MvvmCharting.Series;
 
@@ -167,7 +158,7 @@ namespace MvvmCharting.WpfFX.Series
 
         private void ValidateData()
         {
-            foreach (var seriesHost in this.GetSeries())
+            foreach (var seriesHost in GetSeries())
             {
                 seriesHost.ValidateData();
             }
@@ -232,7 +223,7 @@ namespace MvvmCharting.WpfFX.Series
 
         internal void Refresh()
         {
-            foreach (var seriesHost in this.GetSeries())
+            foreach (var seriesHost in GetSeries())
             {
                 seriesHost.Refresh();
             }
@@ -377,7 +368,7 @@ namespace MvvmCharting.WpfFX.Series
             double minX = double.MaxValue, minY = double.MaxValue,
                 maxX = double.MinValue, maxY = double.MinValue;
 
-            foreach (var sr in this.GetSeries())
+            foreach (var sr in GetSeries())
             {
                 if (sr.XValueRange.IsEmpty || sr.YValueRange.IsEmpty)
                 {
@@ -408,13 +399,13 @@ namespace MvvmCharting.WpfFX.Series
         private Range _xPlottingRange;
         public Range XPlottingRange
         {
-            get { return _xPlottingRange; }
+            get { return this._xPlottingRange; }
             set
             {
-                if (!_xPlottingRange.Equals(value))
+                if (!this._xPlottingRange.Equals(value))
                 {
-                    _xPlottingRange = value;
-                    foreach (var sr in this.GetSeries())
+                    this._xPlottingRange = value;
+                    foreach (var sr in GetSeries())
                     {
                         sr.OnPlottingXValueRangeChanged(value);
                     }
@@ -425,14 +416,14 @@ namespace MvvmCharting.WpfFX.Series
         private Range _yPlottingRange;
         public Range YPlottingRange
         {
-            get { return _yPlottingRange; }
+            get { return this._yPlottingRange; }
             set
             {
-                if (!_yPlottingRange.Equals(value))
+                if (!this._yPlottingRange.Equals(value))
                 {
-                    _yPlottingRange = value;
+                    this._yPlottingRange = value;
 
-                    foreach (var sr in this.GetSeries())
+                    foreach (var sr in GetSeries())
                     {
                         sr.OnPlottingYValueRangeChanged(value);
                     }
@@ -477,7 +468,7 @@ namespace MvvmCharting.WpfFX.Series
 
         internal void Reset()
         {
-            foreach (var sr in this.GetSeries())
+            foreach (var sr in GetSeries())
             {
                 sr.Reset();
             }

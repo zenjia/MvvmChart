@@ -1,11 +1,7 @@
-﻿using System;
-using System.Diagnostics;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using MvvmCharting.Common;
-using MvvmCharting.Drawing;
+using MvvmCharting.Common; 
 
 namespace MvvmCharting.WpfFX.Series
 {
@@ -18,8 +14,8 @@ namespace MvvmCharting.WpfFX.Series
             DefaultStyleKeyProperty.OverrideMetadata(typeof(BarItem), new FrameworkPropertyMetadata(typeof(BarItem)));
         }
 
-        private PointNS _coordinate = PointNS.Empty;
-        public PointNS Coordinate
+        private Point _coordinate = PointHelper.Empty;
+        public Point Coordinate
         {
             get { return this._coordinate; }
             set
@@ -87,7 +83,7 @@ namespace MvvmCharting.WpfFX.Series
                 return;
             }
 
-            this.SetCurrentValue(HeightProperty, newValue);
+            SetCurrentValue(HeightProperty, newValue);
 
             UpdatePosition();
         }

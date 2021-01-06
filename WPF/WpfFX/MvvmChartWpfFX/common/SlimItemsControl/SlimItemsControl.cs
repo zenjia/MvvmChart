@@ -48,7 +48,7 @@ namespace MvvmCharting.WpfFX
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            this.PART_Root = (Panel)this.GetTemplateChild("PART_Root");
+            this.PART_Root = (Panel)GetTemplateChild("PART_Root");
 
 
             if (this.PART_Root == null)
@@ -71,7 +71,7 @@ namespace MvvmCharting.WpfFX
 
         public SlimItemsControl()
         {
-            this.Loaded += this.SlimItemsControl_Loaded;
+            this.Loaded += SlimItemsControl_Loaded;
         }
 
         private void SlimItemsControl_Loaded(object sender, RoutedEventArgs e)
@@ -410,7 +410,7 @@ namespace MvvmCharting.WpfFX
 
             this.PART_Root?.Children.Clear();
 
-            _handledItemsSource = null;
+            this._handledItemsSource = null;
 
         }
 
@@ -440,7 +440,7 @@ namespace MvvmCharting.WpfFX
                 return;
             }
 
-            if (object.ReferenceEquals(this._handledItemsSource, this.ItemsSource))
+            if (ReferenceEquals(this._handledItemsSource, this.ItemsSource))
             {
 
                 return;
@@ -455,7 +455,7 @@ namespace MvvmCharting.WpfFX
             this.PART_Root.Children.Capacity = this.ItemsSource.Count;
 
 
-            Debug.WriteLine($"LoadAllItems: {this.Name}..........ct = {ItemsSource.Count}....!!!!!!!!!!");
+            Debug.WriteLine($"LoadAllItems: {this.Name}..........ct = {this.ItemsSource.Count}....!!!!!!!!!!");
 
             for (int i = 0; i < this.ItemsSource.Count; i++)
             {

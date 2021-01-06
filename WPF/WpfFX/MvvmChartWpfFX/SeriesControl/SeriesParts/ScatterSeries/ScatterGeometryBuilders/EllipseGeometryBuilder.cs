@@ -11,7 +11,7 @@ namespace MvvmCharting.WpfFX.Series
  
         public object GetGeometry()
         {
-            return new EllipseGeometry(new Point(RadiusX, RadiusY), RadiusX, RadiusY);
+            return new EllipseGeometry(new Point(this.RadiusX, this.RadiusY), this.RadiusX, this.RadiusY);
         }
     }
 }

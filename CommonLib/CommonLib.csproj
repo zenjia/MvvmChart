@@ -5,8 +5,4 @@
     <RootNamespace>MvvmCharting</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Series\Scatter\" />
-  </ItemGroup>
-
 </Project>

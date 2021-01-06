@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -38,20 +37,20 @@ namespace MvvmCharting.WpfFX.Axis
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            this.PART_Tick = (FrameworkElement)this.GetTemplateChild(sPART_Tick);
+            this.PART_Tick = (FrameworkElement)GetTemplateChild(sPART_Tick);
 
-            this.PART_Label = (TextBlock)this.GetTemplateChild(sPART_Label);
+            this.PART_Label = (TextBlock)GetTemplateChild(sPART_Label);
             if (this.PART_Label != null)
             {
                 this.PART_Label.SetBinding(TextBlock.TextProperty, new Binding(nameof(this.LabelText)) { Source = this });
             }
-            this.TryDoTranslateTransform();
+            TryDoTranslateTransform();
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
-            this.TryDoTranslateTransform();
+            TryDoTranslateTransform();
         }
 
 
@@ -69,16 +68,16 @@ namespace MvvmCharting.WpfFX.Axis
 
         public double TickLength
         {
-            get { return (double)this.GetValue(TickLengthProperty); }
-            set { this.SetValue(TickLengthProperty, value); }
+            get { return (double)GetValue(TickLengthProperty); }
+            set { SetValue(TickLengthProperty, value); }
         }
         public static readonly DependencyProperty TickLengthProperty =
             DependencyProperty.Register("TickLength", typeof(double), typeof(AxisItem), new PropertyMetadata(8.0));
 
         public Brush TickStroke
         {
-            get { return (Brush)this.GetValue(TickStrokeProperty); }
-            set { this.SetValue(TickStrokeProperty, value); }
+            get { return (Brush)GetValue(TickStrokeProperty); }
+            set { SetValue(TickStrokeProperty, value); }
         }
         public static readonly DependencyProperty TickStrokeProperty =
             DependencyProperty.Register("TickStroke", typeof(Brush), typeof(AxisItem), new PropertyMetadata(Brushes.Gray));
@@ -101,7 +100,7 @@ namespace MvvmCharting.WpfFX.Axis
 
         private void OnPositionChanged()
         {
-            this.TryDoTranslateTransform();
+            TryDoTranslateTransform();
         }
 
 
@@ -109,8 +108,8 @@ namespace MvvmCharting.WpfFX.Axis
 
         public IValueConverter LabelTextConverter
         {
-            get { return (IValueConverter)this.GetValue(LabelTextConverterProperty); }
-            set { this.SetValue(LabelTextConverterProperty, value); }
+            get { return (IValueConverter)GetValue(LabelTextConverterProperty); }
+            set { SetValue(LabelTextConverterProperty, value); }
         }
         public static readonly DependencyProperty LabelTextConverterProperty =
             DependencyProperty.Register("LabelTextConverter", typeof(IValueConverter), typeof(AxisItem), new PropertyMetadata(null, OnLabelTextConverterPropertyChanged));
@@ -126,14 +125,14 @@ namespace MvvmCharting.WpfFX.Axis
 
         private void UpdateLabelTextBinding()
         {
-            this.SetBinding(AxisItem.LabelTextProperty, new Binding() { Converter = this.LabelTextConverter });
+            SetBinding(LabelTextProperty, new Binding() { Converter = this.LabelTextConverter });
         }
 
 
         public string LabelText
         {
-            get { return (string)this.GetValue(LabelTextProperty); }
-            set { this.SetValue(LabelTextProperty, value); }
+            get { return (string)GetValue(LabelTextProperty); }
+            set { SetValue(LabelTextProperty, value); }
         }
         public static readonly DependencyProperty LabelTextProperty =
             DependencyProperty.Register("LabelText", typeof(string), typeof(AxisItem), new PropertyMetadata(null));

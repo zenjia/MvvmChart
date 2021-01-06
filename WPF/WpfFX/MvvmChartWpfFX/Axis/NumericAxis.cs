@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using MvvmCharting.Axis;
-using MvvmCharting.Common;
 
 namespace MvvmCharting.WpfFX.Axis
 {
@@ -77,7 +75,7 @@ namespace MvvmCharting.WpfFX.Axis
         {
    
 
-            foreach (IAxisItem item in this.GetAllAxisItems())
+            foreach (IAxisItem item in GetAllAxisItems())
             {
                 var coordinate = this.DrawingSettings.CalculateCoordinate((double)item.DataContext, this.Orientation);
 

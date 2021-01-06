@@ -1,10 +1,6 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Shapes;
-using MvvmCharting.Common;
-using MvvmCharting.Drawing;
-using MvvmCharting.Series;
+using System.Windows.Shapes; 
 
 namespace MvvmCharting.WpfFX.Series
 {
@@ -83,19 +79,19 @@ namespace MvvmCharting.WpfFX.Series
             Path.DataProperty.AddOwner(typeof(Scatter));
 
 
-        public PointNS Coordinate
+        public Point Coordinate
         {
-            get { return (PointNS)GetValue(CoordinateProperty); }
+            get { return (Point)GetValue(CoordinateProperty); }
             set { SetValue(CoordinateProperty, value); }
         }
         public static readonly DependencyProperty CoordinateProperty =
-            DependencyProperty.Register("Coordinate", typeof(PointNS), typeof(Scatter), new PropertyMetadata(PointNS.Empty, OnCoordinatePropertyChanged));
+            DependencyProperty.Register("Coordinate", typeof(Point), typeof(Scatter), new PropertyMetadata(PointHelper.Empty, OnCoordinatePropertyChanged));
 
         private static void OnCoordinatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((Scatter)d).OnCoordinateChanged((PointNS)e.NewValue);
+            ((Scatter)d).OnCoordinateChanged((Point)e.NewValue);
         }
-        private void OnCoordinateChanged(PointNS newValue)
+        private void OnCoordinateChanged(Point newValue)
         {
             UpdateAdjustedCoordinate();
 
@@ -110,7 +106,7 @@ namespace MvvmCharting.WpfFX.Series
             }
 
 
-            PointNS offset = GetOffsetForSizeChangedOverride();
+            Point offset = GetOffsetForSizeChangedOverride();
             if (offset.IsEmpty())
             {
                 return;
@@ -143,9 +139,9 @@ namespace MvvmCharting.WpfFX.Series
         }
 
 
-        public virtual PointNS GetOffsetForSizeChangedOverride()
+        public virtual Point GetOffsetForSizeChangedOverride()
         {
-            return new PointNS(-ActualWidth / 2, -ActualHeight / 2);
+            return new Point(-this.ActualWidth / 2, -this.ActualHeight / 2);
         }
     }
 }

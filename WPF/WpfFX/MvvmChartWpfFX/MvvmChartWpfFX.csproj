@@ -73,10 +73,13 @@
     <Compile Include="Axis\CategoryAxis.cs" />
     <Compile Include="Axis\NumericAxis.cs" />
     <Compile Include="Axis\AxisItem\DefaultDoubleToAxisLabelTextConverter.cs" />
+    <Compile Include="common\IPlottable_2D.cs" />
+    <Compile Include="common\ISeriesGeometryBuilder.cs" />
     <Compile Include="SeriesCollectionControl\SeriesCollectionControl.cs" />
     <Compile Include="common\PointHelper.cs" />
     <Compile Include="common\SizeHelper.cs" />
     <Compile Include="LegendControl\LegendItemControl.cs" />
+    <Compile Include="SeriesControl\ISeriesControl.cs" />
     <Compile Include="SeriesControl\SeriesParts\AreaSeries\AreaSeries.cs" />
     <Compile Include="SeriesControl\SeriesParts\BarSeries\BarItem.cs" />
     <Compile Include="SeriesControl\SeriesParts\BarSeries\BarSeries.cs" />
@@ -86,6 +89,7 @@
     <Compile Include="SeriesControl\SeriesParts\LineSeries\LineSeries.cs" />
     <Compile Include="SeriesControl\SeriesParts\LineSeries\LineSeriesBase.cs" />
     <Compile Include="SeriesControl\SeriesParts\LineSeries\PathSeries.cs" />
+    <Compile Include="SeriesControl\SeriesParts\ScatterSeries\IScatterGeometryBuilder.cs" />
     <Compile Include="SeriesControl\SeriesParts\ScatterSeries\ScatterSeries.cs" />
     <Compile Include="common\SlimItemsControl\SlimItemsControl.cs" />
     <Compile Include="common\VisualTreeHelper2.cs" />

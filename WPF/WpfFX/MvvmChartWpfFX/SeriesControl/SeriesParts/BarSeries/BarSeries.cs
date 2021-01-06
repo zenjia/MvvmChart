@@ -1,22 +1,11 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using MvvmCharting.Common;
-using MvvmCharting.Drawing;
-using MvvmCharting.Series;
+using MvvmCharting.Common; 
 
 namespace MvvmCharting.WpfFX.Series
 {
@@ -30,9 +19,9 @@ namespace MvvmCharting.WpfFX.Series
         double XPixelPerUnit { get; }
         double YPixelPerUnit { get; }
 
-        PointNS[] GetCoordinates();
-        PointNS GetPlotCoordinateForItem(object item, int itemIndex);
-        PointNS[] GetPreviousSeriesCoordinates(bool isAreaSeries);
+        Point[] GetCoordinates();
+        Point GetPlotCoordinateForItem(object item, int itemIndex);
+        Point[] GetPreviousSeriesCoordinates(bool isAreaSeries);
     }
 
     public class BarSeries : InteractiveControl
@@ -94,12 +83,12 @@ namespace MvvmCharting.WpfFX.Series
 
             if (this.BarStyle != null && barItem.Style == null)
             {
-                barItem.SetCurrentValue(BarItem.StyleProperty, this.BarStyle);
+                barItem.SetCurrentValue(StyleProperty, this.BarStyle);
             }
 
             if (!this.BarWidth.IsNaN() && barItem.Width.IsInvalid())
             {
-                barItem.SetCurrentValue(BarItem.WidthProperty, this.BarWidth);
+                barItem.SetCurrentValue(WidthProperty, this.BarWidth);
             }
 
             if (!this.Owner.SeriesControlOwner.IsSeriesCollectionChanging)
@@ -118,7 +107,7 @@ namespace MvvmCharting.WpfFX.Series
 
                     if (!this.BarWidth.IsNaN() && barItem.Width.IsInvalid())
                     {
-                        barItem.SetCurrentValue(BarItem.WidthProperty, this.BarWidth);
+                        barItem.SetCurrentValue(WidthProperty, this.BarWidth);
                     }
 
                     barItem.SetBarHeight(barHeight);
@@ -261,10 +250,10 @@ namespace MvvmCharting.WpfFX.Series
             {
                 foreach (var barItem in this.PART_BarItemsControl.GetChildren().OfType<BarItem>())
                 {
-                    var vs = DependencyPropertyHelper.GetValueSource(barItem, BarItem.StyleProperty);
+                    var vs = DependencyPropertyHelper.GetValueSource(barItem, StyleProperty);
                     if (vs.IsCurrent)
                     {
-                        barItem.SetCurrentValue(BarItem.StyleProperty, this.BarStyle);
+                        barItem.SetCurrentValue(StyleProperty, this.BarStyle);
                     }
 
                 }
@@ -331,10 +320,10 @@ namespace MvvmCharting.WpfFX.Series
       
             foreach (var barItem in this.PART_BarItemsControl.GetChildren().OfType<BarItem>())
             {
-                var vs = DependencyPropertyHelper.GetValueSource(barItem, BarItem.WidthProperty);
+                var vs = DependencyPropertyHelper.GetValueSource(barItem, WidthProperty);
                 if (vs.IsCurrent)
                 {
-                    barItem.SetCurrentValue(BarItem.WidthProperty, this.BarWidth);
+                    barItem.SetCurrentValue(WidthProperty, this.BarWidth);
                 }
 
             }
@@ -346,7 +335,7 @@ namespace MvvmCharting.WpfFX.Series
             if (this.BarWidth.IsNaN() ||
                 DependencyPropertyHelper.GetValueSource(this, BarWidthProperty).IsCurrent)
             {
-                this.SetCurrentValue(BarWidthProperty, width);
+                SetCurrentValue(BarWidthProperty, width);
             }
         }
 
@@ -359,7 +348,7 @@ namespace MvvmCharting.WpfFX.Series
 
             double width = minXGap * xPixelPerUnit;
  
-            this.SetBarWidth(width);
+            SetBarWidth(width);
         }
 
 
@@ -390,7 +379,7 @@ namespace MvvmCharting.WpfFX.Series
             }
         }
 
-        internal void UpdateBarCoordinateAndHeight(object item, PointNS coordinate, double previousYCoordinate)
+        internal void UpdateBarCoordinateAndHeight(object item, Point coordinate, double previousYCoordinate)
         {
             var barItem = (BarItem)this.PART_BarItemsControl?.TryGetChildForItem(item);
             if (barItem != null)

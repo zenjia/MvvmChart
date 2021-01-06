@@ -1,22 +1,11 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using MvvmCharting.Common;
-using MvvmCharting.Drawing;
-using MvvmCharting.Series;
+using MvvmCharting.Common; 
 
 namespace MvvmCharting.WpfFX.Series
 {
@@ -29,8 +18,8 @@ namespace MvvmCharting.WpfFX.Series
         double XPixelPerUnit { get; }
         double YPixelPerUnit { get; }
 
-        PointNS[] GetCoordinates();
-        PointNS GetPlotCoordinateForItem(object item, int itemIndex);
+        Point[] GetCoordinates();
+        Point GetPlotCoordinateForItem(object item, int itemIndex);
     }
 
     /// <summary>
@@ -159,7 +148,7 @@ namespace MvvmCharting.WpfFX.Series
             }
         }
 
-        internal void UpdateScatterCoordinate(object item, PointNS coordinate)
+        internal void UpdateScatterCoordinate(object item, Point coordinate)
         {
             var scatter = (Scatter)this.PART_ScatterItemsControl?.TryGetChildForItem(item);
             if (scatter != null)

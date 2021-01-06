@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Windows;
 using MvvmCharting.Common;
-using MvvmCharting.Drawing;
 
-namespace MvvmCharting.Series
+namespace MvvmCharting.WpfFX.Series
 {
     /// <summary>
     /// This is the interface that a series should be implement before
@@ -10,7 +10,7 @@ namespace MvvmCharting.Series
     /// </summary>
     public interface ISeriesControl
     {
-        
+
         /// <summary>
         /// This is used to let its host chart see its X value range
         /// </summary>
@@ -40,7 +40,7 @@ namespace MvvmCharting.Series
 
         object DataContext { get; }
 
-        PointNS[] GetCoordinates();
+        Point[] GetCoordinates();
 
         /// <summary>
         /// Fired when the X value range of a series is changed. 
