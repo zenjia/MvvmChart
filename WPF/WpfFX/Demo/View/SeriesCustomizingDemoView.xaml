@@ -147,7 +147,7 @@
         <wpfFx:Chart Background="Bisque"
                      SeriesStackMode="{Binding SelectedStackMode, Source={StaticResource ChartSettingTestViewModel}}"
                             GridLineControlVisibility="{Binding ShowGridLine, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
-                            IsChartUpdating="{Binding Source={StaticResource DemoDataViewModel}, Path=IsModelChanging, Mode=TwoWay}"
+                            IsSeriesCollectionChanging="{Binding Source={StaticResource DemoDataViewModel}, Path=IsModelChanging, Mode=TwoWay}"
                             LegendVisibility="{Binding ShowLegend, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
                             SeriesTemplateSelector="{StaticResource SeriesTemplateSelector}"
                             SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource DemoDataViewModel}}">

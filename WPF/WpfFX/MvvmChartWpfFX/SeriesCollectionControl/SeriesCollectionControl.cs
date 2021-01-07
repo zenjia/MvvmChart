@@ -46,7 +46,23 @@ namespace MvvmCharting.WpfFX.Series
             }
         }
 
-        public bool IsSeriesCollectionChanging { get; internal set; }
+        private bool _isSeriesCollectionChanging;
+        public bool IsSeriesCollectionChanging
+        {
+            get { return this._isSeriesCollectionChanging; }
+            internal set
+            {
+                if (this._isSeriesCollectionChanging != value)
+                {
+                    this._isSeriesCollectionChanging = value;
+                    if (!value)
+                    {
+                        this.Refresh();
+                    }
+                    
+                }
+            }
+        }
 
         private int GetSeriesIndex(ISeriesControl seriesControl)
         {
@@ -103,9 +119,7 @@ namespace MvvmCharting.WpfFX.Series
             if (this.PART_SeriesItemsControl != null)
             {
                 this.PART_SeriesItemsControl.ElementGenerated += SeriesItemTemplateApplied;
-                //this.PART_SeriesItemsControl.ItemAdded += PART_SeriesItemsControl_ItemAdded;
-                this.PART_SeriesItemsControl.ChildRemoved += PartSeriesChildrenControlChildRemoved;
-                //this.PART_SeriesItemsControl.ItemReplaced += PART_SeriesItemsControl_ItemReplaced;
+                this.PART_SeriesItemsControl.ChildRemoved += SeriesItemsControl_ChildRemoved;
                 this.PART_SeriesItemsControl.Reset += PART_SeriesItemsControl_Reset;
 
                 this.PART_SeriesItemsControl.SetBinding(SlimItemsControl.ItemTemplateProperty,
@@ -122,11 +136,13 @@ namespace MvvmCharting.WpfFX.Series
         private void PART_SeriesItemsControl_Reset(object obj)
         {
             UpdateGlobalValueRange();
+            UpdateGlobalRawValueRange();
         }
 
-        private void PartSeriesChildrenControlChildRemoved(object arg1, FrameworkElement arg2)
+        private void SeriesItemsControl_ChildRemoved(object arg1, FrameworkElement arg2)
         {
             UpdateGlobalValueRange();
+            UpdateGlobalRawValueRange();
         }
 
         private void SeriesItemTemplateApplied(object sender, DependencyObject root, int index)
@@ -140,13 +156,13 @@ namespace MvvmCharting.WpfFX.Series
             if (sr == null)
             {
                 MvvmChartException.ThrowDataTemplateRootElementException(nameof(this.SeriesTemplate), typeof(SeriesControl));
- 
+
             }
 
             sr.Owner = this;
 
-            sr.XRangeChanged += Sr_XValueRangeChanged;
-            sr.YRangeChanged += Sr_YValueRangeChanged;
+            sr.ValueRangeChanged += Sr_ValueRangeChanged;
+            sr.RawValueRangeChanged += Sr_RawValueRangeChanged;
 
             sr.OnPlottingXValueRangeChanged(this.XPlottingRange);
             sr.OnPlottingYValueRangeChanged(this.YPlottingRange);
@@ -162,62 +178,7 @@ namespace MvvmCharting.WpfFX.Series
                 seriesHost.ValidateData();
             }
 
-            //if (!this.IsXAxisCategory && (this.StackMode == StackMode.NotStacked))
-            //{
-            //    return;
-            //}
 
-            //string strReason = this.StackMode != StackMode.NotStacked ? $"In {this.StackMode} mode" : "If the XAxis of a Chart is CategoryAxis";
-            //SeriesHost prev = null;
-            //foreach (var seriesHost in this.GetSeries())
-            //{
-            //    if (seriesHost.ItemsSource == null)
-            //    {
-            //        continue;
-            //    }
-
-            //    if (prev == null)
-            //    {
-            //        prev = seriesHost;
-            //        continue;
-            //    }
-
-            //    if (seriesHost.ItemsSource.Count != prev.ItemsSource.Count)
-            //    {
-            //        throw new MvvmChartModelDataException($"{strReason}, the item count of all series in a Chart must be same!");
-            //    }
-
-            //    for (int i = 0; i < seriesHost.ItemsSource.Count; i++)
-            //    {
-            //        if (this.IsXAxisCategory)
-            //        {
-            //            var x1 = seriesHost.GetXRawValueForItem(seriesHost.ItemsSource[i]);
-            //            var x2 = seriesHost.GetXRawValueForItem(prev.ItemsSource[i]);
-            //            if (x1 == null || x2 == null)
-            //            {
-            //                throw new MvvmChartModelDataException("An Item's X value of the series ItemsSource cannot be null!");
-            //            }
-
-            //            if (!x1.Equals(x2))
-            //            {
-            //                throw new MvvmChartModelDataException($"{strReason}, the item's x value in the same index of all series in a Chart must be same!");
-            //            }
-            //        }
-            //        else
-            //        {
-            //            var x1 = seriesHost.GetXValueForItem(seriesHost.ItemsSource[i]);
-            //            var x2 = seriesHost.GetXValueForItem(prev.ItemsSource[i]);
-
-            //            if (!x1.NearlyEqual(x2))
-            //            {
-            //                throw new MvvmChartModelDataException($"{strReason}, the item's x value in the same index of all series in a Chart must be same!");
-            //            }
-            //        }
-
-            //    }
-
-
-            //}
         }
 
         internal void Refresh()
@@ -294,9 +255,30 @@ namespace MvvmCharting.WpfFX.Series
                 if (this._stackMode != value)
                 {
                     this._stackMode = value;
-                    Reset();
-                    ValidateData();
-                    Refresh();
+
+                    if (!this.IsSeriesCollectionChanging)
+                    {
+                        this.IsSeriesCollectionChanging = true;
+                        try
+                        {
+                            Reset();
+                            UpdateGlobalRawValueRange();
+                            ValidateData();
+                            Refresh();
+                        }
+                        finally
+                        {
+                            this.IsSeriesCollectionChanging = false;
+                        }
+                    }
+                    else
+                    {
+                        Reset();
+                        UpdateGlobalRawValueRange();
+                        ValidateData();
+                        Refresh();
+                    }
+
                 }
 
             }
@@ -304,63 +286,63 @@ namespace MvvmCharting.WpfFX.Series
         #endregion
 
         #region Global Data Range
-        private Range _globalYValueRange = Range.Empty;
+        private Range2D _globalValueRange;
         /// <summary>
-        /// The dependent value Range(min & max) of all series data
+        /// The value Range of all series data
         /// </summary>
-        public Range GlobalYValueRange
+        public Range2D GlobalValueRange
         {
-            get { return this._globalYValueRange; }
+            get { return this._globalValueRange; }
             set
             {
-                if (this._globalYValueRange != value)
+                var old = this.GlobalValueRange;
+                if (!this._globalValueRange.Equals(value))
                 {
-                    this._globalYValueRange = value;
-
-
-                    this.GlobalYValueRangeChanged?.Invoke(value);
+                    this._globalValueRange = value;
+                    this.GlobalValueRangeChanged?.Invoke(old, value);
                 }
+
             }
         }
 
-        private Range _globalXValueRange = Range.Empty;
+        private Range2D _globalRawValueRange;
         /// <summary>
-        /// The independent value Range(min & max) of all series data
+        /// The value Range of all series data
         /// </summary>
-        public Range GlobalXValueRange
+        public Range2D GlobalRawValueRange
         {
-            get { return this._globalXValueRange; }
+            get { return this._globalRawValueRange; }
             set
             {
-                if (this._globalXValueRange != value)
+
+                if (!this._globalRawValueRange.Equals(value))
                 {
-                    this._globalXValueRange = value;
-
-
-                    this.GlobalXValueRangeChanged?.Invoke(value);
+                    this._globalRawValueRange = value;
+                    Debug.WriteLine("GlobalRawValueRange===" + GlobalRawValueRange);
                 }
+
             }
         }
 
-        public event Action<Range> GlobalXValueRangeChanged;
-        public event Action<Range> GlobalYValueRangeChanged;
 
-        private void Sr_XValueRangeChanged(ISeriesControl sr, Range obj)
+        public event Action<Range2D, Range2D> GlobalValueRangeChanged;
+
+        private void Sr_ValueRangeChanged(ISeriesControl sr, Range2D obj)
         {
             UpdateGlobalValueRange();
         }
 
-        private void Sr_YValueRangeChanged(ISeriesControl sr, Range obj)
+        private void Sr_RawValueRangeChanged(ISeriesControl sr, Range2D obj)
         {
-            UpdateGlobalValueRange();
+            UpdateGlobalRawValueRange();
         }
 
         private void UpdateGlobalValueRange()
         {
             if (this.SeriesCount == 0)
             {
-                this.GlobalXValueRange = Range.Empty;
-                this.GlobalYValueRange = Range.Empty;
+                this.GlobalValueRange = Range2D.Empty;
+
                 return;
             }
 
@@ -369,26 +351,59 @@ namespace MvvmCharting.WpfFX.Series
 
             foreach (var sr in GetSeries())
             {
-                if (sr.XValueRange.IsEmpty || sr.YValueRange.IsEmpty)
+                if (sr.ValueRange.IsEmpty)
                 {
-                    this.GlobalXValueRange = Range.Empty;
-                    this.GlobalYValueRange = Range.Empty;
+                    this.GlobalValueRange = Range2D.Empty;
 
                     return;
                 }
 
-                minX = Math.Min(minX, sr.XValueRange.Min);
-                maxX = Math.Max(maxX, sr.XValueRange.Max);
+                minX = Math.Min(minX, sr.ValueRange.MinX);
+                maxX = Math.Max(maxX, sr.ValueRange.MaxX);
 
-                minY = Math.Min(minY, sr.YValueRange.Min);
-                maxY = Math.Max(maxY, sr.YValueRange.Max);
-
+                minY = Math.Min(minY, sr.ValueRange.MinY);
+                maxY = Math.Max(maxY, sr.ValueRange.MaxY);
             }
 
-            this.GlobalXValueRange = new Range(minX, maxX);
-            this.GlobalYValueRange = new Range(minY, maxY);
+
+            this.GlobalValueRange = new Range2D(minX, maxX, minY, maxY);
+
+        }
+
+        private void UpdateGlobalRawValueRange()
+        {
+            if (this.StackMode == StackMode.NotStacked || this.SeriesCount == 0)
+            {
+                this.GlobalRawValueRange = Range2D.Empty;
+
+                return;
+            }
+
+            double minX = double.MaxValue, minY = double.MaxValue,
+                maxX = double.MinValue, maxY = double.MinValue;
+
+            foreach (var sr in GetSeries())
+            {
+                if (sr.RawValueRange.IsEmpty)
+                {
+                    sr.UpdateRawValueRange(sr.ItemsSource);
+                }
+ 
+                if (sr.RawValueRange.IsEmpty)
+                {
+                    this.GlobalRawValueRange = Range2D.Empty;
+                    return;
+                }
+
+                minX = Math.Min(minX, sr.RawValueRange.MinX);
+                maxX = Math.Max(maxX, sr.RawValueRange.MaxX);
+
+                minY = Math.Min(minY, sr.RawValueRange.MinY);
+                maxY = Math.Max(maxY, sr.RawValueRange.MaxY);
+            }
 
 
+            this.GlobalRawValueRange = new Range2D(minX, maxX, minY, maxY);
 
         }
         #endregion
@@ -472,8 +487,8 @@ namespace MvvmCharting.WpfFX.Series
                 sr.Reset();
             }
 
-            Debug.Assert(this.GlobalXValueRange == Range.Empty);
-            Debug.Assert(this.GlobalYValueRange == Range.Empty);
+            Debug.Assert(this.GlobalValueRange.IsEmpty);
+
         }
     }
 }

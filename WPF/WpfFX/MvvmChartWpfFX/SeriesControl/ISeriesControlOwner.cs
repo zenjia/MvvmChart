@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MvvmCharting.Common;
 using MvvmCharting.Series;
 
 namespace MvvmCharting.WpfFX.Series
@@ -13,5 +14,7 @@ namespace MvvmCharting.WpfFX.Series
 
         bool IsSeriesCollectionChanging { get; }
         bool IsXAxisCategory { get;}
+
+        Range2D GlobalRawValueRange { get; }
     }
 }

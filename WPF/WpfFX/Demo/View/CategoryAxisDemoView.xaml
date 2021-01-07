@@ -226,7 +226,7 @@
         </Grid.RowDefinitions>
 
         <wpfFx:Chart Background="Bisque"
-                     IsChartUpdating="{Binding Source={StaticResource DemoDataViewModel}, Path=IsModelChanging, Mode=TwoWay}"
+                     IsSeriesCollectionChanging="{Binding Source={StaticResource DemoDataViewModel}, Path=IsModelChanging, Mode=TwoWay}"
                      SeriesStackMode="{Binding SelectedStackMode, Source={StaticResource ChartSettingTestViewModel}}"
                             GridLineControlVisibility="{Binding ShowGridLine, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
                             LegendVisibility="{Binding ShowLegend, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"

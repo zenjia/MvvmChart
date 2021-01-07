@@ -62,7 +62,7 @@
         </Grid.RowDefinitions>
 
         <mvvmCharting:Chart Background="Bisque"
-                            IsChartUpdating="{Binding IsModelChanging, Source={StaticResource BigDataViewModel}, Mode=TwoWay}"
+                            IsSeriesCollectionChanging="{Binding IsModelChanging, Source={StaticResource BigDataViewModel}, Mode=TwoWay}"
                             SeriesTemplate="{StaticResource SeriesTemplate}"
                             SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource BigDataViewModel}}">
             <mvvmCharting:Chart.LegendItemTemplate>

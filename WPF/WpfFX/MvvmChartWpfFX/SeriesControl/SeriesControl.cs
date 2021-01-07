@@ -27,7 +27,7 @@ namespace MvvmCharting.WpfFX.Series
         ILineSeriesOwner,
         IBarSeriesOwner
     {
-        private static IValueConverter B2v = new BooleanToVisibilityConverter();
+        private static readonly IValueConverter B2v = new BooleanToVisibilityConverter();
         static SeriesControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(SeriesControl), new FrameworkPropertyMetadata(typeof(SeriesControl)));
@@ -35,6 +35,9 @@ namespace MvvmCharting.WpfFX.Series
 
         public event Action<ISeriesControl, Range> XRangeChanged;
         public event Action<ISeriesControl, Range> YRangeChanged;
+
+        public event Action<ISeriesControl, Range2D> ValueRangeChanged;
+        public event Action<ISeriesControl, Range2D> RawValueRangeChanged;
 
         public ISeriesControlOwner SeriesControlOwner => this.Owner;
 
@@ -196,8 +199,8 @@ namespace MvvmCharting.WpfFX.Series
             {
                 if (this.Owner.IsXAxisCategory)
                 {
-                    var x1 = GetXRawValueForItem(this.ItemsSource[i]);
-                    var x2 = GetXRawValueForItem(firstSh.ItemsSource[i]);
+                    var x1 = GetXPropertyObjectForItem(this.ItemsSource[i]);
+                    var x2 = GetXPropertyObjectForItem(firstSh.ItemsSource[i]);
                     if (x1 == null || x2 == null)
                     {
                         throw new MvvmChartModelDataException("An Item's X value of the series ItemsSource cannot be null!");
@@ -283,8 +286,6 @@ namespace MvvmCharting.WpfFX.Series
 
         #endregion
 
-
-
         #region ItemsSource property and handlers
 
 
@@ -305,6 +306,7 @@ namespace MvvmCharting.WpfFX.Series
         private static void OnItemsSourcePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             SeriesControl c = (SeriesControl)d;
+
 
             c.OnItemsSourceChanged((IList)e.OldValue, (IList)e.NewValue);
 
@@ -349,9 +351,11 @@ namespace MvvmCharting.WpfFX.Series
             Reset();
             UpdateMinXValueGap();
 
+            //todo: performance!!
             this.ScatterSeries?.UpdateItemsSource();
-
             this.BarSeries?.UpdateItemsSource();
+
+            UpdateRawValueRange(newValue);
 
             Refresh();
 
@@ -376,6 +380,42 @@ namespace MvvmCharting.WpfFX.Series
             //HandleItemsSourceCollectionChange(e.OldItems, e.NewItems);
         }
 
+        private void TryUpdateRawValueRangeOnItemAdd(object item)
+        {
+            var y = GetYValueForItem(item);
+            var x = GetXValueForItem(item);
+
+            var newRawValueRange = Range2D.ExpandRange(this.RawValueRange, x, y);
+            if (this.Owner.IsSeriesCollectionChanging)
+            {
+                this._rawValueRange = newRawValueRange;
+            }
+            else
+            {
+                this.RawValueRange = newRawValueRange;
+            }
+
+        }
+
+        private void TryResetRawValueRangeOnItemRemove(object item)
+        {
+
+            var y = GetYValueForItem(item);
+            var x = GetXValueForItem(item);
+            if (this.RawValueRange.CanPointRemovingAffectRange(x, y))
+            {
+                if (this.Owner.IsSeriesCollectionChanging)
+                {
+                    this._rawValueRange = Range2D.Empty;
+                }
+                else
+                {
+                    this.RawValueRange = Range2D.Empty;
+                }
+            }
+
+        }
+
         private void OnCollectionChanged(NotifyCollectionChangedEventArgs args)
         {
             if (args.OldItems != null && args.OldItems.Count != 1 ||
@@ -391,11 +431,11 @@ namespace MvvmCharting.WpfFX.Series
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
-                    OnItemRemoved(args.OldStartingIndex);
+                    OnItemRemoved(args.OldItems[0], args.OldStartingIndex);
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
-                    OnItemReplaced(args.NewItems[0], args.NewStartingIndex);
+                    OnItemReplaced(args.OldItems[0], args.NewItems[0], args.NewStartingIndex);
                     break;
 
                 case NotifyCollectionChangedAction.Move:
@@ -403,6 +443,8 @@ namespace MvvmCharting.WpfFX.Series
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
+                    ResetValueRange();
+                    this.RawValueRange = Range2D.Empty;
                     break;
 
                 default:
@@ -411,12 +453,11 @@ namespace MvvmCharting.WpfFX.Series
 
         }
 
-
         private void OnItemAdded(object newItem, int index)
         {
             if (this.Owner.StackMode == StackMode.NotStacked)
             {
-                EnsureYValuePositive(newItem);
+                TryUpdateRawValueRangeOnItemAdd(newItem);
             }
 
             if (!this.Owner.IsSeriesCollectionChanging)
@@ -426,8 +467,14 @@ namespace MvvmCharting.WpfFX.Series
 
         }
 
-        private void OnItemRemoved(int index)
+        private void OnItemRemoved(object oldItem, int index)
         {
+            if (this.Owner.StackMode != StackMode.NotStacked ||
+                !this.RawValueRange.IsEmpty)
+            {
+                TryResetRawValueRangeOnItemRemove(oldItem);
+            }
+
             if (!this.Owner.IsSeriesCollectionChanging)
             {
                 Refresh();
@@ -435,11 +482,15 @@ namespace MvvmCharting.WpfFX.Series
 
         }
 
-        private void OnItemReplaced(object newItem, int index)
+        private void OnItemReplaced(object oldItem, object newItem, int index)
         {
             if (this.Owner.StackMode == StackMode.NotStacked)
             {
-                EnsureYValuePositive(newItem);
+                TryResetRawValueRangeOnItemRemove(oldItem);
+                if (!this.RawValueRange.IsEmpty)
+                {
+                    TryUpdateRawValueRangeOnItemAdd(newItem);
+                }
             }
 
             if (!this.Owner.IsSeriesCollectionChanging)
@@ -495,7 +546,7 @@ namespace MvvmCharting.WpfFX.Series
             for (var i = 1; i < this.ItemsSource.Count; i++)
             {
                 var item = this.ItemsSource[i];
- 
+
                 var current = GetXValueForItem(item);
                 var gap = current - prev;
                 if (gap < this.MinXValueGap)
@@ -525,7 +576,7 @@ namespace MvvmCharting.WpfFX.Series
 
         }
 
-        internal object GetXRawValueForItem(object item)
+        internal object GetXPropertyObjectForItem(object item)
         {
             var t = item.GetType();
             var x = t.GetProperty(this.IndependentValueProperty).GetValue(item);
@@ -541,12 +592,11 @@ namespace MvvmCharting.WpfFX.Series
             var y = yProp.GetValue(item);
 
             return DoubleValueConverter.ObjectToDouble(y);
-
         }
 
         private double GetAdjustYValueForItem(object item, int index)
         {
-            double minY = this.PlottingYValueRange.ActualRange.Min;
+            double minY = this.Owner.GlobalRawValueRange.MinY;
             switch (this.Owner.StackMode)
             {
                 case StackMode.NotStacked:
@@ -600,30 +650,33 @@ namespace MvvmCharting.WpfFX.Series
 
         }
 
+        private void ResetValueRange()
+        {
+            this.ValueRange = Range2D.Empty;
+
+        }
+
         public void UpdateValueRange()
         {
             if (this.Owner.IsSeriesCollectionChanging)
             {
-                this.XValueRange = Range.Empty;
-                this.YValueRange = Range.Empty;
+                ResetValueRange();
                 return;
             }
 
             if (this.ItemsSource == null ||
                 this.ItemsSource.Count == 0)
             {
-                this.XValueRange = Range.Empty;
-                this.YValueRange = Range.Empty;
-
+                ResetValueRange();
                 return;
             }
-
-
 
             double minY = double.MaxValue;
             double maxY = double.MinValue;
             double minX = double.MaxValue;
             double maxX = double.MinValue;
+            double minRawY = minY;
+            double maxRawY = maxY;
             for (int i = 0; i < this.ItemsSource.Count; i++)
             {
                 var item = this.ItemsSource[i];
@@ -632,6 +685,10 @@ namespace MvvmCharting.WpfFX.Series
 
                 minY = Math.Min(minY, y);
                 maxY = Math.Max(maxY, y);
+
+                y = GetYValueForItem(item);
+                minRawY = Math.Min(minRawY, y);
+                maxRawY = Math.Max(maxRawY, y);
 
                 if (!this.Owner.IsXAxisCategory)
                 {
@@ -649,57 +706,89 @@ namespace MvvmCharting.WpfFX.Series
                 maxX = this.ItemsSource.Count;
             }
 
-            this.XValueRange = new Range(minX, maxX);
-            this.YValueRange = new Range(minY, maxY);
+            this.ValueRange = new Range2D(minX, maxX, minY, maxY);
 
+            this.RawValueRange = new Range2D(minX, maxX, minRawY, maxRawY);
         }
 
+        internal void UpdateRawValueRange(IList source)
+        {
+            if (this.Owner.StackMode == StackMode.NotStacked)
+            {
+                return;
+            }
+
+            if (source == null || source.Count == 0)
+            {
+                return;
+            }
+
+            double minY = double.MaxValue;
+            double maxY = double.MinValue;
+
+            for (int i = 0; i < source.Count; i++)
+            {
+                var item = source[i];
+
+                var y = GetYValueForItem(item);
+
+                minY = Math.Min(minY, y);
+                maxY = Math.Max(maxY, y);
+
+            }
+
+            double minX;
+            double maxX;
+            if (this.Owner.IsXAxisCategory)
+            {
+                minX = 0;
+                maxX = this.ItemsSource.Count;
+            }
+            else
+            {
+                minX = GetXValueForItem(source[0]);
+                maxX = GetXValueForItem(source[source.Count - 1]);
+            }
+
+            if (this.RawValueRange.IsOutOfRange(minX, maxX, minY, maxY))
+            {
+                this.RawValueRange = new Range2D(minX, maxX, minY, maxY);
+            }
+        }
 
         #endregion
 
         #region value range
-        private Range _yValueRange = Range.Empty;
-        /// <summary>
-        /// The min & max of the dependent value
-        /// </summary>
-        public Range YValueRange
+
+        private Range2D _valueRange;
+        public Range2D ValueRange
         {
-            get { return this._yValueRange; }
-            private set
+            get { return this._valueRange; }
+            set
             {
-                if (this._yValueRange != value)
+                if (!this._valueRange.Equals(value))
                 {
-                    this._yValueRange = value;
-
-
-                    this.YRangeChanged?.Invoke(this, this.YValueRange);
-
+                    this._valueRange = value;
+                    this.ValueRangeChanged?.Invoke(this, value);
                 }
 
             }
         }
 
-        private Range _xValueRange = Range.Empty;
-        /// <summary>
-        /// The min & max of the dependent value
-        /// </summary>
-        public Range XValueRange
+        private Range2D _rawValueRange;
+        public Range2D RawValueRange
         {
-            get { return this._xValueRange; }
-            private set
+            get { return this._rawValueRange; }
+            set
             {
-                if (this._xValueRange != value)
+                if (!this._rawValueRange.Equals(value))
                 {
-                    this._xValueRange = value;
-                    this.XRangeChanged?.Invoke(this, this.XValueRange);
-
-
+                    this._rawValueRange = value;
+                    this.RawValueRangeChanged?.Invoke(this, value);
                 }
+
             }
         }
-
-
-        
         #endregion
 
         #region plotting value range
@@ -896,9 +985,7 @@ namespace MvvmCharting.WpfFX.Series
         {
             this.XPixelPerUnit = double.NaN;
             this.YPixelPerUnit = double.NaN;
-
-            this.XValueRange = Range.Empty;
-            this.YValueRange = Range.Empty;
+            ResetValueRange();
         }
 
         internal void Refresh()

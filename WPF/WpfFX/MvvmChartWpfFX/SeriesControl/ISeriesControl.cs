@@ -10,16 +10,17 @@ namespace MvvmCharting.WpfFX.Series
     /// </summary>
     public interface ISeriesControl
     {
+        Range2D ValueRange { get; }
 
-        /// <summary>
-        /// This is used to let its host chart see its X value range
-        /// </summary>
-        Range XValueRange { get; }
+        ///// <summary>
+        ///// This is used to let its host chart see its X value range
+        ///// </summary>
+        //Range XValueRange { get; }
 
-        /// <summary>
-        /// This is used to let its host chart see its Y value range
-        /// </summary>
-        Range YValueRange { get; }
+        ///// <summary>
+        ///// This is used to let its host chart see its Y value range
+        ///// </summary>
+        //Range YValueRange { get; }
 
         void UpdateValueRange();
 

@@ -68,8 +68,9 @@ namespace MvvmCharting.WpfFX
             {
                 this.Part_SeriesCollectionControl.IsXAxisCategory = this.XAxis is ICategoryAxis;
 
-                this.Part_SeriesCollectionControl.GlobalXValueRangeChanged += SeriesCollectionControlGlobalXValueRangeChanged;
-                this.Part_SeriesCollectionControl.GlobalYValueRangeChanged += SeriesCollectionControlGlobalYValueRangeChanged;
+
+                this.Part_SeriesCollectionControl.GlobalValueRangeChanged += SeriesCollectionControlGlobalValueRangeChanged;
+
 
                 this.Part_SeriesCollectionControl.SetBinding(SeriesCollectionControl.SeriesTemplateProperty,
                     new Binding(nameof(this.SeriesTemplate)) { Source = this });
@@ -80,7 +81,7 @@ namespace MvvmCharting.WpfFX
 
                 this.Part_SeriesCollectionControl.StackMode = this.SeriesStackMode;
 
-                OnIsChartUpdatingChanged();
+                OnIsSeriesCollectionChangingChanged();
             }
 
 
@@ -123,14 +124,16 @@ namespace MvvmCharting.WpfFX
             OnLegendChanged();
         }
 
-        private void SeriesCollectionControlGlobalYValueRangeChanged(Range obj)
+        private void SeriesCollectionControlGlobalValueRangeChanged(Range2D oldValue, Range2D newValue)
         {
-            UpdateActualPlottingYValueRange();
-        }
-
-        private void SeriesCollectionControlGlobalXValueRangeChanged(Range obj)
-        {
-            UpdateActualPlottingXValueRange();
+            if (oldValue.XRange != newValue.XRange)
+            {
+                UpdateActualPlottingXValueRange();
+            }
+            if (oldValue.YRange != newValue.YRange)
+            {
+                UpdateActualPlottingYValueRange();
+            }
         }
 
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -293,42 +296,20 @@ namespace MvvmCharting.WpfFX
 
         private void OnSeriesStackModeChanged()
         {
-            BatchExecute(() =>
+            VerifyAccess();
+
+            Reset();
+
+            if (this.Part_SeriesCollectionControl != null)
             {
+                this.Part_SeriesCollectionControl.StackMode = this.SeriesStackMode;
+            }
 
-
-                Reset();
-
-
-
-                if (this.Part_SeriesCollectionControl != null)
-                {
-                    this.Part_SeriesCollectionControl.StackMode = this.SeriesStackMode;
-                }
-
-
-            });
+ 
+ 
         }
 
-        private void BatchExecute(Action action)
-        {
-            if (!this.IsChartUpdating)
-            {
-                SetCurrentValue(IsChartUpdatingProperty, true);
-                try
-                {
-                    action.Invoke();
-                }
-                finally
-                {
-                    SetCurrentValue(IsChartUpdatingProperty, false);
-                }
-            }
-            else
-            {
-                action.Invoke();
-            }
-        }
+ 
         #endregion
 
         #region Plotting Range
@@ -500,13 +481,13 @@ namespace MvvmCharting.WpfFX
         {
             this.XPlottingRange = PlottingRangeHelper.PlottingRange(this.XPlottingRange.ActualRange, this.XValuePadding);
 
- 
+
         }
 
         private void UpdatePlottingYValueRange()
         {
             this.YPlottingRange = PlottingRangeHelper.PlottingRange(this.YPlottingRange.ActualRange, this.YValuePadding);
- 
+
         }
 
         private void UpdateActualPlottingXValueRange()
@@ -517,10 +498,10 @@ namespace MvvmCharting.WpfFX
                 return;
             }
 
-            double min = !this.XMinimum.IsNaN() ? this.XMinimum : this.Part_SeriesCollectionControl.GlobalXValueRange.Min;
-            double max = !this.XMaximum.IsNaN() ? this.XMaximum : this.Part_SeriesCollectionControl.GlobalXValueRange.Max;
+            double min = !this.XMinimum.IsNaN() ? this.XMinimum : this.Part_SeriesCollectionControl.GlobalValueRange.MinX;
+            double max = !this.XMaximum.IsNaN() ? this.XMaximum : this.Part_SeriesCollectionControl.GlobalValueRange.MaxX;
 
-           
+
             if (min.IsNaN() && max.IsNaN())
             {
                 //this.ActualPlottingXValueRange = Range.Empty;
@@ -542,8 +523,8 @@ namespace MvvmCharting.WpfFX
                 return;
             }
 
-            double min = !this.YMinimum.IsNaN() ? this.YMinimum : this.Part_SeriesCollectionControl.GlobalYValueRange.Min;
-            double max = !this.YMaximum.IsNaN() ? this.YMaximum : this.Part_SeriesCollectionControl.GlobalYValueRange.Max;
+            double min = !this.YMinimum.IsNaN() ? this.YMinimum : this.Part_SeriesCollectionControl.GlobalValueRange.MinY;
+            double max = !this.YMaximum.IsNaN() ? this.YMaximum : this.Part_SeriesCollectionControl.GlobalValueRange.MaxY;
 
             if (min.IsNaN() && max.IsNaN())
             {
@@ -609,7 +590,7 @@ namespace MvvmCharting.WpfFX
 
                     var sr = this.Part_SeriesCollectionControl.GetSeries().FirstOrDefault();
 
-                    plottingItemValues = sr?.ItemsSource.OfType<object>().Select(x => sr.GetXRawValueForItem(x))
+                    plottingItemValues = sr?.ItemsSource.OfType<object>().Select(x => sr.GetXPropertyObjectForItem(x))
                         .ToArray();
                     break;
 
@@ -1081,30 +1062,31 @@ namespace MvvmCharting.WpfFX
 
         #endregion
 
-        #region IsChartUpdating
+        #region IsSeriesCollectionChanging
         /// <summary>
         /// When collection or chart setting is changing, set this to true can
         /// reduce some performance-hitting, duplicated operation. 
         /// </summary>
-        public bool IsChartUpdating
+        public bool IsSeriesCollectionChanging
         {
-            get { return (bool)GetValue(IsChartUpdatingProperty); }
-            set { SetValue(IsChartUpdatingProperty, value); }
+            get { return (bool)GetValue(IsSeriesCollectionChangingProperty); }
+            set { SetValue(IsSeriesCollectionChangingProperty, value); }
         }
-        public static readonly DependencyProperty IsChartUpdatingProperty =
-            DependencyProperty.Register("IsChartUpdating", typeof(bool), typeof(Chart), new PropertyMetadata(false, OnIsChartUpdatingPropertyChanged));
+        public static readonly DependencyProperty IsSeriesCollectionChangingProperty =
+            DependencyProperty.Register("IsSeriesCollectionChanging", typeof(bool), typeof(Chart), new PropertyMetadata(false, OnIsSeriesCollectionChangingPropertyChanged));
 
-        private static void OnIsChartUpdatingPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnIsSeriesCollectionChangingPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((Chart)d).OnIsChartUpdatingChanged();
+            ((Chart)d).OnIsSeriesCollectionChangingChanged();
         }
 
-        private void OnIsChartUpdatingChanged()
+        private void OnIsSeriesCollectionChangingChanged()
         {
+            VerifyAccess();
             if (this.Part_SeriesCollectionControl != null)
             {
-                this.Part_SeriesCollectionControl.IsSeriesCollectionChanging = this.IsChartUpdating;
-                this.Part_SeriesCollectionControl.Refresh();
+                this.Part_SeriesCollectionControl.IsSeriesCollectionChanging = this.IsSeriesCollectionChanging;
+
             }
         }
         #endregion

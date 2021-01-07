@@ -1,7 +1,6 @@
 ﻿namespace MvvmCharting.Common
 {
-
-    public partial struct Range
+    public struct Range
     {
         public static readonly Range Empty = new Range(double.NaN, double.NaN);
 
@@ -89,7 +88,25 @@
 
         public bool IsInRange(double d)
         {
+
             return d <= this.Max && d >= this.Min;
+        }
+
+   
+
+
+        public bool IsOutOfRange(double min, double max)
+        {
+            if (this.IsEmpty)
+            {
+                return true;
+            }
+            return min < this.Min || max > this.Max;
+        }
+        
+        public bool IsOutOfRange(Range newRange)
+        {
+            return IsOutOfRange(newRange.Min, newRange.Max);
         }
     }
 
