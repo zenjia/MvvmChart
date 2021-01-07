@@ -159,8 +159,8 @@ namespace MvvmCharting.WpfFX.Series
 
         private void EnsureYValuePositive(object item)
         {
+            return;
 
- 
             var y = GetYValueForItem(item);
             if (y < 0)
             {
@@ -411,7 +411,7 @@ namespace MvvmCharting.WpfFX.Series
 
         }
 
- 
+
         private void OnItemAdded(object newItem, int index)
         {
             if (this.Owner.StackMode == StackMode.NotStacked)
@@ -423,7 +423,7 @@ namespace MvvmCharting.WpfFX.Series
             {
                 Refresh();
             }
- 
+
         }
 
         private void OnItemRemoved(int index)
@@ -432,7 +432,7 @@ namespace MvvmCharting.WpfFX.Series
             {
                 Refresh();
             }
- 
+
         }
 
         private void OnItemReplaced(object newItem, int index)
@@ -446,7 +446,7 @@ namespace MvvmCharting.WpfFX.Series
             {
                 Refresh();
             }
- 
+
         }
 
         private void OnItemMoved()
@@ -473,37 +473,38 @@ namespace MvvmCharting.WpfFX.Series
 
             if (this.Owner.IsXAxisCategory)
             {
-                this.MinXValueGap = 1.0;
-                this.BarSeries?.UpdateBarWidth(this.MinXValueGap, this.XPixelPerUnit);
-
-                return;
-            }
-
-            if (this.ItemsSource==null)
-            {
-                return;
-            }
-
-            double prev = double.NaN;
-            this.MinXValueGap = double.MaxValue;
-            foreach (var item in this.ItemsSource)
-            {
-                if (prev.IsNaN())
+                if (this.MinXValueGap != 1.0)
                 {
-
-                    prev = GetXValueForItem(item);
-                    continue;
+                    this.MinXValueGap = 1.0;
+                }
+                else
+                {
+                    this.BarSeries?.UpdateBarWidth(this.MinXValueGap, this.XPixelPerUnit);
                 }
 
+                return;
+            }
+
+            if (this.ItemsSource == null || this.ItemsSource.Count == 0)
+            {
+                return;
+            }
+
+            double prev = GetXValueForItem(this.ItemsSource[0]);
+            this.MinXValueGap = double.MaxValue;
+            for (var i = 1; i < this.ItemsSource.Count; i++)
+            {
+                var item = this.ItemsSource[i];
+ 
                 var current = GetXValueForItem(item);
                 var gap = current - prev;
                 if (gap < this.MinXValueGap)
                 {
                     this.MinXValueGap = gap;
                 }
+
+                prev = current;
             }
-
-
         }
 
         //private void HandleItemsSourceCollectionChange(IList oldValue, IList newValue)
@@ -545,10 +546,10 @@ namespace MvvmCharting.WpfFX.Series
 
         private double GetAdjustYValueForItem(object item, int index)
         {
+            double minY = this.PlottingYValueRange.ActualRange.Min;
             switch (this.Owner.StackMode)
             {
                 case StackMode.NotStacked:
-
                     return GetYValueForItem(item);
 
                 case StackMode.Stacked:
@@ -557,7 +558,7 @@ namespace MvvmCharting.WpfFX.Series
                     {
                         var obj = sr.ItemsSource[index];
                         var y = sr.GetYValueForItem(obj);
-                        total += y;
+                        total += (y - minY);
                         if (obj == item)
                         {
                             break;
@@ -575,7 +576,7 @@ namespace MvvmCharting.WpfFX.Series
                     foreach (var sr in this.Owner.GetSeries())
                     {
                         var obj = sr.ItemsSource[index];
-                        total += sr.GetYValueForItem(obj);
+                        total += sr.GetYValueForItem(obj) - minY;
 
                         if (!meet)
                         {
@@ -696,6 +697,9 @@ namespace MvvmCharting.WpfFX.Series
                 }
             }
         }
+
+
+        
         #endregion
 
         #region plotting value range
@@ -865,7 +869,7 @@ namespace MvvmCharting.WpfFX.Series
 
             Array.Resize(ref this._coordinateCache, this.ItemsSource.Count);
             var previous = GetPreviousCoordinates(false);
-            var minCoordinateY = this.YStartValue;
+            var startCoordinateY = this.StartCoordinateY;
             for (int i = 0; i < this.ItemsSource.Count; i++)
             {
                 var item = this.ItemsSource[i];
@@ -876,7 +880,7 @@ namespace MvvmCharting.WpfFX.Series
 
                 this.ScatterSeries?.UpdateScatterCoordinate(item, pt);
 
-                double y = previous?[i].Y ?? minCoordinateY;
+                double y = previous?[i].Y ?? startCoordinateY;
                 this.BarSeries?.UpdateBarCoordinateAndHeight(item, pt, y);
             }
 
@@ -885,7 +889,7 @@ namespace MvvmCharting.WpfFX.Series
 
             this.BarSeries?.UpdateBarWidth(this.MinXValueGap, this.XPixelPerUnit);
 
-
+            Debug.WriteLine($"{this.DataContext}......RecalculateCoordinate...!!!");
         }
 
         internal void Reset()
@@ -900,7 +904,7 @@ namespace MvvmCharting.WpfFX.Series
         internal void Refresh()
         {
             Reset();
- 
+
             UpdateMinXValueGap();
 
             UpdateValueRange();
@@ -925,7 +929,7 @@ namespace MvvmCharting.WpfFX.Series
             return this.Owner.GetPreviousSeriesHost(this);
         }
 
-        public double YStartValue => (this.PlottingYValueRange.ActualRange.Min -
+        public double StartCoordinateY => (this.PlottingYValueRange.ActualRange.Min -
                                       this.PlottingYValueRange.FullRange.Min) * this.YPixelPerUnit;
 
         public Point[] GetPreviousCoordinates(bool isAreaSeries)
@@ -940,7 +944,7 @@ namespace MvvmCharting.WpfFX.Series
                 case StackMode.NotStacked:
                     if (isAreaSeries)
                     {
-                        var minY = YStartValue;
+                        var minY = this.StartCoordinateY;
                         previous = new[] { new Point(coordinates.First().X, minY), new Point(coordinates.Last().X, minY) };
                     }
                     break;
@@ -951,7 +955,7 @@ namespace MvvmCharting.WpfFX.Series
                     {
                         if (isAreaSeries)
                         {
-                            var minY = YStartValue;
+                            var minY = this.StartCoordinateY;
                             previous = new[] { new Point(coordinates.First().X, minY), new Point(coordinates.Last().X, minY) };
                         }
 

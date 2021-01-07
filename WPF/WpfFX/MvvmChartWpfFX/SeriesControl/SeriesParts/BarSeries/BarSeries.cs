@@ -24,7 +24,7 @@ namespace MvvmCharting.WpfFX.Series
         Point[] GetCoordinates();
         Point GetPlotCoordinateForItem(object item, int itemIndex);
         Point[] GetPreviousCoordinates(bool isAreaSeries);
-        double YStartValue { get; }
+        double StartCoordinateY { get; }
     }
 
     public class BarSeries : InteractiveControl
@@ -110,7 +110,7 @@ namespace MvvmCharting.WpfFX.Series
                     var coordinate = this.Owner.GetPlotCoordinateForItem(item, childIndex);
 
                     double barHeight = privousCoordinates == null
-                        ? coordinate.Y - this.Owner.YStartValue
+                        ? coordinate.Y - this.Owner.StartCoordinateY
                         : coordinate.Y - privousCoordinates[childIndex].Y;
 
 
@@ -425,13 +425,13 @@ namespace MvvmCharting.WpfFX.Series
                 Debug.Assert(previous.Length == coordinates.Length);
             }
 
-            double yStartValue = this.Owner.YStartValue;
+            double startCoordinateY = this.Owner.StartCoordinateY;
             for (int i = 0; i < coordinates.Length; i++)
             {
                 var pt = coordinates[i];
                 var item = this.PART_BarItemsControl.ItemsSource[i];
 
-                double y = previous == null ? yStartValue : previous[i].Y;
+                double y = previous == null ? startCoordinateY : previous[i].Y;
                 UpdateBarCoordinateAndHeight(item, pt, y);
             }
 

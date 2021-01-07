@@ -153,7 +153,7 @@ namespace Demo
             var v = i / 1.0;
             var y = Math.Abs(v) < 1e-10 ? 1 : Math.Sin(v) / v;
 
-            var pt = new SomePoint(v, y + 0.25 + yOffset);
+            var pt = new SomePoint(v, y + yOffset);
 
             return pt;
         }

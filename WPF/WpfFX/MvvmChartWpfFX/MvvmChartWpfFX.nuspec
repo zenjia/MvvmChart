@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>$id$</id>
-    <version>0.5.3</version>
+    <version>0.5.4</version>
     <title>MvvmChart</title>
     <authors>naivecoder</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

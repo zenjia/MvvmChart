@@ -218,6 +218,7 @@
         </Grid.RowDefinitions>
 
         <chart:Chart Background="Bisque"
+                     SeriesStackMode="{Binding SelectedStackMode, Source={StaticResource ChartSettingTestViewModel}}"
                      XValuePadding="{Binding XValuePadding, Source={StaticResource ChartValuePaddingViewModel}, Converter={StaticResource RangeToPointConverter}}"
                      YValuePadding="{Binding YValuePadding, Source={StaticResource ChartValuePaddingViewModel}, Converter={StaticResource RangeToPointConverter}}"
                      IsChartUpdating="{Binding Source={StaticResource DemoDataViewModel}, Path=IsModelChanging, Mode=TwoWay}"
@@ -327,6 +328,17 @@
                     <ui:NumberBox Header="Max Value Padding" 
                                   Value="{Binding YMaxValuePadding, Mode=TwoWay}"/>
 
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Series Mode:">
+                <StackPanel>
+
+                    <ComboBox Width="100"
+                              Margin="6,0,6,6"
+                              HorizontalAlignment="Left"
+                              ItemsSource="{Binding SeriesModeList}"
+                              SelectedItem="{Binding SelectedStackMode, Mode=TwoWay}"/>
                 </StackPanel>
             </GroupBox>
 
