@@ -162,7 +162,7 @@ namespace MvvmCharting.WpfFX.Series
 
         private void EnsureYValuePositive(object item)
         {
-            return;
+
 
             var y = GetYValueForItem(item);
             if (y < 0)
@@ -305,6 +305,7 @@ namespace MvvmCharting.WpfFX.Series
 
         private static void OnItemsSourcePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+
             SeriesControl c = (SeriesControl)d;
 
 
@@ -331,15 +332,6 @@ namespace MvvmCharting.WpfFX.Series
             }
         }
 
-        //internal void DetachCollectionChangedHandler()
-        //{
-        //    DetachCollectionChangedHandler(this.ItemsSource);
-        //}
-
-        //internal void AttachCollectionChangedHandler()
-        //{
-        //    AttachCollectionChangedHandler(this.ItemsSource);
-        //}
 
         private void OnItemsSourceChanged(IList oldValue, IList newValue)
         {
@@ -357,7 +349,18 @@ namespace MvvmCharting.WpfFX.Series
 
             UpdateRawValueRange(newValue);
 
-            Refresh();
+            if (this.Owner.StackMode == StackMode.NotStacked ||
+                this.Owner.GetSeries().All(sr => sr.ItemsSource != null))
+            {
+                if (!this.Owner.IsSeriesCollectionChanging)
+                {
+                    UpdateValueRange();
+                    Refresh();
+                }
+            }
+
+
+
 
         }
 
@@ -457,11 +460,17 @@ namespace MvvmCharting.WpfFX.Series
         {
             if (this.Owner.StackMode == StackMode.NotStacked)
             {
-                TryUpdateRawValueRangeOnItemAdd(newItem);
+                EnsureYValuePositive(newItem);
             }
+
+            //if (this.Owner.StackMode == StackMode.NotStacked)
+            //{
+            //    TryUpdateRawValueRangeOnItemAdd(newItem);
+            //}
 
             if (!this.Owner.IsSeriesCollectionChanging)
             {
+                UpdateValueRange();
                 Refresh();
             }
 
@@ -469,14 +478,15 @@ namespace MvvmCharting.WpfFX.Series
 
         private void OnItemRemoved(object oldItem, int index)
         {
-            if (this.Owner.StackMode != StackMode.NotStacked ||
-                !this.RawValueRange.IsEmpty)
-            {
-                TryResetRawValueRangeOnItemRemove(oldItem);
-            }
+            //if (this.Owner.StackMode != StackMode.NotStacked ||
+            //    !this.RawValueRange.IsEmpty)
+            //{
+            //    TryResetRawValueRangeOnItemRemove(oldItem);
+            //}
 
             if (!this.Owner.IsSeriesCollectionChanging)
             {
+                UpdateValueRange();
                 Refresh();
             }
 
@@ -486,15 +496,21 @@ namespace MvvmCharting.WpfFX.Series
         {
             if (this.Owner.StackMode == StackMode.NotStacked)
             {
-                TryResetRawValueRangeOnItemRemove(oldItem);
-                if (!this.RawValueRange.IsEmpty)
-                {
-                    TryUpdateRawValueRangeOnItemAdd(newItem);
-                }
+                EnsureYValuePositive(newItem);
             }
+
+            //if (this.Owner.StackMode == StackMode.NotStacked)
+            //{
+            //    TryResetRawValueRangeOnItemRemove(oldItem);
+            //    if (!this.RawValueRange.IsEmpty)
+            //    {
+            //        TryUpdateRawValueRangeOnItemAdd(newItem);
+            //    }
+            //}
 
             if (!this.Owner.IsSeriesCollectionChanging)
             {
+                UpdateValueRange();
                 Refresh();
             }
 
@@ -521,6 +537,10 @@ namespace MvvmCharting.WpfFX.Series
         }
         private void UpdateMinXValueGap()
         {
+            if (this.Owner == null || this.BarSeries == null)
+            {
+                return;
+            }
 
             if (this.Owner.IsXAxisCategory)
             {
@@ -542,20 +562,22 @@ namespace MvvmCharting.WpfFX.Series
             }
 
             double prev = GetXValueForItem(this.ItemsSource[0]);
-            this.MinXValueGap = double.MaxValue;
+            double minGap = double.MaxValue;
             for (var i = 1; i < this.ItemsSource.Count; i++)
             {
                 var item = this.ItemsSource[i];
 
                 var current = GetXValueForItem(item);
                 var gap = current - prev;
-                if (gap < this.MinXValueGap)
+                if (gap < minGap)
                 {
-                    this.MinXValueGap = gap;
+                    minGap = gap;
                 }
 
                 prev = current;
             }
+
+            this.MinXValueGap = minGap;
         }
 
         //private void HandleItemsSourceCollectionChange(IList oldValue, IList newValue)
@@ -596,7 +618,7 @@ namespace MvvmCharting.WpfFX.Series
 
         private double GetAdjustYValueForItem(object item, int index)
         {
-            double minY = this.Owner.GlobalRawValueRange.MinY;
+            double minY = 0;//this.Owner.GlobalRawValueRange.MinY;
             switch (this.Owner.StackMode)
             {
                 case StackMode.NotStacked:
@@ -658,11 +680,7 @@ namespace MvvmCharting.WpfFX.Series
 
         public void UpdateValueRange()
         {
-            if (this.Owner.IsSeriesCollectionChanging)
-            {
-                ResetValueRange();
-                return;
-            }
+
 
             if (this.ItemsSource == null ||
                 this.ItemsSource.Count == 0)
@@ -805,6 +823,7 @@ namespace MvvmCharting.WpfFX.Series
                 {
                     this._plottingXValueRange = value;
                     UpdateXPixelPerUnit();
+
                     RecalculateCoordinate();
                 }
             }
@@ -829,9 +848,7 @@ namespace MvvmCharting.WpfFX.Series
                         UpdateYPixelPerUnit();
                     }
 
-
                     RecalculateCoordinate();
-
                 }
             }
         }
@@ -876,8 +893,6 @@ namespace MvvmCharting.WpfFX.Series
                 }
             }
         }
-
-
 
         private void UpdateXPixelPerUnit()
         {
@@ -938,10 +953,13 @@ namespace MvvmCharting.WpfFX.Series
         /// This method will first update the _coordinateCache and the Coordinate of each scatter,
         /// then update the shape of the Line or Area
         /// </summary>
+
         internal void RecalculateCoordinate()
         {
+
             if (this.Owner.IsSeriesCollectionChanging)
             {
+
                 return;
             }
 
@@ -977,8 +995,6 @@ namespace MvvmCharting.WpfFX.Series
             this.AreaSeries?.UpdateShape();
 
             this.BarSeries?.UpdateBarWidth(this.MinXValueGap, this.XPixelPerUnit);
-
-            Debug.WriteLine($"{this.DataContext}......RecalculateCoordinate...!!!");
         }
 
         internal void Reset()
@@ -990,11 +1006,9 @@ namespace MvvmCharting.WpfFX.Series
 
         internal void Refresh()
         {
-            Reset();
 
             UpdateMinXValueGap();
 
-            UpdateValueRange();
 
             RecalculateCoordinate();
 
@@ -1009,7 +1023,6 @@ namespace MvvmCharting.WpfFX.Series
         {
             return this._coordinateCache;
         }
-
 
         private ISeriesControl GetPreviousSeriesHost()
         {
@@ -1037,7 +1050,7 @@ namespace MvvmCharting.WpfFX.Series
                     break;
                 case StackMode.Stacked:
                 case StackMode.Stacked100:
-                    ISeriesControl previousSeriesControl = GetPreviousSeriesHost();
+                    var previousSeriesControl = (SeriesControl)GetPreviousSeriesHost();
                     if (previousSeriesControl == null)
                     {
                         if (isAreaSeries)
@@ -1051,9 +1064,16 @@ namespace MvvmCharting.WpfFX.Series
                     {
                         previous = previousSeriesControl.GetCoordinates();
 
+                        if (previous == null)
+                        {
+                            previousSeriesControl.UpdateValueRange();
+                            previousSeriesControl.Refresh();
+                            previous = previousSeriesControl.GetCoordinates();
+                        }
+
                         if (previous.Length != coordinates.Length)
                         {
-                            throw new MvvmChartException($"previous.Length({previous.Length}) != coordinates.Length({coordinates.Length})");
+                            throw new MvvmChartException($"{this.DataContext}...previous.Length({previous.Length}) != coordinates.Length({coordinates.Length})");
                         }
                     }
 
@@ -1065,8 +1085,6 @@ namespace MvvmCharting.WpfFX.Series
 
             return previous;
         }
-
-
         #endregion
 
         #region series
@@ -1175,8 +1193,12 @@ namespace MvvmCharting.WpfFX.Series
 
             if (this.BarSeries != null)
             {
+
                 this.BarSeries.Owner = this;
-                this.BarSeries.UpdateBarWidth(this.MinXValueGap, this.XPixelPerUnit);
+
+                UpdateMinXValueGap();
+
+                //this.BarSeries.UpdateBarWidth(this.MinXValueGap, this.XPixelPerUnit);
                 this.BarSeries.UpdateItemsSource();
             }
         }

@@ -590,7 +590,11 @@ namespace MvvmCharting.WpfFX
 
                     var sr = this.Part_SeriesCollectionControl.GetSeries().FirstOrDefault();
 
-                    plottingItemValues = sr?.ItemsSource.OfType<object>().Select(x => sr.GetXPropertyObjectForItem(x))
+                    if (sr?.ItemsSource==null)
+                    {
+                        return null;
+                    }
+                    plottingItemValues = sr.ItemsSource.OfType<object>().Select(x => sr.GetXPropertyObjectForItem(x))
                         .ToArray();
                     break;
 

@@ -52,6 +52,11 @@ namespace MvvmCharting.WpfFX.Series
             get { return this._isSeriesCollectionChanging; }
             internal set
             {
+                if (IsSeriesCollectionChanging && !value)
+                {
+                    UpdateValueRange();
+                }
+
                 if (this._isSeriesCollectionChanging != value)
                 {
                     this._isSeriesCollectionChanging = value;
@@ -59,7 +64,7 @@ namespace MvvmCharting.WpfFX.Series
                     {
                         this.Refresh();
                     }
-                    
+
                 }
             }
         }
@@ -167,8 +172,13 @@ namespace MvvmCharting.WpfFX.Series
             sr.OnPlottingXValueRangeChanged(this.XPlottingRange);
             sr.OnPlottingYValueRangeChanged(this.YPlottingRange);
 
-            sr.Refresh();
+           
+            if (this.StackMode == StackMode.NotStacked)
+            {
+                sr.UpdateValueRange();
+                sr.Refresh();
 
+            }
         }
 
         private void ValidateData()
@@ -181,8 +191,29 @@ namespace MvvmCharting.WpfFX.Series
 
         }
 
+        internal void UpdateValueRange()
+        {
+
+            if (GetSeries().Any(sr=>sr.ItemsSource==null))
+            {
+                return;
+            }
+
+            foreach (var seriesHost in GetSeries())
+            {
+
+                seriesHost.UpdateValueRange();
+
+            }
+        }
+
         internal void Refresh()
         {
+            if (GetSeries().Any(sr => sr.ItemsSource == null))
+            {
+                return;
+            }
+
             foreach (var seriesHost in GetSeries())
             {
                 seriesHost.Refresh();
@@ -264,6 +295,7 @@ namespace MvvmCharting.WpfFX.Series
                             Reset();
                             UpdateGlobalRawValueRange();
                             ValidateData();
+                            UpdateValueRange();
                             Refresh();
                         }
                         finally
@@ -276,6 +308,7 @@ namespace MvvmCharting.WpfFX.Series
                         Reset();
                         UpdateGlobalRawValueRange();
                         ValidateData();
+                        UpdateValueRange();
                         Refresh();
                     }
 
@@ -318,7 +351,6 @@ namespace MvvmCharting.WpfFX.Series
                 if (!this._globalRawValueRange.Equals(value))
                 {
                     this._globalRawValueRange = value;
-                    Debug.WriteLine("GlobalRawValueRange===" + GlobalRawValueRange);
                 }
 
             }
@@ -388,7 +420,7 @@ namespace MvvmCharting.WpfFX.Series
                 {
                     sr.UpdateRawValueRange(sr.ItemsSource);
                 }
- 
+
                 if (sr.RawValueRange.IsEmpty)
                 {
                     this.GlobalRawValueRange = Range2D.Empty;
@@ -401,7 +433,6 @@ namespace MvvmCharting.WpfFX.Series
                 minY = Math.Min(minY, sr.RawValueRange.MinY);
                 maxY = Math.Max(maxY, sr.RawValueRange.MaxY);
             }
-
 
             this.GlobalRawValueRange = new Range2D(minX, maxX, minY, maxY);
 
@@ -447,7 +478,6 @@ namespace MvvmCharting.WpfFX.Series
 
         internal virtual void SetPlottingValueRange(Orientation orientation, PlottingRange newValue)
         {
-
             switch (orientation)
             {
                 case Orientation.Horizontal:
@@ -488,7 +518,6 @@ namespace MvvmCharting.WpfFX.Series
             }
 
             Debug.Assert(this.GlobalValueRange.IsEmpty);
-
         }
     }
 }

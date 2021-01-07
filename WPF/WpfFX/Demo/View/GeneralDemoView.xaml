@@ -330,19 +330,7 @@
 
                 </StackPanel>
             </GroupBox>
-
-            <GroupBox Header="Series Mode:">
-                <StackPanel>
-
-                    <ComboBox Width="100"
-                              Margin="6,0,6,6"
-                              HorizontalAlignment="Left"
-                              ItemsSource="{Binding SeriesModeList}"
-                              SelectedItem="{Binding SelectedStackMode, Mode=TwoWay}"/>
-                </StackPanel>
-            </GroupBox>
-
-
+            
             <StackPanel Margin="10,20" 
                         DataContext="{StaticResource DemoDataViewModel}">
                 <ui:NumberBox Header="Series count" 

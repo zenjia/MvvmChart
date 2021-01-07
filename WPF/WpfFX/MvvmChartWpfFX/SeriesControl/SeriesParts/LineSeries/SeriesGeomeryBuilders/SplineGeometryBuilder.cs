@@ -35,8 +35,6 @@ namespace MvvmCharting.WpfFX.Series
             }
             else
             {
-
-
                 for (int i = 0; i < points.Length; i++)
                 {
                     double T1 = tension;
@@ -66,7 +64,7 @@ namespace MvvmCharting.WpfFX.Series
             return list;
         }
 
-        private static void Segment(PointCollection list, System.Windows.Point pt0, System.Windows.Point pt1, System.Windows.Point pt2, System.Windows.Point pt3, double T1, double T2, double tolerance)
+        private static void Segment(PointCollection list, Point pt0, Point pt1, Point pt2, Point pt3, double T1, double T2, double tolerance)
         {
             // See Petzold, "Programming Microsoft Windows with C#", pages 645-646 or 
             //     Petzold, "Programming Microsoft Windows with Microsoft Visual Basic .NET", pages 638-639
@@ -93,7 +91,7 @@ namespace MvvmCharting.WpfFX.Series
             for (int i = 1; i < num; i++)
             {
                 double t = (double)i / (num - 1);
-                System.Windows.Point pt = new System.Windows.Point(AX * t * t * t + BX * t * t + CX * t + DX,
+                Point pt = new Point(AX * t * t * t + BX * t * t + CX * t + DX,
                                      AY * t * t * t + BY * t * t + CY * t + DY);
                 list.Add(pt);
             }
@@ -163,7 +161,7 @@ namespace MvvmCharting.WpfFX.Series
                 else
                 {
 
-                    curvePoints2 = CreateCurvePoints(previousPoints, this.Tension);
+                    curvePoints2 = CreateCurvePoints(previousPoints.Reversed(), this.Tension);
                 }
             }
 
