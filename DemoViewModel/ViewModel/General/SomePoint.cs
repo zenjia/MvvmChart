@@ -1,7 +1,6 @@
 ﻿using MvvmCharting.Common;
-using MvvmCharting;
 
-namespace Demo
+namespace DemoViewModel
 {
     public class SomePoint : BindableBase
     {

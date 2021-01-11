@@ -15,6 +15,13 @@ namespace MvvmCharting.WpfFX.Series
         bool IsSeriesCollectionChanging { get; }
         bool IsXAxisCategory { get;}
 
-        Range2D GlobalRawValueRange { get; }
+ 
+        double XStartValue { get; }
+        double YStartValue { get; }
+        double XPixelPerUnit { get; }
+        double YPixelPerUnit { get; }
+
+        double YBaseValue { get; }
+        double YBaseCoordinate { get; }
     }
 }

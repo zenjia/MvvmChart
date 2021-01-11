@@ -1,30 +1,22 @@
-﻿<UserControl x:Class="Demo.WpfFX.CategoryAxisDemoView"
+﻿<UserControl x:Class="DemoViewModel.WpfFX.CategoryAxisDemoView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Demo.WpfFX"
-             xmlns:demo="clr-namespace:Demo"
+             xmlns:local="clr-namespace:DemoViewModel.WpfFX"
+             xmlns:demo="clr-namespace:DemoViewModel"
              xmlns:wpfFx="clr-namespace:MvvmCharting.WpfFX;assembly=MvvmChartWpfFX"
              xmlns:axis="clr-namespace:MvvmCharting.WpfFX.Axis;assembly=MvvmChartWpfFX"
              xmlns:series="clr-namespace:MvvmCharting.WpfFX.Series;assembly=MvvmChartWpfFX"
              xmlns:controls="http://schemas.modernwpf.com/2019"
+             xmlns:demoViewModel="clr-namespace:DemoViewModel;assembly=DemoViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <demo:ChartSettingTestViewModel x:Key="ChartSettingTestViewModel"/>
+       
 
-        <demo:DemoDataViewModel x:Key="DemoDataViewModel" SeriesCount="3" Max="20"/>
-
-        <!--<demo:ItemToScatterFillConverter x:Key="ItemToScatterFillConverter"/>-->
-
-        <series:PolylineGeometryBuilder x:Key="DefaultPolyLineGeometryBuilder"/>
-        <series:StepLineGeometryBuilder x:Key="DefaultStepLineGeometryBuilder"/>
-        <series:SplineGeometryBuilder x:Key="DefaultSplineGeometryBuilder"/>
-        <local:GeometryBuilderConverter x:Key="MyGeometryBuilderConverter"
-                                        PolylineBuilder="{StaticResource DefaultPolyLineGeometryBuilder}" 
-                                        StepLineBuilder="{StaticResource DefaultStepLineGeometryBuilder}"
-                                        SplineBuilder="{StaticResource DefaultSplineGeometryBuilder}"/>
+        <demoViewModel:DemoDataViewModel x:Key="DemoDataViewModel" SeriesCount="3" Max="20"/>
+ 
 
         <!--This is the Default Scatter Style-->
         <DataTemplate x:Key="ScatterDataTemplate">
@@ -84,7 +76,7 @@
 
 
 
-        <DataTemplate x:Key="SeriesTemplate0" DataType="demo:SomePointList">
+        <DataTemplate x:Key="SeriesTemplate0" DataType="demoViewModel:SomePointList">
             <series:SeriesControl IndependentValueProperty="tt"
                                          DependentValueProperty="Y"
                                          Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
@@ -97,7 +89,7 @@
                 <series:SeriesControl.LineSeries>
                     <series:LineSeries Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
                                            StrokeThickness="1.5"
-                                           GeometryBuilder="{Binding SelectedSeriesBuilder, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource MyGeometryBuilderConverter}}"
+                                           GeometryBuilder="{Binding SelectedSeriesBuilder, Source={StaticResource DemoDataViewModel}, Converter={StaticResource MyGeometryBuilderConverter}}"
                                            IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
                                            Opacity="0.8">
                     </series:LineSeries>
@@ -106,7 +98,7 @@
                     <series:AreaSeries Opacity="0.8"
                                                Stroke="{Binding Index, Converter={StaticResource IndexToAreaSeriesFillConverter}}"
                                                StrokeThickness="1.5"
-                                               GeometryBuilder="{Binding SelectedSeriesBuilder, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource MyGeometryBuilderConverter}}"
+                                               GeometryBuilder="{Binding SelectedSeriesBuilder, Source={StaticResource DemoDataViewModel}, Converter={StaticResource MyGeometryBuilderConverter}}"
                                                IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}">
                     </series:AreaSeries>
 
@@ -125,7 +117,7 @@
             </series:SeriesControl>
         </DataTemplate>
 
-        <DataTemplate x:Key="SeriesTemplate1" DataType="demo:SomePointList">
+        <DataTemplate x:Key="SeriesTemplate1" DataType="demoViewModel:SomePointList">
             <series:SeriesControl IndependentValueProperty="tt"
                               DependentValueProperty="Y"
                               Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
@@ -138,7 +130,7 @@
                 <series:SeriesControl.LineSeries>
                     <series:LineSeries Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
                                            StrokeThickness="1.5"
-                                           GeometryBuilder="{Binding SelectedSeriesBuilder, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource MyGeometryBuilderConverter}}"
+                                           GeometryBuilder="{Binding SelectedSeriesBuilder, Source={StaticResource DemoDataViewModel}, Converter={StaticResource MyGeometryBuilderConverter}}"
                                            IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
                                            Opacity="0.8">
                     </series:LineSeries>
@@ -148,7 +140,7 @@
                     <series:AreaSeries Opacity="0.8"
                                              Stroke="{Binding Index, Converter={StaticResource IndexToAreaSeriesFillConverter}}"
                                              StrokeThickness="1.5"
-                                             GeometryBuilder="{Binding SelectedSeriesBuilder, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource MyGeometryBuilderConverter}}"
+                                             GeometryBuilder="{Binding SelectedSeriesBuilder, Source={StaticResource DemoDataViewModel}, Converter={StaticResource MyGeometryBuilderConverter}}"
                                              IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}">
                     </series:AreaSeries>
 
@@ -169,7 +161,7 @@
 
         </DataTemplate>
 
-        <DataTemplate x:Key="SeriesTemplate2" DataType="demo:SomePointList">
+        <DataTemplate x:Key="SeriesTemplate2" DataType="demoViewModel:SomePointList">
             <series:SeriesControl IndependentValueProperty="tt"
                               DependentValueProperty="Y"
                               Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
@@ -183,7 +175,7 @@
                 <series:SeriesControl.LineSeries>
                     <series:LineSeries Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
                                      StrokeThickness="1.5"
-                                     GeometryBuilder="{Binding SelectedSeriesBuilder, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource MyGeometryBuilderConverter}}"
+                                     GeometryBuilder="{Binding SelectedSeriesBuilder, Source={StaticResource DemoDataViewModel}, Converter={StaticResource MyGeometryBuilderConverter}}"
                                      IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
                                      Opacity="0.8">
                     </series:LineSeries>
@@ -192,7 +184,7 @@
                     <series:AreaSeries Opacity="0.8"
                                                Stroke="{Binding Index, Converter={StaticResource IndexToAreaSeriesFillConverter}}"
                                                StrokeThickness="1.5"
-                                               GeometryBuilder="{Binding SelectedSeriesBuilder, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource MyGeometryBuilderConverter}}"
+                                               GeometryBuilder="{Binding SelectedSeriesBuilder, Source={StaticResource DemoDataViewModel}, Converter={StaticResource MyGeometryBuilderConverter}}"
                                                IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}">
                     </series:AreaSeries>
 
@@ -219,28 +211,29 @@
 
     </UserControl.Resources>
 
-    <Grid>
+    <Grid DataContext="{Binding Source={StaticResource DemoDataViewModel}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <wpfFx:Chart Background="Bisque"
-                     IsSeriesCollectionChanging="{Binding Source={StaticResource DemoDataViewModel}, Path=IsModelChanging, Mode=TwoWay}"
-                     SeriesStackMode="{Binding SelectedStackMode, Source={StaticResource ChartSettingTestViewModel}}"
-                            GridLineControlVisibility="{Binding ShowGridLine, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
-                            LegendVisibility="{Binding ShowLegend, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
+                     YBaseValue="{Binding YBaseValue}" 
+                     IsSeriesCollectionChanging="{Binding IsModelChanging, Mode=TwoWay}"
+                     SeriesStackMode="{Binding SelectedStackMode}"
+                            GridLineControlVisibility="{Binding ShowGridLine, Converter={StaticResource t2v}}"
+                            LegendVisibility="{Binding ShowLegend, Converter={StaticResource t2v}}"
                             SeriesTemplateSelector="{StaticResource SeriesTemplateSelector}"
                             SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource DemoDataViewModel}}">
             <wpfFx:Chart.XAxis>
-                <axis:CategoryAxis Title="t values" Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedXPlacement}"/>
+                <axis:CategoryAxis Title="t values" Placement="{Binding SelectedXPlacement}"/>
             </wpfFx:Chart.XAxis>
             <wpfFx:Chart.YAxis>
-                <axis:NumericAxis Title="Y values"  Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedYPlacement}"/>
+                <axis:NumericAxis Title="Y values"  Placement="{Binding SelectedYPlacement}"/>
             </wpfFx:Chart.YAxis>
 
             <wpfFx:Chart.LegendItemTemplate>
-                <DataTemplate DataType="demo:SomePointList">
+                <DataTemplate DataType="demoViewModel:SomePointList">
                     <wpfFx:LegendItemControl 
                         IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
                         IndicatorBrush="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"/>
@@ -250,13 +243,12 @@
             <wpfFx:Chart.BackgroundElement>
                 <Image Source="../image/Caribbean1.jpg" 
                        Stretch="Fill" 
-                       Visibility="{Binding ShowBackgroundImage, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"/>
+                       Visibility="{Binding ShowBackgroundImage, Converter={StaticResource t2v}}"/>
             </wpfFx:Chart.BackgroundElement>
         </wpfFx:Chart>
 
 
         <StackPanel Grid.Row="1" 
-                    DataContext="{Binding Source={StaticResource ChartSettingTestViewModel}}"
                     Margin="10"
                     Orientation="Horizontal">
             <StackPanel.Resources>
@@ -327,6 +319,11 @@
                               Minimum="0"
                               SpinButtonPlacementMode="Inline"/>
 
+                <controls:NumberBox Header="YBaseValue"  
+                              Value="{Binding YBaseValue, Mode=TwoWay}" 
+                              SmallChange="0.05" 
+                              LargeChange="0.1"
+                              SpinButtonPlacementMode="Inline"/>
             </StackPanel>
 
 

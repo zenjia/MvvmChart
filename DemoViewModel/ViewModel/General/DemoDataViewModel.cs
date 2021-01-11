@@ -1,14 +1,111 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Windows;
+using System.Net.Mime;
+using MvvmCharting.Axis;
 using MvvmCharting.Common;
-using MvvmCharting;
+using MvvmCharting.Series;
 
-namespace Demo
+namespace DemoViewModel
 {
-    public class DemoDataViewModel : BindableBase
+    public class DemoDataViewModelBase : BindableBase
+    {
+        public ChartValuePaddingViewModel ChartValuePaddingViewModel { get; }
+
+        public DemoDataViewModelBase()
+        {
+            ChartValuePaddingViewModel = new ChartValuePaddingViewModel();
+            this.XAxisPlacements = new ObservableCollection<AxisPlacement>();
+            this.XAxisPlacements.Add(AxisPlacement.Bottom);
+            this.XAxisPlacements.Add(AxisPlacement.Top);
+
+            this.YAxisPlacements = new ObservableCollection<AxisPlacement>();
+            this.YAxisPlacements.Add(AxisPlacement.Left);
+            this.YAxisPlacements.Add(AxisPlacement.Right);
+
+            this.SeriesModeList = new ObservableCollection<StackMode>()
+            {
+                StackMode.NotStacked,
+                StackMode.Stacked,
+                StackMode.Stacked100
+            };
+
+            this.SeriesGeometryBuilders = new ObservableCollection<string>()
+            {
+                "PolyLine","StepLine","Spline"
+            };
+
+        }
+
+
+        public ObservableCollection<string> SeriesGeometryBuilders { get; }
+
+        public ObservableCollection<StackMode> SeriesModeList { get; }
+
+        public ObservableCollection<AxisPlacement> XAxisPlacements { get; }
+        public ObservableCollection<AxisPlacement> YAxisPlacements { get; }
+
+        private StackMode _selectedStackMode = StackMode.NotStacked;
+        public StackMode SelectedStackMode
+        {
+            get { return this._selectedStackMode; }
+            set { SetProperty(ref this._selectedStackMode, value); }
+        }
+
+        private string _selectedSeriesBuilder = "PolyLine";
+        public string SelectedSeriesBuilder
+        {
+            get { return this._selectedSeriesBuilder; }
+            set { SetProperty(ref this._selectedSeriesBuilder, value); }
+        }
+
+
+
+        private AxisPlacement _selectedXPlacement = AxisPlacement.Bottom;
+        public AxisPlacement SelectedXPlacement
+        {
+            get { return this._selectedXPlacement; }
+            set { SetProperty(ref this._selectedXPlacement, value); }
+        }
+
+        private AxisPlacement _selectedYPlacement = AxisPlacement.Left;
+        public AxisPlacement SelectedYPlacement
+        {
+            get { return this._selectedYPlacement; }
+            set { SetProperty(ref this._selectedYPlacement, value); }
+        }
+
+        private bool _showBackgroundImage;
+        public bool ShowBackgroundImage
+        {
+            get { return this._showBackgroundImage; }
+            set { SetProperty(ref this._showBackgroundImage, value); }
+        }
+
+        private bool _showGridLine = true;
+        public bool ShowGridLine
+        {
+            get { return this._showGridLine; }
+            set { SetProperty(ref this._showGridLine, value); }
+        }
+
+        private bool _showLegend = true;
+        public bool ShowLegend
+        {
+            get { return this._showLegend; }
+            set { SetProperty(ref this._showLegend, value); }
+        }
+
+        private double _yBaseValue;
+        public double YBaseValue
+        {
+            get { return this._yBaseValue; }
+            set { SetProperty(ref this._yBaseValue, value); }
+        }
+
+
+    }
+    public class DemoDataViewModel : DemoDataViewModelBase
     {
         public ObservableCollection<SomePointList> ItemsSourceList { get; }
 
@@ -71,17 +168,17 @@ namespace Demo
             {
                 if (SetProperty(ref this._showBarSeries, value))
                 {
-                    var chartValuePaddingViewModel = (ChartValuePaddingViewModel)Application.Current.Resources["ChartValuePaddingViewModel"];
 
+                  
 
-                    if (chartValuePaddingViewModel.XMinValuePadding < 0.5)
+                    if (ChartValuePaddingViewModel.XMinValuePadding < 0.5)
                     {
-                        chartValuePaddingViewModel.XMinValuePadding = 0.5;
+                        ChartValuePaddingViewModel.XMinValuePadding = 0.5;
                     }
 
-                    if (chartValuePaddingViewModel.XMaxValuePadding < 0.5)
+                    if (ChartValuePaddingViewModel.XMaxValuePadding < 0.5)
                     {
-                        chartValuePaddingViewModel.XMaxValuePadding = 0.5;
+                        ChartValuePaddingViewModel.XMaxValuePadding = 0.5;
                     }
 
                     foreach (var sr in this.ItemsSourceList)
@@ -153,7 +250,7 @@ namespace Demo
             var v = i / 1.0;
             var y = Math.Abs(v) < 1e-10 ? 1 : Math.Sin(v) / v;
 
-            var pt = new SomePoint(v, y + 0.25 + yOffset);
+            var pt = new SomePoint(v, y - 0.25 + yOffset);
 
             return pt;
         }
@@ -306,14 +403,23 @@ namespace Demo
 
         public DemoDataViewModel()
         {
-
-
             this.ItemsSourceList = new ObservableCollection<SomePointList>();
+            this.ItemsSourceList.CollectionChanged += ItemsSourceList_CollectionChanged;
+        }
 
-
-
-
-
+        private void ItemsSourceList_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems!=null)
+            {
+                foreach (var somePointList in e.NewItems.OfType<SomePointList>())
+                {
+                    somePointList.ShowLineSeries = this.ShowLineSeries;
+                    somePointList.ShowScatterSeries = this.ShowScatterSeries;
+                    somePointList.ShowAreaSeries = this.ShowAreaSeries;
+                    somePointList.ShowBarSeries = this.ShowBarSeries;
+                    
+                }
+            }
         }
     }
 }

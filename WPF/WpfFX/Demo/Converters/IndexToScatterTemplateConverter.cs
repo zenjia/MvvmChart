@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace Demo
+namespace DemoViewModel
 {
     public class IndexToAreaSeriesFillConverter : IValueConverter
     {

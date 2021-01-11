@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using MvvmCharting.Common;
-using MvvmCharting;
-
-namespace Demo
+﻿namespace DemoViewModel
 {
     public class BigDataViewModel : DemoDataViewModel
     {

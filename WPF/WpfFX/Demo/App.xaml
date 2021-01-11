@@ -1,10 +1,13 @@
-﻿<Application x:Class="Demo.App"
+﻿<Application x:Class="DemoViewModel.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Demo"
+             xmlns:local="clr-namespace:DemoViewModel"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              StartupUri="MainWindow.xaml"
-             xmlns:ui="http://schemas.modernwpf.com/2019">
+             xmlns:ui="http://schemas.modernwpf.com/2019"
+             xmlns:wpfFx="clr-namespace:DemoViewModel.WpfFX"
+             xmlns:charting="http://schemas.mvvmchart.com/2020"
+             xmlns:demoViewModel="clr-namespace:DemoViewModel;assembly=DemoViewModel">
     <Application.Resources>
 
         <ResourceDictionary>
@@ -12,12 +15,22 @@
                 <ui:ThemeResources />
                 <ui:XamlControlsResources />
             </ResourceDictionary.MergedDictionaries>
-            <local:ChartValuePaddingViewModel x:Key="ChartValuePaddingViewModel"/>
+            <demoViewModel:ChartValuePaddingViewModel x:Key="ChartValuePaddingViewModel"/>
             <local:IndexToStrokeConverter x:Key="IndexToStrokeConverter"/>
 
             <local:IndexToAreaSeriesFillConverter x:Key="IndexToAreaSeriesFillConverter"/>
             <BooleanToVisibilityConverter x:Key="t2v"/>
             <local:ItemToScatterFillConverter x:Key="ItemToScatterFillConverter"/>
+
+
+            <charting:PolylineGeometryBuilder x:Key="DefaultPolyLineGeometryBuilder"/>
+            <charting:StepLineGeometryBuilder x:Key="DefaultStepLineGeometryBuilder"/>
+            <charting:SplineGeometryBuilder x:Key="DefaultSplineGeometryBuilder"/>
+            <wpfFx:GeometryBuilderConverter x:Key="MyGeometryBuilderConverter"
+                                            PolylineBuilder="{StaticResource DefaultPolyLineGeometryBuilder}" 
+                                            StepLineBuilder="{StaticResource DefaultStepLineGeometryBuilder}"
+                                            SplineBuilder="{StaticResource DefaultSplineGeometryBuilder}"/>
+
 
             <Style TargetType="Button">
                 <Setter Property="Margin" Value="1"/>

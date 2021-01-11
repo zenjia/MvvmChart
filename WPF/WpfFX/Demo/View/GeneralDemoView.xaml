@@ -1,15 +1,17 @@
-﻿<UserControl x:Class="Demo.GeneralDemoView"
+﻿<UserControl x:Class="DemoViewModel.GeneralDemoView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Demo"
+             xmlns:local="clr-namespace:DemoViewModel"
              mc:Ignorable="d"
              xmlns:chart="http://schemas.mvvmchart.com/2020"
-             xmlns:ui="http://schemas.modernwpf.com/2019">
+             xmlns:ui="http://schemas.modernwpf.com/2019"
+             xmlns:demoViewModel="clr-namespace:DemoViewModel;assembly=DemoViewModel"
+             >
     <UserControl.Resources>
-        <local:ChartSettingTestViewModel x:Key="ChartSettingTestViewModel"/>
-        <local:DemoDataViewModel x:Key="DemoDataViewModel" SeriesCount="3" Max="30"/>
+
+        <demoViewModel:DemoDataViewModel x:Key="DemoDataViewModel" SeriesCount="3" Max="30"/>
 
         <local:RangeToPointConverter x:Key="RangeToPointConverter"/>
 
@@ -70,7 +72,7 @@
                                                ScatterDataTemplate="{StaticResource ScatterDataTemplate}"
                                                ScatterDataTemplate1="{StaticResource ScatterDataTemplate1}"
                                                ScatterDataTemplate2="{StaticResource ScatterDataTemplate2}"/>
-        <DataTemplate x:Key="SeriesTemplate0" DataType="local:SomePointList">
+        <DataTemplate x:Key="SeriesTemplate0" DataType="demoViewModel:SomePointList">
             <chart:SeriesControl IndependentValueProperty="t"
                                          DependentValueProperty="Y"
                                          Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
@@ -113,7 +115,7 @@
         </DataTemplate>
 
 
-        <DataTemplate x:Key="SeriesTemplate1" DataType="local:SomePointList">
+        <DataTemplate x:Key="SeriesTemplate1" DataType="demoViewModel:SomePointList">
             <chart:SeriesControl IndependentValueProperty="t"
                                      DependentValueProperty="Y"
                                      Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
@@ -158,7 +160,7 @@
 
 
 
-        <DataTemplate x:Key="SeriesTemplate2" DataType="local:SomePointList">
+        <DataTemplate x:Key="SeriesTemplate2" DataType="demoViewModel:SomePointList">
             <chart:SeriesControl IndependentValueProperty="t"
                                DependentValueProperty="Y"
                                Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
@@ -211,30 +213,32 @@
     </UserControl.Resources>
 
 
-    <Grid>
+    <Grid DataContext="{Binding Source={StaticResource DemoDataViewModel}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <chart:Chart Background="Bisque"
-                     SeriesStackMode="{Binding SelectedStackMode, Source={StaticResource ChartSettingTestViewModel}}"
-                     XValuePadding="{Binding XValuePadding, Source={StaticResource ChartValuePaddingViewModel}, Converter={StaticResource RangeToPointConverter}}"
-                     YValuePadding="{Binding YValuePadding, Source={StaticResource ChartValuePaddingViewModel}, Converter={StaticResource RangeToPointConverter}}"
+ 
+                     YBaseValue="{Binding YBaseValue}" 
+                     SeriesStackMode="{Binding SelectedStackMode}"
+                     XValuePadding="{Binding ChartValuePaddingViewModel.XValuePadding, Converter={StaticResource RangeToPointConverter}}"
+                     YValuePadding="{Binding ChartValuePaddingViewModel.YValuePadding, Converter={StaticResource RangeToPointConverter}}"
                      IsSeriesCollectionChanging="{Binding Source={StaticResource DemoDataViewModel}, Path=IsModelChanging, Mode=TwoWay}"
-                     GridLineControlVisibility="{Binding ShowGridLine, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
-                     LegendVisibility="{Binding ShowLegend, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"
+                     GridLineControlVisibility="{Binding ShowGridLine, Converter={StaticResource t2v}}"
+                     LegendVisibility="{Binding ShowLegend, Converter={StaticResource t2v}}"
                             SeriesTemplateSelector="{StaticResource SeriesTemplateSelector}"
                             SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource DemoDataViewModel}}">
             <chart:Chart.XAxis>
-                <chart:NumericAxis Title="t values" Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedXPlacement}"/>
+                <chart:NumericAxis Title="t values" Placement="{Binding SelectedXPlacement}"/>
             </chart:Chart.XAxis>
             <chart:Chart.YAxis>
-                <chart:NumericAxis Title="Y values"  Placement="{Binding Source={StaticResource ChartSettingTestViewModel}, Path=SelectedYPlacement}"/>
+                <chart:NumericAxis Title="Y values"  Placement="{Binding SelectedYPlacement}"/>
             </chart:Chart.YAxis>
 
             <chart:Chart.LegendItemTemplate>
-                <DataTemplate DataType="local:SomePointList">
+                <DataTemplate DataType="demoViewModel:SomePointList">
                     <chart:LegendItemControl 
                         IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
                         IndicatorBrush="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"/>
@@ -244,12 +248,11 @@
             <chart:Chart.BackgroundElement>
                 <Image Source="../image/Caribbean1.jpg" 
                        Stretch="Fill" 
-                       Visibility="{Binding ShowBackgroundImage, Source={StaticResource ChartSettingTestViewModel}, Converter={StaticResource t2v}}"/>
+                       Visibility="{Binding ShowBackgroundImage, Converter={StaticResource t2v}}"/>
             </chart:Chart.BackgroundElement>
         </chart:Chart>
 
         <StackPanel Grid.Row="1" 
-                    DataContext="{Binding Source={StaticResource ChartSettingTestViewModel}}"
                     Margin="10"
                     Orientation="Horizontal">
             <StackPanel.Resources>
@@ -260,7 +263,7 @@
             </StackPanel.Resources>
 
             <GroupBox Header="Series Settings">
-                <StackPanel DataContext="{Binding Source={StaticResource DemoDataViewModel}}">
+                <StackPanel>
                     <CheckBox Content="Show ScatterSeries"
                               IsChecked="{Binding ShowScatterSeries, Mode=TwoWay}"/>
                     <CheckBox Content="Show LineSeries"
@@ -273,7 +276,7 @@
             </GroupBox>
 
             <GroupBox Header="General Settings">
-                <StackPanel DataContext="{Binding Source={StaticResource ChartSettingTestViewModel}}">
+                <StackPanel>
 
                     <CheckBox Content="show GridLine"
                               IsChecked="{Binding ShowGridLine, Mode=TwoWay}"/>
@@ -306,7 +309,7 @@
             </GroupBox>
 
             <GroupBox Header="Value Padding"
-                      DataContext="{StaticResource ChartValuePaddingViewModel}">
+                      DataContext="{Binding ChartValuePaddingViewModel}">
                 <StackPanel>
                     <StackPanel.Resources>
                         <Style TargetType="ui:NumberBox">
@@ -331,8 +334,7 @@
                 </StackPanel>
             </GroupBox>
             
-            <StackPanel Margin="10,20" 
-                        DataContext="{StaticResource DemoDataViewModel}">
+            <StackPanel Margin="10,20">
                 <ui:NumberBox Header="Series count" 
                               Value="{Binding SeriesCount, Mode=TwoWay}" 
                               SmallChange="1" 
@@ -353,6 +355,13 @@
                               LargeChange="1"
                               Minimum="0"
                               SpinButtonPlacementMode="Inline"/>
+
+                <ui:NumberBox Header="YBaseValue"  
+                              Value="{Binding YBaseValue, Mode=TwoWay}" 
+                              SmallChange="0.05" 
+                              LargeChange="0.1"
+                              SpinButtonPlacementMode="Inline"/>
+                
  
             </StackPanel>
 

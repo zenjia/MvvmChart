@@ -6,7 +6,7 @@ namespace MvvmCharting.Common
     {
         public override string ToString()
         {
-            return $"(({this.XRange}),({this.YRange}))";
+            return $"({this.XRange}, {this.YRange})";
         }
 
         public static Range2D ExpandRange(Range2D oldValue, double x, double y)

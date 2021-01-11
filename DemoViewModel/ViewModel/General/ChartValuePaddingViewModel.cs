@@ -1,9 +1,6 @@
-﻿using System.Diagnostics;
-using System.Windows;
-using Windows.Foundation;
-using MvvmCharting.Common;
+﻿using MvvmCharting.Common;
 
-namespace Demo
+namespace DemoViewModel
 {
     public class ChartValuePaddingViewModel : BindableBase
     {

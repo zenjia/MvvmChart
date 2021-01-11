@@ -26,7 +26,7 @@ namespace MvvmCharting.WpfFX
     [TemplatePart(Name = "PART_VerticalCrossHair", Type = typeof(Line))]
     [TemplatePart(Name = "PART_GridLineHolder", Type = typeof(ContentControl))]
     [TemplatePart(Name = "PART_LegendHolder", Type = typeof(ContentControl))]
-    public class Chart : Control, IXAxisOwner, IYAxisOwner
+    public class Chart : Control, IChart, IXAxisOwner, IYAxisOwner
     {
         static Chart()
         {
@@ -44,6 +44,7 @@ namespace MvvmCharting.WpfFX
 
 
         private SeriesCollectionControl Part_SeriesCollectionControl;
+
         private Grid PART_Root;
         private Grid PART_PlottingCanvas;
 
@@ -68,20 +69,11 @@ namespace MvvmCharting.WpfFX
             {
                 this.Part_SeriesCollectionControl.IsXAxisCategory = this.XAxis is ICategoryAxis;
 
+                this.Part_SeriesCollectionControl.Owner = this;
 
-                this.Part_SeriesCollectionControl.GlobalValueRangeChanged += SeriesCollectionControlGlobalValueRangeChanged;
+                this.Part_SeriesCollectionControl.ActualXPlottingRangeChanged += SeriesCollectionControl_ActualXPlottingRangeChanged;
+                this.Part_SeriesCollectionControl.ActualYPlottingRangeChanged += SeriesCollectionControl_ActualYPlottingRangeChanged;
 
-
-                this.Part_SeriesCollectionControl.SetBinding(SeriesCollectionControl.SeriesTemplateProperty,
-                    new Binding(nameof(this.SeriesTemplate)) { Source = this });
-                this.Part_SeriesCollectionControl.SetBinding(SeriesCollectionControl.SeriesTemplateSelectorProperty,
-                    new Binding(nameof(this.SeriesTemplateSelector)) { Source = this });
-                this.Part_SeriesCollectionControl.SetBinding(SeriesCollectionControl.SeriesItemsSourceProperty,
-                    new Binding(nameof(this.SeriesItemsSource)) { Source = this });
-
-                this.Part_SeriesCollectionControl.StackMode = this.SeriesStackMode;
-
-                OnIsSeriesCollectionChangingChanged();
             }
 
 
@@ -118,79 +110,24 @@ namespace MvvmCharting.WpfFX
 
             this.PART_PlottingCanvas.MouseMove += PlottingCanvasMouseMove;
             this.PART_PlottingCanvas.MouseLeave += PlottingCanvasMouseLeave;
-            this.PART_PlottingCanvas.SizeChanged += PartPlottingCanvasSizeChanged;
 
             this.PART_LegendHolder = (ContentControl)GetTemplateChild(sPART_LegendHolder);
             OnLegendChanged();
         }
 
-        private void SeriesCollectionControlGlobalValueRangeChanged(Range2D oldValue, Range2D newValue)
+        private void SeriesCollectionControl_ActualYPlottingRangeChanged(Range obj)
         {
-            if (oldValue.XRange != newValue.XRange)
-            {
-                UpdateActualPlottingXValueRange();
-            }
-            if (oldValue.YRange != newValue.YRange)
-            {
-                UpdateActualPlottingYValueRange();
-            }
+            this.TryUpdatePlottingSettings(AxisType.Y);
         }
 
-        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        private void SeriesCollectionControl_ActualXPlottingRangeChanged(Range obj)
         {
-            base.OnPropertyChanged(e);
-            if (e.Property == PaddingProperty)
-            {
-                TryUpdatePlottingSettings(AxisType.X);
-                TryUpdatePlottingSettings(AxisType.Y);
-            }
-            else if (e.Property == MarginProperty)
-            {
-                TryUpdatePlottingSettings(AxisType.X);
-                TryUpdatePlottingSettings(AxisType.Y);
-            }
-            else if (e.Property == BorderThicknessProperty)
-            {
-                TryUpdatePlottingSettings(AxisType.X);
-                TryUpdatePlottingSettings(AxisType.Y);
-            }
+            this.TryUpdatePlottingSettings(AxisType.X);
         }
+
         #endregion
 
-        #region event handlers
-        //private void Sr_PropertyChanged(object sender, string propertyName)
-        //{
-        //    var sr = (ISeries)sender;
-        //    if (propertyName == nameof(sr.IsHighlighted))
-        //    {
-        //        this.Legend.OnItemHighlightChanged(sr.DataContext, sr.IsHighlighted);
-        //    }
 
-        //}
-
-        private void PartPlottingCanvasSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-
-            if (!this.IsLoaded)
-            {
-                return;
-            }
-
-
-
-
-
-            if (e.WidthChanged)
-            {
-                TryUpdatePlottingSettings(AxisType.X);
-            }
-
-            if (e.HeightChanged)
-            {
-                TryUpdatePlottingSettings(AxisType.Y);
-            }
-        }
-        #endregion
 
         #region XMinimum & XMaximum & YMinimum & YMaximum
         /// <summary>
@@ -217,7 +154,7 @@ namespace MvvmCharting.WpfFX
 
         private static void OnXMinimumOrXMaximumPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((Chart)d).UpdateActualPlottingXValueRange();
+            ((Chart)d).Part_SeriesCollectionControl?.UpdateActualPlottingXValueRange();
         }
 
         /// <summary>
@@ -244,7 +181,7 @@ namespace MvvmCharting.WpfFX
 
         private static void OnYMinimumOrYMaximumPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((Chart)d).UpdateActualPlottingYValueRange();
+            ((Chart)d).Part_SeriesCollectionControl?.UpdateActualPlottingYValueRange();
         }
         #endregion
 
@@ -256,7 +193,12 @@ namespace MvvmCharting.WpfFX
         }
 
         public static readonly DependencyProperty SeriesTemplateProperty =
-            SeriesCollectionControl.SeriesTemplateProperty.AddOwner(typeof(Chart));
+            DependencyProperty.Register("SeriesTemplate", typeof(DataTemplate), typeof(Chart), new PropertyMetadata(null, OnSeriesTemplatePropertyChanged));
+
+        private static void OnSeriesTemplatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((Chart)d).Part_SeriesCollectionControl?.OnSeriesTemplateChanged();
+        }
 
         public DataTemplateSelector SeriesTemplateSelector
         {
@@ -264,7 +206,12 @@ namespace MvvmCharting.WpfFX
             set { SetValue(SeriesTemplateSelectorProperty, value); }
         }
         public static readonly DependencyProperty SeriesTemplateSelectorProperty =
-            SeriesCollectionControl.SeriesTemplateSelectorProperty.AddOwner(typeof(Chart));
+            DependencyProperty.Register("SeriesTemplateSelector", typeof(DataTemplateSelector), typeof(Chart), new PropertyMetadata(null, OnSeriesTemplateSelectorPropertyChanged));
+
+        private static void OnSeriesTemplateSelectorPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((Chart)d).Part_SeriesCollectionControl?.OnSeriesTemplateSelectorChanged();
+        }
         #endregion
 
         #region SeriesItemsSource
@@ -277,7 +224,15 @@ namespace MvvmCharting.WpfFX
             set { SetValue(SeriesItemsSourceProperty, value); }
         }
         public static readonly DependencyProperty SeriesItemsSourceProperty =
-            SeriesCollectionControl.SeriesItemsSourceProperty.AddOwner(typeof(Chart));
+            DependencyProperty.Register("SeriesItemsSource", typeof(IList), typeof(Chart), new PropertyMetadata(null, OnSeriesItemsSourcePropertyChanged));
+
+        private static void OnSeriesItemsSourcePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((Chart)d).Part_SeriesCollectionControl?.OnSeriesItemsSourceChanged((IList)e.OldValue, (IList)e.NewValue);
+        }
+
+ 
+
         #endregion
 
         #region SeriesStackMode
@@ -297,22 +252,17 @@ namespace MvvmCharting.WpfFX
         private void OnSeriesStackModeChanged()
         {
             VerifyAccess();
-
-            Reset();
-
-            if (this.Part_SeriesCollectionControl != null)
-            {
-                this.Part_SeriesCollectionControl.StackMode = this.SeriesStackMode;
-            }
-
  
+
+            this.Part_SeriesCollectionControl?.OnStackModeChanged();
  
+
         }
 
- 
+
         #endregion
 
-        #region Plotting Range
+        #region XValuePadding & YValuePadding
         /// <summary> Specify the padding to the <see cref="ActualPlottingXValueRange"/>:
         /// <list type="bullet">
         /// <item>
@@ -334,7 +284,7 @@ namespace MvvmCharting.WpfFX
 
         private static void OnPlottingXValuePaddingPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((Chart)d).UpdatePlottingXValueRange();
+            ((Chart)d).Part_SeriesCollectionControl?.OnXValuePaddingChanged();
         }
 
         /// <summary> Specify the padding to the <see cref="ActualPlottingYValueRange"/>:
@@ -358,204 +308,10 @@ namespace MvvmCharting.WpfFX
 
         private static void OnPlottingYValuePaddingPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-
-            ((Chart)d).UpdatePlottingYValueRange();
+            ((Chart)d).Part_SeriesCollectionControl?.OnYValuePaddingChanged();
         }
 
-
-        private PlottingRange _xPlottingRange;
-        public PlottingRange XPlottingRange
-        {
-            get { return _xPlottingRange; }
-            set
-            {
-                if (!_xPlottingRange.Equals(value))
-                {
-                    _xPlottingRange = value;
-
-                    this.Part_SeriesCollectionControl.SetPlottingValueRange(Orientation.Horizontal,
-                        value);
-
-                    TryUpdatePlottingSettings(AxisType.X);
-                }
-
-            }
-        }
-
-        private PlottingRange _yPlottingRange;
-        public PlottingRange YPlottingRange
-        {
-            get { return _yPlottingRange; }
-            set
-            {
-                if (!_yPlottingRange.Equals(value))
-                {
-                    _yPlottingRange = value;
-                    TryUpdatePlottingSettings(AxisType.Y);
-                    this.Part_SeriesCollectionControl.SetPlottingValueRange(Orientation.Vertical,
-                        value);
-                }
-
-            }
-        }
-
-
-        //private Range _plottingXValueRange = Range.Empty;
-        ///// <summary>
-        ///// The entire independent value range(min & max) used to plot chart 
-        ///// including <see cref="XValuePadding"/>
-        ///// </summary>
-        //public Range PlottingXValueRange
-        //{
-        //    get
-        //    {
-
-        //        return this._plottingXValueRange;
-        //    }
-        //    private set
-        //    {
-        //        if (this._plottingXValueRange != value)
-        //        {
-        //            this._plottingXValueRange = value;
-
-
-        //            this.Part_SeriesCollectionControl.SetPlottingValueRange(Orientation.Horizontal,
-        //                this.PlottingXValueRange);
-
-        //            TryUpdatePlottingSettings(AxisType.X);
-        //        }
-        //    }
-        //}
-
-        //private Range _plottingYValueRange = Range.Empty;
-        ///// <summary>
-        ///// The entire dependent value range(min & max) used to plot chart 
-        ///// including <see cref="XValuePadding"/>
-        ///// </summary>
-        //public Range PlottingYValueRange
-        //{
-        //    get { return this._plottingYValueRange; }
-        //    private set
-        //    {
-        //        if (this._plottingYValueRange != value)
-        //        {
-        //            this._plottingYValueRange = value;
-
-        //            TryUpdatePlottingSettings(AxisType.Y);
-        //            this.Part_SeriesCollectionControl.SetPlottingValueRange(Orientation.Vertical,
-        //                 this.PlottingYValueRange);
-        //        }
-        //    }
-        //}
-
-        //private Range _actualPlottingXValueRange = Range.Empty;
-        //public Range ActualPlottingXValueRange
-        //{
-        //    get { return this._actualPlottingXValueRange; }
-        //    private set
-        //    {
-        //        if (this._actualPlottingXValueRange != value)
-        //        {
-        //            this._actualPlottingXValueRange = value;
-        //            UpdatePlottingXValueRange();
-        //        }
-
-        //    }
-        //}
-
-        //private Range _actualPlottingYValueRange = Range.Empty;
-        //public Range ActualPlottingYValueRange
-        //{
-        //    get { return this._actualPlottingYValueRange; }
-        //    private set
-        //    {
-        //        if (this._actualPlottingYValueRange != value)
-        //        {
-        //            this._actualPlottingYValueRange = value;
-        //            UpdatePlottingYValueRange();
-        //        }
-        //    }
-        //}
-
-        private void UpdatePlottingXValueRange()
-        {
-            this.XPlottingRange = PlottingRangeHelper.PlottingRange(this.XPlottingRange.ActualRange, this.XValuePadding);
-
-
-        }
-
-        private void UpdatePlottingYValueRange()
-        {
-            this.YPlottingRange = PlottingRangeHelper.PlottingRange(this.YPlottingRange.ActualRange, this.YValuePadding);
-
-        }
-
-        private void UpdateActualPlottingXValueRange()
-        {
-            if (this.Part_SeriesCollectionControl == null)
-            {
-                this.XPlottingRange = PlottingRange.Empty;
-                return;
-            }
-
-            double min = !this.XMinimum.IsNaN() ? this.XMinimum : this.Part_SeriesCollectionControl.GlobalValueRange.MinX;
-            double max = !this.XMaximum.IsNaN() ? this.XMaximum : this.Part_SeriesCollectionControl.GlobalValueRange.MaxX;
-
-
-            if (min.IsNaN() && max.IsNaN())
-            {
-                //this.ActualPlottingXValueRange = Range.Empty;
-                this.XPlottingRange = PlottingRange.Empty;
-                return;
-            }
-
-            Range actualRange = new Range(min, max);
-            this.XPlottingRange = PlottingRangeHelper.PlottingRange(actualRange, this.XValuePadding);
-            //this.ActualPlottingXValueRange = new Range(min, max);
-
-        }
-
-        private void UpdateActualPlottingYValueRange()
-        {
-            if (this.Part_SeriesCollectionControl == null)
-            {
-                this.YPlottingRange = PlottingRange.Empty;
-                return;
-            }
-
-            double min = !this.YMinimum.IsNaN() ? this.YMinimum : this.Part_SeriesCollectionControl.GlobalValueRange.MinY;
-            double max = !this.YMaximum.IsNaN() ? this.YMaximum : this.Part_SeriesCollectionControl.GlobalValueRange.MaxY;
-
-            if (min.IsNaN() && max.IsNaN())
-            {
-                this.YPlottingRange = PlottingRange.Empty;
-                return;
-            }
-
-            Range actualRange = GetProperPlottingYRange(new Range(min, max));
-            this.YPlottingRange = PlottingRangeHelper.PlottingRange(actualRange, this.YValuePadding);
-        }
-
-        private Range GetProperPlottingYRange(Range newRange)
-        {
-
-            switch (this.SeriesStackMode)
-            {
-                case StackMode.NotStacked:
-                    return newRange;
-
-                case StackMode.Stacked:
-                    return new Range(0.00, newRange.Max);
-
-                case StackMode.Stacked100:
-                    return new Range(0.00, 1.00);
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-
+ 
         #endregion
 
         #region PlottingSettings
@@ -567,13 +323,13 @@ namespace MvvmCharting.WpfFX
 
         private PlottingRangeBase GetPlottingSettings(AxisType orientation)
         {
-            if (this.PART_PlottingCanvas == null)
+            if (this.Part_SeriesCollectionControl == null)
             {
 
                 return null;
             }
 
-            Range plotingDataRange, valuePadding;
+            Range plottingDataRange, valuePadding;
             IList<object> plottingItemValues = null;
             bool isCategory;
             switch (orientation)
@@ -586,11 +342,11 @@ namespace MvvmCharting.WpfFX
                     valuePadding = new Range(this.XValuePadding.X, this.XValuePadding.Y);
 
                     isCategory = this.XAxis is ICategoryAxis;
-                    plotingDataRange = this.XPlottingRange.ActualRange;
+                    plottingDataRange = this.Part_SeriesCollectionControl.XPlottingRange.ActualRange;
 
                     var sr = this.Part_SeriesCollectionControl.GetSeries().FirstOrDefault();
 
-                    if (sr?.ItemsSource==null)
+                    if (sr?.ItemsSource == null)
                     {
                         return null;
                     }
@@ -606,13 +362,13 @@ namespace MvvmCharting.WpfFX
                     }
                     valuePadding = new Range(this.YValuePadding.X, this.YValuePadding.Y);
                     isCategory = this.YAxis is ICategoryAxis;
-                    plotingDataRange = this.YPlottingRange.ActualRange;
+                    plottingDataRange = this.Part_SeriesCollectionControl.YPlottingRange.ActualRange;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(orientation), orientation, null);
             }
 
-            if (!plotingDataRange.IsInvalid)
+            if (!plottingDataRange.IsInvalid)
             {
                 if (isCategory)
                 {
@@ -628,7 +384,7 @@ namespace MvvmCharting.WpfFX
                 }
                 else
                 {
-                    return new NumericPlottingRange(plotingDataRange, valuePadding);
+                    return new NumericPlottingRange(plottingDataRange, valuePadding);
                 }
             }
 
@@ -850,10 +606,9 @@ namespace MvvmCharting.WpfFX
         }
         #endregion
 
-        #region BackgroundImage
+        #region BackgroundElement
         /// <summary>
         /// Represents pluggable background UIElement.
-        /// User can plug any UIElement(include image) here.
         /// </summary>
         public UIElement BackgroundElement
         {
@@ -887,6 +642,9 @@ namespace MvvmCharting.WpfFX
             }
 
         }
+
+
+
         #endregion
 
         #region cross hair
@@ -1095,6 +853,20 @@ namespace MvvmCharting.WpfFX
         }
         #endregion
 
+        public double YBaseValue
+        {
+            get { return (double)GetValue(YBaseValueProperty); }
+            set { SetValue(YBaseValueProperty, value); }
+        }
+        public static readonly DependencyProperty YBaseValueProperty =
+            DependencyProperty.Register("YBaseValue", typeof(double), typeof(Chart), new PropertyMetadata(0d, OnYBaseValuePropertyChanged));
+
+        private static void OnYBaseValuePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((Chart)d).Part_SeriesCollectionControl?.UpdateYBaseValue();
+        }
+
+
         /// <summary>
         /// Called when x-axis or y-axis has updated the coordinates of its items.
         /// </summary>
@@ -1105,26 +877,7 @@ namespace MvvmCharting.WpfFX
             this.GridLineControl?.OnAxisItemCoordinateChanged(orientation, ticks);
         }
 
-        private void Reset()
-        {
 
-            this.Part_SeriesCollectionControl.Reset();
-
-            switch (this.SeriesStackMode)
-            {
-                case StackMode.NotStacked:
-                    this.YPlottingRange = PlottingRange.Empty;
-                    break;
-                case StackMode.Stacked:
-                    this.YPlottingRange = PlottingRangeHelper.PlottingRange(new Range(0, double.NaN), this.YValuePadding);
-                    break;
-                case StackMode.Stacked100:
-                    this.YPlottingRange = PlottingRangeHelper.PlottingRange(new Range(0, 1), this.YValuePadding);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
     }
 
 

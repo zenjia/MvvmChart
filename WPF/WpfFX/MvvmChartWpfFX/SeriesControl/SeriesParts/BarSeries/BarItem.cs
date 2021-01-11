@@ -1,11 +1,12 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using MvvmCharting.Common; 
+using MvvmCharting.Common;
 
 namespace MvvmCharting.WpfFX.Series
 {
- 
+
 
     public class BarItem : InteractiveControl, IPlottable_2D
     {
@@ -36,8 +37,28 @@ namespace MvvmCharting.WpfFX.Series
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
-            UpdatePosition();
 
+            if (sizeInfo.WidthChanged)
+            {
+                UpdatePosition();
+            }
+            
+
+        }
+
+        internal void SetBarItemHeightAndCoordinate(Point coordinate, double previousYCoordinate)
+        {
+            double barHeight = coordinate.Y - previousYCoordinate;
+
+            this.SetBarHeight(Math.Abs(barHeight));
+            if (barHeight >= 0)
+            {
+                this.Coordinate = new Point(coordinate.X, coordinate.Y - barHeight);
+            }
+            else
+            {
+                this.Coordinate = new Point(coordinate.X, coordinate.Y);
+            }
         }
 
         private void UpdatePosition()
@@ -55,8 +76,16 @@ namespace MvvmCharting.WpfFX.Series
 
             var x = this.Coordinate.X + xOffset;
 
-          
-            var y = this.Coordinate.Y -  this.ActualHeight - this.Margin.Top;
+            double y = this.Coordinate.Y /*- this.ActualHeight*/ - this.Margin.Top;
+            //if (this.Coordinate.Y >= 0)
+            //{
+            //    y = this.Coordinate.Y - this.ActualHeight - this.Margin.Top;
+            //}
+            //else
+            //{
+            //    y = -this.Coordinate.Y;
+            //}
+
 
             var translateTransform = this.RenderTransform as TranslateTransform;
             if (translateTransform == null)
@@ -78,17 +107,17 @@ namespace MvvmCharting.WpfFX.Series
 
         public void SetBarHeight(double newValue)
         {
-            if (newValue.IsInvalid()|| newValue<0)
+            if (newValue.IsInvalid() || newValue < 0)
             {
                 return;
             }
 
             SetCurrentValue(HeightProperty, newValue);
 
-            UpdatePosition();
+ 
         }
 
- 
+
 
         public Brush Stroke
         {
@@ -122,8 +151,8 @@ namespace MvvmCharting.WpfFX.Series
         public static readonly DependencyProperty BarStyleProperty =
             DependencyProperty.Register("BarStyle", typeof(Style), typeof(BarItem), new PropertyMetadata(null));
 
- 
-        
+
+
 
     }
 }

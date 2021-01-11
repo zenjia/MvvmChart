@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Demo.WpfFX.Properties {
+namespace DemoViewModel.WpfFX.Properties {
     using System;
     
     

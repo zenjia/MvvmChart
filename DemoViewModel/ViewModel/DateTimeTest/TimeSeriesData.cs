@@ -1,8 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using MvvmCharting.Common;
-using MvvmCharting;
 
-namespace Demo
+namespace DemoViewModel
 {
     public class TimeSeriesData : BindableBase
     {

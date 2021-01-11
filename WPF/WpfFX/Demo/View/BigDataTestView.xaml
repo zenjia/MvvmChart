@@ -1,19 +1,20 @@
-﻿<UserControl x:Class="Demo.BigDataTestView"
+﻿<UserControl x:Class="DemoViewModel.BigDataTestView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Demo"
+             xmlns:local="clr-namespace:DemoViewModel"
              xmlns:mvvmCharting="clr-namespace:MvvmCharting.WpfFX;assembly=MvvmChartWpfFX"
              xmlns:axis="clr-namespace:MvvmCharting.WpfFX.Axis;assembly=MvvmChartWpfFX"
              xmlns:series="clr-namespace:MvvmCharting.WpfFX.Series;assembly=MvvmChartWpfFX"
              xmlns:controls="http://schemas.modernwpf.com/2019"
+             xmlns:demoViewModel="clr-namespace:DemoViewModel;assembly=DemoViewModel"
 
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
-        <local:BigDataViewModel x:Key="BigDataViewModel" SeriesCount="1" Max="1000"/>
+        <demoViewModel:BigDataViewModel x:Key="BigDataViewModel" SeriesCount="1" Max="1000"/>
 
         <DataTemplate x:Key="ScatterDataTemplate">
             <series:Scatter >
@@ -26,7 +27,7 @@
 
 
 
-        <DataTemplate x:Key="SeriesTemplate" DataType="local:SomePointList">
+        <DataTemplate x:Key="SeriesTemplate" DataType="demoViewModel:SomePointList">
             <series:SeriesControl IndependentValueProperty="t"
                                          DependentValueProperty="Y"
                                          IsScatterSeriesVisible="{Binding ShowScatterSeries}"
@@ -66,7 +67,7 @@
                             SeriesTemplate="{StaticResource SeriesTemplate}"
                             SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource BigDataViewModel}}">
             <mvvmCharting:Chart.LegendItemTemplate>
-                <DataTemplate DataType="local:SomePointList">
+                <DataTemplate DataType="demoViewModel:SomePointList">
                     <mvvmCharting:LegendItemControl 
                         IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
                         IndicatorBrush="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"/>

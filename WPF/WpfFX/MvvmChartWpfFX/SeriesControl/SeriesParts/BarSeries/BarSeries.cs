@@ -24,7 +24,7 @@ namespace MvvmCharting.WpfFX.Series
         Point[] GetCoordinates();
         Point GetPlotCoordinateForItem(object item, int itemIndex);
         Point[] GetPreviousCoordinates(bool isAreaSeries);
-        double StartCoordinateY { get; }
+
     }
 
     public class BarSeries : InteractiveControl
@@ -94,7 +94,7 @@ namespace MvvmCharting.WpfFX.Series
                 barItem.SetCurrentValue(WidthProperty, this.BarWidth);
             }
 
-          
+
             if (!this.Owner.SeriesControlOwner.IsSeriesCollectionChanging)
             {
                 if (!this.Owner.XPixelPerUnit.IsNaN() && !this.Owner.YPixelPerUnit.IsNaN())
@@ -109,14 +109,14 @@ namespace MvvmCharting.WpfFX.Series
                     var item = barItem.DataContext;
                     var coordinate = this.Owner.GetPlotCoordinateForItem(item, childIndex);
 
-                    double barHeight = privousCoordinates == null
-                        ? coordinate.Y - this.Owner.StartCoordinateY
-                        : coordinate.Y - privousCoordinates[childIndex].Y;
+                    var yBaseCoordinate = this.Owner.SeriesControlOwner.YBaseCoordinate;
 
+                    double baseCoordinate = privousCoordinates == null
+                        ? yBaseCoordinate
+                        : privousCoordinates[childIndex].Y;
 
-
-                    barItem.SetBarHeight(barHeight);
-                    barItem.Coordinate = coordinate;
+                    barItem.SetBarItemHeightAndCoordinate(coordinate, baseCoordinate);
+                    
                 }
             }
         }
@@ -384,60 +384,19 @@ namespace MvvmCharting.WpfFX.Series
             }
         }
 
+
+
         internal void UpdateBarCoordinateAndHeight(object item, Point coordinate, double previousYCoordinate)
         {
             var barItem = (BarItem)this.PART_BarItemsControl?.TryGetChildForItem(item);
-            if (barItem != null)
-            {
-                var barHeight = coordinate.Y - previousYCoordinate;
 
-                barItem.SetBarHeight(barHeight);
+            barItem?.SetBarItemHeightAndCoordinate(coordinate, previousYCoordinate);
 
-                barItem.Coordinate = coordinate;
-            }
-
-        }
-
-        internal void UpdateBarItemCoordinateAndHeight()
-        {
-            if (this.PART_BarItemsControl == null)
-            {
-                return;
-            }
-
-
-            var coordinates = this.Owner.GetCoordinates();
-
-            if (coordinates == null)
-            {
-                return;
-            }
-
-            if (coordinates.Length != this.PART_BarItemsControl.ItemCount)
-            {
-                throw new NotImplementedException();
-            }
-
-            var previous = this.Owner.GetPreviousCoordinates(false);
-
-            if (previous != null)
-            {
-                Debug.Assert(previous.Length == coordinates.Length);
-            }
-
-            double startCoordinateY = this.Owner.StartCoordinateY;
-            for (int i = 0; i < coordinates.Length; i++)
-            {
-                var pt = coordinates[i];
-                var item = this.PART_BarItemsControl.ItemsSource[i];
-
-                double y = previous == null ? startCoordinateY : previous[i].Y;
-                UpdateBarCoordinateAndHeight(item, pt, y);
-            }
 
 
         }
 
- 
+
+
     }
 }

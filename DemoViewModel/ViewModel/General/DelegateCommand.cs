@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace Demo
+namespace DemoViewModel
 {
     public class DelegateCommand : ICommand
     {

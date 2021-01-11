@@ -85,7 +85,6 @@ namespace MvvmCharting.WpfFX.Series
             this.PART_LineSeriesHolder = (ContentControl)GetTemplateChild("PART_LineSeriesHolder");
             if (this.PART_LineSeriesHolder != null)
             {
-
                 this.PART_LineSeriesHolder.Content = this.LineSeries;
                 this.PART_LineSeriesHolder.SetBinding(VisibilityProperty,
                     new Binding(nameof(this.IsLineSeriesVisible)) { Source = this, Converter = B2v });
@@ -95,8 +94,8 @@ namespace MvvmCharting.WpfFX.Series
             if (this.PART_AreaSeriesHolder != null)
             {
                 this.PART_AreaSeriesHolder.Content = this.AreaSeries;
-                this.PART_AreaSeriesHolder.SetBinding(VisibilityProperty,
-                    new Binding(nameof(this.IsAreaSeriesVisible)) { Source = this, Converter = B2v });
+                this.PART_AreaSeriesHolder.SetBinding(ContentControl.VisibilityProperty,
+                   new Binding(nameof(this.IsAreaSeriesVisible)) { Source = this, Converter = B2v });
             }
 
             this.PART_ScatterSeriesHolder = (ContentControl)GetTemplateChild("PART_ScatterSeriesHolder");
@@ -116,65 +115,17 @@ namespace MvvmCharting.WpfFX.Series
             }
         }
 
-        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
-        {
-            base.OnRenderSizeChanged(sizeInfo);
 
-            if (sizeInfo.NewSize.NearlyEqual(sizeInfo.PreviousSize))
-            {
-                return;
-            }
-
-            if (sizeInfo.WidthChanged)
-            {
-                UpdateXPixelPerUnit();
-            }
-
-            if (sizeInfo.HeightChanged)
-            {
-                UpdateYPixelPerUnit();
-            }
-
-            RecalculateCoordinate();
-        }
 
 
         #endregion
 
         #region Validate data
-        private void EnsureYValuePositive(IList list)
-        {
-            if (list == null)
-            {
-                return;
-            }
 
-            if (this.Owner.StackMode == StackMode.NotStacked)
-            {
-                return;
-            }
-
-            foreach (var item in list)
-            {
-                EnsureYValuePositive(item);
-            }
-        }
-
-        private void EnsureYValuePositive(object item)
-        {
-
-
-            var y = GetYValueForItem(item);
-            if (y < 0)
-            {
-                throw new MvvmChartModelDataException(
-                    $"Item value of {this.Owner.StackMode} series cannot be negative!");
-            }
-        }
 
         internal void ValidateData()
         {
-            EnsureYValuePositive(this.ItemsSource);
+
 
             if (!this.Owner.IsXAxisCategory && (this.Owner.StackMode == StackMode.NotStacked))
             {
@@ -274,6 +225,8 @@ namespace MvvmCharting.WpfFX.Series
         public static readonly DependencyProperty IsAreaSeriesVisibleProperty =
             DependencyProperty.Register("IsAreaSeriesVisible", typeof(bool), typeof(SeriesControl), new PropertyMetadata(true));
 
+ 
+
         public bool IsBarSeriesVisible
         {
             get { return (bool)GetValue(IsBarSeriesVisibleProperty); }
@@ -341,7 +294,6 @@ namespace MvvmCharting.WpfFX.Series
             AttachCollectionChangedHandler(newValue);
 
             Reset();
-            UpdateMinXValueGap();
 
             //todo: performance!!
             this.ScatterSeries?.UpdateItemsSource();
@@ -383,41 +335,7 @@ namespace MvvmCharting.WpfFX.Series
             //HandleItemsSourceCollectionChange(e.OldItems, e.NewItems);
         }
 
-        private void TryUpdateRawValueRangeOnItemAdd(object item)
-        {
-            var y = GetYValueForItem(item);
-            var x = GetXValueForItem(item);
 
-            var newRawValueRange = Range2D.ExpandRange(this.RawValueRange, x, y);
-            if (this.Owner.IsSeriesCollectionChanging)
-            {
-                this._rawValueRange = newRawValueRange;
-            }
-            else
-            {
-                this.RawValueRange = newRawValueRange;
-            }
-
-        }
-
-        private void TryResetRawValueRangeOnItemRemove(object item)
-        {
-
-            var y = GetYValueForItem(item);
-            var x = GetXValueForItem(item);
-            if (this.RawValueRange.CanPointRemovingAffectRange(x, y))
-            {
-                if (this.Owner.IsSeriesCollectionChanging)
-                {
-                    this._rawValueRange = Range2D.Empty;
-                }
-                else
-                {
-                    this.RawValueRange = Range2D.Empty;
-                }
-            }
-
-        }
 
         private void OnCollectionChanged(NotifyCollectionChangedEventArgs args)
         {
@@ -458,10 +376,7 @@ namespace MvvmCharting.WpfFX.Series
 
         private void OnItemAdded(object newItem, int index)
         {
-            if (this.Owner.StackMode == StackMode.NotStacked)
-            {
-                EnsureYValuePositive(newItem);
-            }
+
 
             //if (this.Owner.StackMode == StackMode.NotStacked)
             //{
@@ -494,10 +409,7 @@ namespace MvvmCharting.WpfFX.Series
 
         private void OnItemReplaced(object oldItem, object newItem, int index)
         {
-            if (this.Owner.StackMode == StackMode.NotStacked)
-            {
-                EnsureYValuePositive(newItem);
-            }
+
 
             //if (this.Owner.StackMode == StackMode.NotStacked)
             //{
@@ -530,8 +442,10 @@ namespace MvvmCharting.WpfFX.Series
                 if (this._minXValueGap != value)
                 {
                     this._minXValueGap = value;
-
-                    this.BarSeries?.UpdateBarWidth(this.MinXValueGap, this.XPixelPerUnit);
+                    if (!value.IsNaN())
+                    {
+                        this.BarSeries?.UpdateBarWidth(this.MinXValueGap, this.XPixelPerUnit);
+                    }
                 }
             }
         }
@@ -580,14 +494,7 @@ namespace MvvmCharting.WpfFX.Series
             this.MinXValueGap = minGap;
         }
 
-        //private void HandleItemsSourceCollectionChange(IList oldValue, IList newValue)
-        //{
-        //    Reset();
-        //    EnsureYValuePositive(newValue);
-        //    UpdateMinXValueGap();
-        //    UpdateValueRange();
-        //    RecalculateCoordinate();
-        //}
+
 
         private double GetXValueForItem(object item)
         {
@@ -618,25 +525,24 @@ namespace MvvmCharting.WpfFX.Series
 
         private double GetAdjustYValueForItem(object item, int index)
         {
-            double minY = 0;//this.Owner.GlobalRawValueRange.MinY;
+            double minY = this.Owner.YBaseValue;
+
             switch (this.Owner.StackMode)
             {
                 case StackMode.NotStacked:
-                    return GetYValueForItem(item);
+                    return GetYValueForItem(item)/* - minY*/;
 
                 case StackMode.Stacked:
                     double total = 0;
                     foreach (var sr in this.Owner.GetSeries())
                     {
                         var obj = sr.ItemsSource[index];
-                        var y = sr.GetYValueForItem(obj);
-                        total += (y - minY);
+                        var y = sr.GetYValueForItem(obj) - minY;
+                        total += y;
                         if (obj == item)
                         {
                             break;
                         }
-
-
                     }
 
                     return total;
@@ -681,7 +587,6 @@ namespace MvvmCharting.WpfFX.Series
         public void UpdateValueRange()
         {
 
-
             if (this.ItemsSource == null ||
                 this.ItemsSource.Count == 0)
             {
@@ -693,8 +598,7 @@ namespace MvvmCharting.WpfFX.Series
             double maxY = double.MinValue;
             double minX = double.MaxValue;
             double maxX = double.MinValue;
-            double minRawY = minY;
-            double maxRawY = maxY;
+
             for (int i = 0; i < this.ItemsSource.Count; i++)
             {
                 var item = this.ItemsSource[i];
@@ -704,9 +608,7 @@ namespace MvvmCharting.WpfFX.Series
                 minY = Math.Min(minY, y);
                 maxY = Math.Max(maxY, y);
 
-                y = GetYValueForItem(item);
-                minRawY = Math.Min(minRawY, y);
-                maxRawY = Math.Max(maxRawY, y);
+
 
                 if (!this.Owner.IsXAxisCategory)
                 {
@@ -723,10 +625,9 @@ namespace MvvmCharting.WpfFX.Series
                 minX = 0;
                 maxX = this.ItemsSource.Count;
             }
-
             this.ValueRange = new Range2D(minX, maxX, minY, maxY);
 
-            this.RawValueRange = new Range2D(minX, maxX, minRawY, maxRawY);
+
         }
 
         internal void UpdateRawValueRange(IList source)
@@ -809,116 +710,11 @@ namespace MvvmCharting.WpfFX.Series
         }
         #endregion
 
-        #region plotting value range
-        private PlottingRange _plottingXValueRange = PlottingRange.Empty;
-        /// <summary>
-        /// The final X value range used to plot the chart
-        /// </summary>
-        protected PlottingRange PlottingXValueRange
-        {
-            get { return this._plottingXValueRange; }
-            set
-            {
-                if (!this._plottingXValueRange.Equals(value))
-                {
-                    this._plottingXValueRange = value;
-                    UpdateXPixelPerUnit();
-
-                    RecalculateCoordinate();
-                }
-            }
-        }
-
-        private PlottingRange _valuePlottingYValueRange = PlottingRange.Empty;
-        /// <summary>
-        /// The final Y value range used to plot the chart
-        /// </summary>
-        protected PlottingRange PlottingYValueRange
-        {
-            get { return this._valuePlottingYValueRange; }
-            set
-            {
-                bool isFullRangeChanged = this.PlottingYValueRange.FullRange != value.FullRange;
-
-                if (!this._valuePlottingYValueRange.Equals(value))
-                {
-                    this._valuePlottingYValueRange = value;
-                    if (isFullRangeChanged)
-                    {
-                        UpdateYPixelPerUnit();
-                    }
-
-                    RecalculateCoordinate();
-                }
-            }
-        }
-
-        public virtual void OnPlottingXValueRangeChanged(PlottingRange newValue)
-        {
-            this.PlottingXValueRange = newValue;
-        }
-
-        public virtual void OnPlottingYValueRangeChanged(PlottingRange newValue)
-        {
-            this.PlottingYValueRange = newValue;
-        }
-        #endregion
-
         #region Coordinates calculating
-        private double _xPixelPerUnit;
-        public double XPixelPerUnit
-        {
-            get { return this._xPixelPerUnit; }
-            set
-            {
-                if (this._xPixelPerUnit != value)
-                {
-                    this._xPixelPerUnit = value;
-                    this.BarSeries?.UpdateBarWidth(this.MinXValueGap, this.XPixelPerUnit);
 
-                }
+        public double XPixelPerUnit => this.Owner.XPixelPerUnit;
 
-            }
-        }
-
-        private double _yPixelPerUnit;
-        public double YPixelPerUnit
-        {
-            get { return this._yPixelPerUnit; }
-            set
-            {
-                if (this._yPixelPerUnit != value)
-                {
-                    this._yPixelPerUnit = value;
-                }
-            }
-        }
-
-        private void UpdateXPixelPerUnit()
-        {
-            if (this.PlottingXValueRange.IsEmpty ||
-                this.RenderSize.IsInvalid())
-            {
-                this.XPixelPerUnit = double.NaN;
-                return;
-            }
-
-            this.XPixelPerUnit = this.ActualWidth / this.PlottingXValueRange.FullRange.Span;
-        }
-
-        private void UpdateYPixelPerUnit()
-        {
-            if (this.PlottingYValueRange.IsEmpty ||
-                this.RenderSize.IsInvalid())
-            {
-                this.YPixelPerUnit = double.NaN;
-
-                return;
-            }
-
-            this.YPixelPerUnit = this.ActualHeight / this.PlottingYValueRange.FullRange.Span;
-
-        }
+        public double YPixelPerUnit => this.Owner.YPixelPerUnit;
 
         public Point GetPlotCoordinateForItem(object item, int itemIndex)
         {
@@ -936,14 +732,8 @@ namespace MvvmCharting.WpfFX.Series
 
             var y = GetAdjustYValueForItem(item, itemIndex);
 
-            var pt = new Point((x - this.PlottingXValueRange.FullRange.Min) * this.XPixelPerUnit,
-                (y - this.PlottingYValueRange.FullRange.Min) * this.YPixelPerUnit);
-
-
-            if (pt.Y < 0)
-            {
-                throw new NotImplementedException(this.DataContext.ToString());
-            }
+            var pt = new Point((x - this.Owner.XStartValue) * this.XPixelPerUnit,
+                (y/* + this.Owner.YBaseValue*/ - this.Owner.YStartValue) * this.YPixelPerUnit);
 
             return pt;
         }
@@ -956,15 +746,10 @@ namespace MvvmCharting.WpfFX.Series
 
         internal void RecalculateCoordinate()
         {
-
             if (this.Owner.IsSeriesCollectionChanging)
             {
-
                 return;
             }
-
-            UpdateXPixelPerUnit();
-            UpdateYPixelPerUnit();
 
             if (this.XPixelPerUnit.IsNaN() ||
                 this.YPixelPerUnit.IsNaN() ||
@@ -973,10 +758,11 @@ namespace MvvmCharting.WpfFX.Series
                 return;
             }
 
-
             Array.Resize(ref this._coordinateCache, this.ItemsSource.Count);
             var previous = GetPreviousCoordinates(false);
-            var startCoordinateY = this.StartCoordinateY;
+
+            var prevX = double.NaN;
+            double minGap = double.MaxValue;
             for (int i = 0; i < this.ItemsSource.Count; i++)
             {
                 var item = this.ItemsSource[i];
@@ -987,28 +773,42 @@ namespace MvvmCharting.WpfFX.Series
 
                 this.ScatterSeries?.UpdateScatterCoordinate(item, pt);
 
-                double y = previous?[i].Y ?? startCoordinateY;
+                double y = previous?[i].Y ?? this.Owner.YBaseCoordinate;
                 this.BarSeries?.UpdateBarCoordinateAndHeight(item, pt, y);
+
+                if (!this.Owner.IsXAxisCategory)
+                {
+                    if (!prevX.IsNaN())
+                    {
+                        double gap = pt.X = prevX;
+                        if (gap < minGap)
+                        {
+                            minGap = gap;
+                        }
+                    }
+
+                    prevX = pt.X;
+                }
+
             }
 
             this.LineSeries?.UpdateShape();
             this.AreaSeries?.UpdateShape();
 
-            this.BarSeries?.UpdateBarWidth(this.MinXValueGap, this.XPixelPerUnit);
+            this.MinXValueGap = this.Owner.IsXAxisCategory ? 1.0 : minGap;
+
+
+            Debug.WriteLine($"{this.DataContext}...RecalculateCoordinate...ok!!!");
         }
 
         internal void Reset()
         {
-            this.XPixelPerUnit = double.NaN;
-            this.YPixelPerUnit = double.NaN;
+
             ResetValueRange();
         }
 
         internal void Refresh()
         {
-
-            UpdateMinXValueGap();
-
 
             RecalculateCoordinate();
 
@@ -1029,8 +829,8 @@ namespace MvvmCharting.WpfFX.Series
             return this.Owner.GetPreviousSeriesHost(this);
         }
 
-        public double StartCoordinateY => (this.PlottingYValueRange.ActualRange.Min -
-                                      this.PlottingYValueRange.FullRange.Min) * this.YPixelPerUnit;
+        //public double StartCoordinateY => (this.PlottingYValueRange.ActualRange.Min -
+        //                              this.PlottingYValueRange.FullRange.Min) * this.YPixelPerUnit;
 
         public Point[] GetPreviousCoordinates(bool isAreaSeries)
         {
@@ -1038,14 +838,15 @@ namespace MvvmCharting.WpfFX.Series
 
             Point[] previous = null;
 
+            double yBaseCoordinate = this.Owner.YBaseCoordinate;
 
             switch (this.Owner.StackMode)
             {
                 case StackMode.NotStacked:
                     if (isAreaSeries)
                     {
-                        var minY = this.StartCoordinateY;
-                        previous = new[] { new Point(coordinates.First().X, minY), new Point(coordinates.Last().X, minY) };
+
+                        previous = new[] { new Point(coordinates.First().X, yBaseCoordinate), new Point(coordinates.Last().X, yBaseCoordinate) };
                     }
                     break;
                 case StackMode.Stacked:
@@ -1055,8 +856,7 @@ namespace MvvmCharting.WpfFX.Series
                     {
                         if (isAreaSeries)
                         {
-                            var minY = this.StartCoordinateY;
-                            previous = new[] { new Point(coordinates.First().X, minY), new Point(coordinates.Last().X, minY) };
+                            previous = new[] { new Point(coordinates.First().X, yBaseCoordinate), new Point(coordinates.Last().X, yBaseCoordinate) };
                         }
 
                     }
@@ -1064,12 +864,6 @@ namespace MvvmCharting.WpfFX.Series
                     {
                         previous = previousSeriesControl.GetCoordinates();
 
-                        if (previous == null)
-                        {
-                            previousSeriesControl.UpdateValueRange();
-                            previousSeriesControl.Refresh();
-                            previous = previousSeriesControl.GetCoordinates();
-                        }
 
                         if (previous.Length != coordinates.Length)
                         {
@@ -1085,6 +879,7 @@ namespace MvvmCharting.WpfFX.Series
 
             return previous;
         }
+
         #endregion
 
         #region series
@@ -1195,10 +990,6 @@ namespace MvvmCharting.WpfFX.Series
             {
 
                 this.BarSeries.Owner = this;
-
-                UpdateMinXValueGap();
-
-                //this.BarSeries.UpdateBarWidth(this.MinXValueGap, this.XPixelPerUnit);
                 this.BarSeries.UpdateItemsSource();
             }
         }

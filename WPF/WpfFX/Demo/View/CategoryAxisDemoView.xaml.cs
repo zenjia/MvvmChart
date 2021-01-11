@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Demo.WpfFX
+namespace DemoViewModel.WpfFX
 {
     /// <summary>
     /// Interaction logic for CategoryAxisDemoView.xaml

@@ -1,9 +1,7 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
 using MvvmCharting.Common;
-using MvvmCharting;
 
-namespace Demo
+namespace DemoViewModel
 {
     public class SomePointList: BindableBase
     {
@@ -51,7 +49,7 @@ namespace Demo
             get { return this._showAreaSeries; }
             set
             {
-               
+              
                 SetProperty(ref this._showAreaSeries, value);
             }
         }

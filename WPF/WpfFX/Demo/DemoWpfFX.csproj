@@ -59,36 +59,28 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ViewModel\General\ChartValuePaddingViewModel.cs" />
     <Compile Include="View\CategoryAxisDemoView.xaml.cs">
       <DependentUpon>CategoryAxisDemoView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\General\ChartSettingTestViewModel.cs" />
-    <Compile Include="ViewModel\General\DelegateCommand.cs" />
+    <Compile Include="Converters\GeometryBuilderConverter.cs" />
+    <Compile Include="Converters\ItemToScatterFillConverter.cs" />
     <Compile Include="View\SeriesCustomizingDemoView.xaml.cs">
       <DependentUpon>SeriesCustomizingDemoView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\Converters\IndexToScatterTemplateConverter.cs" />
+    <Compile Include="Converters\IndexToScatterTemplateConverter.cs" />
     <Compile Include="View\ScatterCustomizationDemoView.xaml.cs">
       <DependentUpon>ScatterCustomizationDemoView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\DateTimeTest\TimeSeriesData.cs" />
-    <Compile Include="ViewModel\DateTimeTest\TimeSeriesViewModel.cs" />
     <Compile Include="View\DateTimeDemoView.xaml.cs">
       <DependentUpon>DateTimeDemoView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\DateTimeTest\TimeSeriesPoint.cs" />
     <Compile Include="View\BigDataTestView.xaml.cs">
       <DependentUpon>BigDataTestView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\Big Data\BigDataViewModel.cs" />
     <Compile Include="View\GeneralDemoView.xaml.cs">
       <DependentUpon>GeneralDemoView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\General\DemoDataViewModel.cs" />
-    <Compile Include="ViewModel\General\SomePoint.cs" />
-    <Compile Include="ViewModel\General\SomePointList.cs" />
-    <Compile Include="ViewModel\Converters\SeriesTemplateSelector.cs" />
+    <Compile Include="Converters\SeriesTemplateSelector.cs" />
     <Page Include="View\CategoryAxisDemoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -153,6 +145,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\DemoViewModel\DemoViewModel.csproj">
+      <Project>{b5633cd3-cb1d-45fa-a219-84c540e8e46c}</Project>
+      <Name>DemoViewModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MvvmChartWpfFX\MvvmChartWpfFX.csproj">
       <Project>{28c40709-2e83-4a1f-be8a-eba5ab886012}</Project>
       <Name>MvvmChartWpfFX</Name>

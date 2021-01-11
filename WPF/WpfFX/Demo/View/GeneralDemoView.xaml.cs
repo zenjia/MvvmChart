@@ -9,13 +9,12 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MvvmCharting.Common;
 
-namespace Demo
+namespace DemoViewModel
 {
     public class RangeToPointConverter : IValueConverter
     {
@@ -30,36 +29,6 @@ namespace Demo
         {
             throw new NotImplementedException();
         }
-    }
-
-    public class ItemToScatterFillConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null)
-            {
-                return null;
-            }
-
-            SomePoint pt = (SomePoint)value;
-            int i = (int)pt.t;
-
-
-            if (i % 3 == 0)
-            {
-                return Brushes.Red;
-            }
-
-
-            return Brushes.LightSeaGreen;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-
-     
     }
 
     /// <summary>

@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MvvmCharting;
 
-namespace Demo
+namespace DemoViewModel
 {
     public class MyScatterTemplateSelector : DataTemplateSelector
     {

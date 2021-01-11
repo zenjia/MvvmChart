@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 using MvvmCharting.Common;
 using MvvmCharting;
 
-namespace Demo
+namespace DemoViewModel
 {
 
     public class DoubleToDateTimeStringConverter : IValueConverter
