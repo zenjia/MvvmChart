@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using MvvmCharting.Common;
+using Range = MvvmCharting.Common.Range;
 
 namespace MvvmCharting.WpfFX.Series
 {

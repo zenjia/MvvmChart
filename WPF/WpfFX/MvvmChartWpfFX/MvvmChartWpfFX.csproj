@@ -1,186 +1,21 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{28C40709-2E83-4A1F-BE8A-EBA5AB886012}</ProjectGuid>
-    <OutputType>library</OutputType>
-    <RootNamespace>MvvmCharting.WpfFX</RootNamespace>
-    <AssemblyName>MvvmChartWpfFX</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-    <Deterministic>true</Deterministic>
-    <RepositoryUrl>https://github.com/zenjia/MvvmChart</RepositoryUrl>
-    <TargetFrameworkProfile />
+    <OutputType>Library</OutputType>
+    <TargetFrameworks>net472;netcoreapp3.0;netcoreapp3.1;net5-windows</TargetFrameworks>
+    <UseWPF>true</UseWPF>
+    <Version>0.5.0.0</Version>
+    <Company>zenjia</Company>
+    <Description>A lightweighted, mvvm support chart for WPF/UWP</Description>
+    <Product>MvvmChartWpfFX</Product>
+    <Copyright>Copyright ©  2020</Copyright>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Axis\AxisBase.cs" />
-    <Compile Include="Axis\AxisItem\AxisItem.cs" />
-    <Compile Include="Axis\CategoryAxis.cs" />
-    <Compile Include="Axis\NumericAxis.cs" />
-    <Compile Include="Axis\AxisItem\DefaultDoubleToAxisLabelTextConverter.cs" />
-    <Compile Include="common\IPlottable_2D.cs" />
-    <Compile Include="common\ISeriesGeometryBuilder.cs" />
-    <Compile Include="common\PlottingRangeHelper.cs" />
-    <Compile Include="SeriesCollectionControl\SeriesCollectionControl.cs" />
-    <Compile Include="common\PointHelper.cs" />
-    <Compile Include="common\SizeHelper.cs" />
-    <Compile Include="LegendControl\LegendItemControl.cs" />
-    <Compile Include="SeriesControl\ISeriesControl.cs" />
-    <Compile Include="SeriesControl\SeriesParts\AreaSeries\AreaSeries.cs" />
-    <Compile Include="SeriesControl\SeriesParts\BarSeries\BarItem.cs" />
-    <Compile Include="SeriesControl\SeriesParts\BarSeries\BarSeries.cs" />
-    <Compile Include="SeriesControl\ISeriesControlOwner.cs" />
-    <Compile Include="common\InteractiveControl.cs" />
-    <Compile Include="SeriesControl\SeriesParts\LineSeries\ILineSeriesOwner.cs" />
-    <Compile Include="SeriesControl\SeriesParts\LineSeries\LineSeries.cs" />
-    <Compile Include="SeriesControl\SeriesParts\LineSeries\LineSeriesBase.cs" />
-    <Compile Include="SeriesControl\SeriesParts\LineSeries\PathSeries.cs" />
-    <Compile Include="SeriesControl\SeriesParts\ScatterSeries\IScatterGeometryBuilder.cs" />
-    <Compile Include="SeriesControl\SeriesParts\ScatterSeries\ScatterSeries.cs" />
-    <Compile Include="common\SlimItemsControl\SlimItemsControl.cs" />
-    <Compile Include="common\VisualTreeHelper2.cs" />
-    <Compile Include="SeriesControl\SeriesParts\ScatterSeries\ScatterGeometryBuilders\CustomGeometryBuilder.cs" />
-    <Compile Include="SeriesControl\SeriesParts\ScatterSeries\ScatterGeometryBuilders\EllipseGeometryBuilder.cs" />
-    <Compile Include="SeriesControl\SeriesParts\ScatterSeries\ScatterGeometryBuilders\RectangleGeometryBuilder.cs" />
-    <Compile Include="GridLineControl\GridLineControl.cs" />
-    <Compile Include="LegendControl\LegendControl.cs" />
-    <Compile Include="SeriesControl\SeriesParts\ScatterSeries\Scatter.cs" />
-    <Compile Include="Chart.cs" />
-    <Compile Include="SeriesControl\SeriesParts\LineSeries\SeriesGeomeryBuilders\SplineGeometryBuilder.cs" />
-    <Compile Include="SeriesControl\SeriesParts\LineSeries\SeriesGeomeryBuilders\PolylineGeometryBuilder.cs" />
-    <Compile Include="SeriesControl\SeriesParts\LineSeries\SeriesGeomeryBuilders\StepLineGeometryBuilder.cs" />
-    <Page Include="Axis\AxisStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GridLineControl\GridLineStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="LegendControl\LegendStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SeriesCollectionControl\SeriesCollectionControlStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SeriesControl\SeriesParts\AreaSeries\AreaSeriesStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SeriesControl\SeriesParts\BarSeries\BarSeriesStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SeriesControl\SeriesParts\LineSeries\LineSeriesStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SeriesControl\SeriesParts\ScatterSeries\ScatterSeriesStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SeriesControl\SeriesControlStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="common\SlimItemsControl\SlimItemsControlStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Themes\Generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="SeriesControl\SeriesControl.cs">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\CommonLib\CommonLib.csproj">
-      <Project>{2ac79084-def9-4164-8ace-bcb735047d96}</Project>
-      <Name>CommonLib</Name>
+     
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  
 </Project>

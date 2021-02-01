@@ -12,6 +12,7 @@ using MvvmCharting.Axis;
 using MvvmCharting.GridLine;
 using MvvmCharting.Series;
 using MvvmCharting.WpfFX.Series;
+using Range = MvvmCharting.Common.Range;
 
 namespace MvvmCharting.WpfFX
 {
