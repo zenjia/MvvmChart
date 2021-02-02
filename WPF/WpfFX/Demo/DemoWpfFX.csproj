@@ -1,9 +1,8 @@
 ﻿
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net472;net5-windows</TargetFrameworks>
+    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x64</Platforms>
     <LangVersion>latest</LangVersion>
@@ -13,28 +12,16 @@
     <Company />
     <Title>Demo</Title>
   </PropertyGroup>
-  
-
   <ItemGroup>
     <ProjectReference Include="..\..\..\DemoViewModel\DemoViewModel.csproj">
-   
-   
     </ProjectReference>
     <ProjectReference Include="..\MvvmChartWpfFX\MvvmChartWpfFX.csproj">
-     
-     
     </ProjectReference>
     <ProjectReference Include="..\..\..\CommonLib\CommonLib.csproj">
-     
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="image\Caribbean1.jpg" />
+    <PackageReference Include="ModernWpfUI" Version="0.9.2" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="ModernWpfUI">
-      <Version>0.9.2</Version>
-    </PackageReference>
-  </ItemGroup>
- 
+  
 </Project>

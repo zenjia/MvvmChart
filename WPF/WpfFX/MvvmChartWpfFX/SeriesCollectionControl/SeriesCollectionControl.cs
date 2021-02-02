@@ -8,7 +8,9 @@ using System.Windows;
 using System.Windows.Controls;
 using MvvmCharting.Common;
 using MvvmCharting.Series;
+#if NETCOREAPP
 using Range = MvvmCharting.Common.Range;
+#endif
 
 namespace MvvmCharting.WpfFX.Series
 {
