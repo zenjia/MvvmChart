@@ -1,49 +1,53 @@
-﻿<UserControl x:Class="DemoViewModel.GeneralDemoView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DemoViewModel"
-             mc:Ignorable="d"
-             xmlns:chart="http://schemas.mvvmchart.com/2020"
-             xmlns:ui="http://schemas.modernwpf.com/2019"
-             xmlns:demoViewModel="clr-namespace:DemoViewModel;assembly=DemoViewModel"
-             >
+﻿<UserControl
+    x:Class="DemoViewModel.GeneralDemoView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:chart="http://schemas.mvvmchart.com/2020"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:demoViewModel="clr-namespace:DemoViewModel;assembly=DemoViewModel"
+    xmlns:local="clr-namespace:DemoViewModel"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:series="clr-namespace:MvvmCharting.WpfFX.Series;assembly=MvvmChartWpfFX"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    mc:Ignorable="d">
     <UserControl.Resources>
 
-        <demoViewModel:DemoDataViewModel x:Key="DemoDataViewModel" SeriesCount="3" Max="30"/>
+        <demoViewModel:DemoDataViewModel
+            x:Key="DemoDataViewModel"
+            Max="30"
+            SeriesCount="3" />
 
-        <local:RangeToPointConverter x:Key="RangeToPointConverter"/>
+        <local:RangeToPointConverter x:Key="RangeToPointConverter" />
 
-        <!--This is the Default Scatter Style-->
+        <!--  This is the Default Scatter Style  -->
         <DataTemplate x:Key="ScatterDataTemplate">
-            <chart:Scatter Fill="{Binding Converter={StaticResource ItemToScatterFillConverter}}"/>
+            <series:Scatter Fill="{Binding Converter={StaticResource ItemToScatterFillConverter}}" />
         </DataTemplate>
 
-        <!--This change the Data from EllipseGeometry(default) to other geometry-->
+        <!--  This change the Data from EllipseGeometry(default) to other geometry  -->
         <DataTemplate x:Key="ScatterDataTemplate1">
 
-            <chart:Scatter Fill="Goldenrod" 
-                            Stretch="Uniform"
-                            Opacity="0.7"
-                            Width="20" 
-                            Height="20"
-                            Data="M14.800003,0L18,8.2000122 24.699997,2.4000244 22.300003,10.800018 31.300003,9.9000244 24.199997,15.400024 32,19.800018 23,20.200012 26.600006,28.200012 19.100006,23.400024 17.199997,32 14,23.800018 7.3000031,29.600006 9.6999969,21.200012 0.69999695,22.100006 7.8000031,16.600006 0,12.100006 9,11.700012 5.3999939,3.7000122 12.899994,8.5z">
-            </chart:Scatter>
+            <chart:Scatter
+                Width="20"
+                Height="20"
+                Data="M14.800003,0L18,8.2000122 24.699997,2.4000244 22.300003,10.800018 31.300003,9.9000244 24.199997,15.400024 32,19.800018 23,20.200012 26.600006,28.200012 19.100006,23.400024 17.199997,32 14,23.800018 7.3000031,29.600006 9.6999969,21.200012 0.69999695,22.100006 7.8000031,16.600006 0,12.100006 9,11.700012 5.3999939,3.7000122 12.899994,8.5z"
+                Fill="Goldenrod"
+                Opacity="0.7"
+                Stretch="Uniform" />
         </DataTemplate>
 
-        <!--This change the whole Template-->
+        <!--  This change the whole Template  -->
         <DataTemplate x:Key="ScatterDataTemplate2">
-            <chart:Scatter Fill="Sienna" 
-                                  Opacity="0.6">
+            <chart:Scatter Fill="Sienna" Opacity="0.6">
                 <chart:Scatter.Template>
                     <ControlTemplate TargetType="chart:Scatter">
-                        <Rectangle x:Name="PART_Rect" 
-                                   Fill="Red" 
-                                   Width="14" 
-                                   Height="14"
-                                   Opacity="0.7"
-                                   RenderTransformOrigin="0.5,0.5">
+                        <Rectangle
+                            x:Name="PART_Rect"
+                            Width="14"
+                            Height="14"
+                            Fill="Red"
+                            Opacity="0.7"
+                            RenderTransformOrigin="0.5,0.5">
                             <Rectangle.RenderTransform>
                                 <RotateTransform Angle="45" />
                             </Rectangle.RenderTransform>
@@ -51,14 +55,14 @@
 
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="PART_Rect" Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                                <Setter TargetName="PART_Rect" Property="RenderTransformOrigin" Value="0.5,0.5" />
                                 <Setter TargetName="PART_Rect" Property="RenderTransform">
                                     <Setter.Value>
                                         <ScaleTransform ScaleX="1.5" ScaleY="2" />
                                     </Setter.Value>
                                 </Setter>
-                                <Setter Property="Opacity" Value="0.8"/>
-                                <Setter TargetName="PART_Rect" Property="Fill" Value="SandyBrown"/>
+                                <Setter Property="Opacity" Value="0.8" />
+                                <Setter TargetName="PART_Rect" Property="Fill" Value="SandyBrown" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -66,93 +70,86 @@
             </chart:Scatter>
         </DataTemplate>
 
-        <local:IndexToBarBrushConverter x:Key="IndexToBarBrushConverter"/>
+        <local:IndexToBarBrushConverter x:Key="IndexToBarBrushConverter" />
 
-        <local:IndexToScatterTemplateConverter x:Key="IndexToScatterTemplateConverter"
-                                               ScatterDataTemplate="{StaticResource ScatterDataTemplate}"
-                                               ScatterDataTemplate1="{StaticResource ScatterDataTemplate1}"
-                                               ScatterDataTemplate2="{StaticResource ScatterDataTemplate2}"/>
+        <local:IndexToScatterTemplateConverter
+            x:Key="IndexToScatterTemplateConverter"
+            ScatterDataTemplate="{StaticResource ScatterDataTemplate}"
+            ScatterDataTemplate1="{StaticResource ScatterDataTemplate1}"
+            ScatterDataTemplate2="{StaticResource ScatterDataTemplate2}" />
         <DataTemplate x:Key="SeriesTemplate0" DataType="demoViewModel:SomePointList">
-            <chart:SeriesControl IndependentValueProperty="t"
-                                         DependentValueProperty="Y"
-                                         Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
-                                         IsScatterSeriesVisible="{Binding ShowScatterSeries}"
-                                         IsLineSeriesVisible="{Binding ShowLineSeries}"
-                                         IsAreaSeriesVisible="{Binding ShowAreaSeries}"
-                                         IsBarSeriesVisible="{Binding ShowBarSeries}"
-                                         ItemsSource="{Binding DataList}"
-                                         >
+            <chart:SeriesControl
+                DependentValueProperty="Y"
+                IndependentValueProperty="t"
+                IsAreaSeriesVisible="{Binding ShowAreaSeries}"
+                IsBarSeriesVisible="{Binding ShowBarSeries}"
+                IsLineSeriesVisible="{Binding ShowLineSeries}"
+                IsScatterSeriesVisible="{Binding ShowScatterSeries}"
+                ItemsSource="{Binding DataList}"
+                Visibility="{Binding IsVisible, Converter={StaticResource t2v}}">
                 <chart:SeriesControl.LineSeries>
-                    <chart:PolyLineSeries Opacity="0.8"
-                                           Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
-                                           StrokeThickness="1.5"
-                                           IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}">
-                    </chart:PolyLineSeries>
+                    <chart:PolyLineSeries
+                        IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
+                        Opacity="0.8"
+                        Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
+                        StrokeThickness="1.5" />
 
                 </chart:SeriesControl.LineSeries>
 
                 <chart:SeriesControl.AreaSeries>
-                    <chart:PolyLineAreaSeries Stroke="{Binding Index, Converter={StaticResource IndexToAreaSeriesFillConverter}}"
-                                           StrokeThickness="1.5"
-                                           IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}">
-                    </chart:PolyLineAreaSeries>
+                    <chart:PolyLineAreaSeries
+                        IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
+                        Stroke="{Binding Index, Converter={StaticResource IndexToAreaSeriesFillConverter}}"
+                        StrokeThickness="1.5" />
 
                 </chart:SeriesControl.AreaSeries>
 
                 <chart:SeriesControl.ScatterSeries>
-                    <chart:ScatterSeries ScatterTemplate="{Binding Index, Converter={StaticResource IndexToScatterTemplateConverter}}">
-                    </chart:ScatterSeries>
+                    <chart:ScatterSeries ScatterTemplate="{Binding Index, Converter={StaticResource IndexToScatterTemplateConverter}}" />
 
                 </chart:SeriesControl.ScatterSeries>
 
                 <chart:SeriesControl.BarSeries>
-                    <chart:BarSeries IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
-                                      BarBrush="{Binding Index, Converter={StaticResource IndexToBarBrushConverter}}">
-
-                    </chart:BarSeries>
+                    <chart:BarSeries BarBrush="{Binding Index, Converter={StaticResource IndexToBarBrushConverter}}" IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}" />
                 </chart:SeriesControl.BarSeries>
             </chart:SeriesControl>
         </DataTemplate>
 
 
         <DataTemplate x:Key="SeriesTemplate1" DataType="demoViewModel:SomePointList">
-            <chart:SeriesControl IndependentValueProperty="t"
-                                     DependentValueProperty="Y"
-                                     Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
-                                     IsScatterSeriesVisible="{Binding ShowScatterSeries}"
-                                     IsLineSeriesVisible="{Binding ShowLineSeries}"
-                                     IsAreaSeriesVisible="{Binding ShowAreaSeries}"
-                                     IsBarSeriesVisible="{Binding ShowBarSeries}"
-                                     ItemsSource="{Binding DataList}"
-                                     >
+            <chart:SeriesControl
+                DependentValueProperty="Y"
+                IndependentValueProperty="t"
+                IsAreaSeriesVisible="{Binding ShowAreaSeries}"
+                IsBarSeriesVisible="{Binding ShowBarSeries}"
+                IsLineSeriesVisible="{Binding ShowLineSeries}"
+                IsScatterSeriesVisible="{Binding ShowScatterSeries}"
+                ItemsSource="{Binding DataList}"
+                Visibility="{Binding IsVisible, Converter={StaticResource t2v}}">
                 <chart:SeriesControl.LineSeries>
-                    <chart:StepLineSeries Opacity="0.8"
-                                           Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
-                                           StrokeThickness="1.5"
-                                           IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}">
-                    </chart:StepLineSeries>
+                    <chart:StepLineSeries
+                        IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
+                        Opacity="0.8"
+                        Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
+                        StrokeThickness="1.5" />
 
                 </chart:SeriesControl.LineSeries>
 
                 <chart:SeriesControl.AreaSeries>
-                    <chart:StepLineAreaSeries Stroke="{Binding Index, Converter={StaticResource IndexToAreaSeriesFillConverter}}"
-                                               StrokeThickness="1.5"
-                                               IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}">
-                    </chart:StepLineAreaSeries>
+                    <chart:StepLineAreaSeries
+                        IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
+                        Stroke="{Binding Index, Converter={StaticResource IndexToAreaSeriesFillConverter}}"
+                        StrokeThickness="1.5" />
 
                 </chart:SeriesControl.AreaSeries>
 
                 <chart:SeriesControl.ScatterSeries>
-                    <chart:ScatterSeries ScatterTemplate="{Binding Index, Converter={StaticResource IndexToScatterTemplateConverter}}">
-                    </chart:ScatterSeries>
+                    <chart:ScatterSeries ScatterTemplate="{Binding Index, Converter={StaticResource IndexToScatterTemplateConverter}}" />
 
                 </chart:SeriesControl.ScatterSeries>
 
                 <chart:SeriesControl.BarSeries>
-                    <chart:BarSeries IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}" 
-                                      BarBrush="{Binding Index, Converter={StaticResource IndexToBarBrushConverter}}">
-
-                    </chart:BarSeries>
+                    <chart:BarSeries BarBrush="{Binding Index, Converter={StaticResource IndexToBarBrushConverter}}" IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}" />
                 </chart:SeriesControl.BarSeries>
             </chart:SeriesControl>
 
@@ -161,52 +158,48 @@
 
 
         <DataTemplate x:Key="SeriesTemplate2" DataType="demoViewModel:SomePointList">
-            <chart:SeriesControl IndependentValueProperty="t"
-                               DependentValueProperty="Y"
-                               Visibility="{Binding IsVisible, Converter={StaticResource t2v}}"
-                               IsScatterSeriesVisible="{Binding ShowScatterSeries}"
-                               IsLineSeriesVisible="{Binding ShowLineSeries}"
-                               IsAreaSeriesVisible="{Binding ShowAreaSeries}"
-                               IsBarSeriesVisible="{Binding ShowBarSeries}"
-                               ItemsSource="{Binding DataList}"
-                                     >
+            <chart:SeriesControl
+                DependentValueProperty="Y"
+                IndependentValueProperty="t"
+                IsAreaSeriesVisible="{Binding ShowAreaSeries}"
+                IsBarSeriesVisible="{Binding ShowBarSeries}"
+                IsLineSeriesVisible="{Binding ShowLineSeries}"
+                IsScatterSeriesVisible="{Binding ShowScatterSeries}"
+                ItemsSource="{Binding DataList}"
+                Visibility="{Binding IsVisible, Converter={StaticResource t2v}}">
                 <chart:SeriesControl.LineSeries>
-                    <chart:SplineSeries Opacity="0.8"
-                                     Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
-                                     StrokeThickness="1.5"
-                                     IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}">
-                    </chart:SplineSeries>
+                    <chart:SplineSeries
+                        IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
+                        Opacity="0.8"
+                        Stroke="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"
+                        StrokeThickness="1.5" />
 
                 </chart:SeriesControl.LineSeries>
 
                 <chart:SeriesControl.AreaSeries>
-                    <chart:SplineAreaSeries Stroke="{Binding Index, Converter={StaticResource IndexToAreaSeriesFillConverter}}"
-                                               StrokeThickness="1.5"
-                                               IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}">
-                    </chart:SplineAreaSeries>
+                    <chart:SplineAreaSeries
+                        IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
+                        Stroke="{Binding Index, Converter={StaticResource IndexToAreaSeriesFillConverter}}"
+                        StrokeThickness="1.5" />
 
                 </chart:SeriesControl.AreaSeries>
 
                 <chart:SeriesControl.ScatterSeries>
-                    <chart:ScatterSeries ScatterTemplate="{Binding Index, Converter={StaticResource IndexToScatterTemplateConverter}}">
-                    </chart:ScatterSeries>
+                    <chart:ScatterSeries ScatterTemplate="{Binding Index, Converter={StaticResource IndexToScatterTemplateConverter}}" />
 
                 </chart:SeriesControl.ScatterSeries>
 
                 <chart:SeriesControl.BarSeries>
-                    <chart:BarSeries IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
-                                      BarBrush="{Binding Index, Converter={StaticResource IndexToBarBrushConverter}}">
-
-
-                    </chart:BarSeries>
+                    <chart:BarSeries BarBrush="{Binding Index, Converter={StaticResource IndexToBarBrushConverter}}" IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}" />
                 </chart:SeriesControl.BarSeries>
             </chart:SeriesControl>
         </DataTemplate>
 
-        <local:SeriesTemplateSelector x:Key="SeriesTemplateSelector"
-                                      DataTemplate0="{StaticResource SeriesTemplate0}"
-                                      DataTemplate1="{StaticResource SeriesTemplate1}"
-                                      DataTemplate2="{StaticResource SeriesTemplate2}"/>
+        <local:SeriesTemplateSelector
+            x:Key="SeriesTemplateSelector"
+            DataTemplate0="{StaticResource SeriesTemplate0}"
+            DataTemplate1="{StaticResource SeriesTemplate1}"
+            DataTemplate2="{StaticResource SeriesTemplate2}" />
 
 
 
@@ -215,154 +208,153 @@
 
     <Grid DataContext="{Binding Source={StaticResource DemoDataViewModel}}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <chart:Chart Background="Bisque"
- 
-                     YBaseValue="{Binding YBaseValue}" 
-                     SeriesStackMode="{Binding SelectedStackMode}"
-                     XValuePadding="{Binding ChartValuePaddingViewModel.XValuePadding, Converter={StaticResource RangeToPointConverter}}"
-                     YValuePadding="{Binding ChartValuePaddingViewModel.YValuePadding, Converter={StaticResource RangeToPointConverter}}"
-                     IsSeriesCollectionChanging="{Binding Source={StaticResource DemoDataViewModel}, Path=IsModelChanging, Mode=TwoWay}"
-                     GridLineControlVisibility="{Binding ShowGridLine, Converter={StaticResource t2v}}"
-                     LegendVisibility="{Binding ShowLegend, Converter={StaticResource t2v}}"
-                            SeriesTemplateSelector="{StaticResource SeriesTemplateSelector}"
-                            SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource DemoDataViewModel}}">
+        <chart:Chart
+            Background="Bisque"
+            GridLineControlVisibility="{Binding ShowGridLine, Converter={StaticResource t2v}}"
+            IsSeriesCollectionChanging="{Binding Source={StaticResource DemoDataViewModel}, Path=IsModelChanging, Mode=TwoWay}"
+            LegendVisibility="{Binding ShowLegend, Converter={StaticResource t2v}}"
+            SeriesItemsSource="{Binding ItemsSourceList, Source={StaticResource DemoDataViewModel}}"
+            SeriesStackMode="{Binding SelectedStackMode}"
+            SeriesTemplateSelector="{StaticResource SeriesTemplateSelector}"
+            XValuePadding="{Binding ChartValuePaddingViewModel.XValuePadding, Converter={StaticResource RangeToPointConverter}}"
+            YBaseValue="{Binding YBaseValue}"
+            YValuePadding="{Binding ChartValuePaddingViewModel.YValuePadding, Converter={StaticResource RangeToPointConverter}}">
             <chart:Chart.XAxis>
-                <chart:NumericAxis Title="t values" Placement="{Binding SelectedXPlacement}"/>
+                <chart:NumericAxis Title="t values" Placement="{Binding SelectedXPlacement}" />
             </chart:Chart.XAxis>
             <chart:Chart.YAxis>
-                <chart:NumericAxis Title="Y values"  Placement="{Binding SelectedYPlacement}"/>
+                <chart:NumericAxis Title="Y values" Placement="{Binding SelectedYPlacement}" />
             </chart:Chart.YAxis>
 
             <chart:Chart.LegendItemTemplate>
                 <DataTemplate DataType="demoViewModel:SomePointList">
-                    <chart:LegendItemControl 
-                        IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}"
-                        IndicatorBrush="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}"/>
+                    <chart:LegendItemControl IndicatorBrush="{Binding Index, Converter={StaticResource IndexToStrokeConverter}}" IsHighlighted="{Binding IsHighlighted, Mode=TwoWay}" />
                 </DataTemplate>
             </chart:Chart.LegendItemTemplate>
 
             <chart:Chart.BackgroundElement>
-                <Image Source="../image/Caribbean1.jpg" 
-                       Stretch="Fill" 
-                       Visibility="{Binding ShowBackgroundImage, Converter={StaticResource t2v}}"/>
+                <Image
+                    Source="../image/Caribbean1.jpg"
+                    Stretch="Fill"
+                    Visibility="{Binding ShowBackgroundImage, Converter={StaticResource t2v}}" />
             </chart:Chart.BackgroundElement>
         </chart:Chart>
 
-        <StackPanel Grid.Row="1" 
-                    Margin="10"
-                    Orientation="Horizontal">
+        <StackPanel
+            Grid.Row="1"
+            Margin="10"
+            Orientation="Horizontal">
             <StackPanel.Resources>
                 <Style TargetType="GroupBox">
-                    <Setter Property="Margin" Value="7"/>
-                    <Setter Property="Padding" Value="5"/>
+                    <Setter Property="Margin" Value="7" />
+                    <Setter Property="Padding" Value="5" />
                 </Style>
             </StackPanel.Resources>
 
             <GroupBox Header="Series Settings">
                 <StackPanel>
-                    <CheckBox Content="Show ScatterSeries"
-                              IsChecked="{Binding ShowScatterSeries, Mode=TwoWay}"/>
-                    <CheckBox Content="Show LineSeries"
-                              IsChecked="{Binding ShowLineSeries, Mode=TwoWay}"/>
-                    <CheckBox Content="Show AreaSeries"
-                              IsChecked="{Binding ShowAreaSeries, Mode=TwoWay}"/>
-                    <CheckBox Content="Show BarSeries"
-                              IsChecked="{Binding ShowBarSeries, Mode=TwoWay}"/>
+                    <CheckBox Content="Show ScatterSeries" IsChecked="{Binding ShowScatterSeries, Mode=TwoWay}" />
+                    <CheckBox Content="Show LineSeries" IsChecked="{Binding ShowLineSeries, Mode=TwoWay}" />
+                    <CheckBox Content="Show AreaSeries" IsChecked="{Binding ShowAreaSeries, Mode=TwoWay}" />
+                    <CheckBox Content="Show BarSeries" IsChecked="{Binding ShowBarSeries, Mode=TwoWay}" />
                 </StackPanel>
             </GroupBox>
 
             <GroupBox Header="General Settings">
                 <StackPanel>
 
-                    <CheckBox Content="show GridLine"
-                              IsChecked="{Binding ShowGridLine, Mode=TwoWay}"/>
+                    <CheckBox Content="show GridLine" IsChecked="{Binding ShowGridLine, Mode=TwoWay}" />
 
-                    <CheckBox Content="show Legend"
-                              IsChecked="{Binding ShowLegend, Mode=TwoWay}"/>
+                    <CheckBox Content="show Legend" IsChecked="{Binding ShowLegend, Mode=TwoWay}" />
 
-                    <CheckBox Content="show back ground image"
-                              IsChecked="{Binding ShowBackgroundImage, Mode=TwoWay}"/>
+                    <CheckBox Content="show back ground image" IsChecked="{Binding ShowBackgroundImage, Mode=TwoWay}" />
                 </StackPanel>
             </GroupBox>
 
 
             <GroupBox Header="Axis Placement">
                 <StackPanel>
-                    <TextBlock VerticalAlignment="Center" Margin="6,6,6,0" Text="X Axis placement: "/>
-                    <ComboBox Width="100"
-                              Margin="6,0,6,6"
-                              HorizontalAlignment="Left"
-                              ItemsSource="{Binding XAxisPlacements}"
-                              SelectedItem="{Binding SelectedXPlacement, Mode=TwoWay}"/>
+                    <TextBlock
+                        Margin="6,6,6,0"
+                        VerticalAlignment="Center"
+                        Text="X Axis placement: " />
+                    <ComboBox
+                        Width="100"
+                        Margin="6,0,6,6"
+                        HorizontalAlignment="Left"
+                        ItemsSource="{Binding XAxisPlacements}"
+                        SelectedItem="{Binding SelectedXPlacement, Mode=TwoWay}" />
 
-                    <TextBlock VerticalAlignment="Center" Margin="6,6,6,0" Text="Y Axis placement: "/>
-                    <ComboBox Width="100"
-                              Margin="6,0,6,6"
-                              HorizontalAlignment="Left"
-                              ItemsSource="{Binding YAxisPlacements}"
-                              SelectedItem="{Binding SelectedYPlacement, Mode=TwoWay}"/>
+                    <TextBlock
+                        Margin="6,6,6,0"
+                        VerticalAlignment="Center"
+                        Text="Y Axis placement: " />
+                    <ComboBox
+                        Width="100"
+                        Margin="6,0,6,6"
+                        HorizontalAlignment="Left"
+                        ItemsSource="{Binding YAxisPlacements}"
+                        SelectedItem="{Binding SelectedYPlacement, Mode=TwoWay}" />
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="Value Padding"
-                      DataContext="{Binding ChartValuePaddingViewModel}">
+            <GroupBox DataContext="{Binding ChartValuePaddingViewModel}" Header="Value Padding">
                 <StackPanel>
                     <StackPanel.Resources>
                         <Style TargetType="ui:NumberBox">
-                            <Setter Property="LargeChange" Value="0.5"/>
-                            <Setter Property="SmallChange" Value="0.1"/>
-                            <Setter Property="SpinButtonPlacementMode" Value="Inline"/>
+                            <Setter Property="LargeChange" Value="0.5" />
+                            <Setter Property="SmallChange" Value="0.1" />
+                            <Setter Property="SpinButtonPlacementMode" Value="Inline" />
                         </Style>
                     </StackPanel.Resources>
-                    <TextBlock Text="X Value Padding"/>
-                    <ui:NumberBox Header="Min Value Padding" 
-                                  Value="{Binding XMinValuePadding, Mode=TwoWay}"/>
-                    <ui:NumberBox Header="Max Value Padding" 
-                                  Value="{Binding XMaxValuePadding, Mode=TwoWay}"/>
+                    <TextBlock Text="X Value Padding" />
+                    <ui:NumberBox Header="Min Value Padding" Value="{Binding XMinValuePadding, Mode=TwoWay}" />
+                    <ui:NumberBox Header="Max Value Padding" Value="{Binding XMaxValuePadding, Mode=TwoWay}" />
 
-                    <TextBlock Margin="0,8,0,0" 
-                               Text="Y Value Padding"/>
-                    <ui:NumberBox Header="Min Value Padding" 
-                                  Value="{Binding YMinValuePadding, Mode=TwoWay}"/>
-                    <ui:NumberBox Header="Max Value Padding" 
-                                  Value="{Binding YMaxValuePadding, Mode=TwoWay}"/>
+                    <TextBlock Margin="0,8,0,0" Text="Y Value Padding" />
+                    <ui:NumberBox Header="Min Value Padding" Value="{Binding YMinValuePadding, Mode=TwoWay}" />
+                    <ui:NumberBox Header="Max Value Padding" Value="{Binding YMaxValuePadding, Mode=TwoWay}" />
 
                 </StackPanel>
             </GroupBox>
-            
+
             <StackPanel Margin="10,20">
-                <ui:NumberBox Header="Series count" 
-                              Value="{Binding SeriesCount, Mode=TwoWay}" 
-                              SmallChange="1" 
-                              LargeChange="1"
-                              SpinButtonPlacementMode="Inline"/>
+                <ui:NumberBox
+                    Header="Series count"
+                    LargeChange="1"
+                    SmallChange="1"
+                    SpinButtonPlacementMode="Inline"
+                    Value="{Binding SeriesCount, Mode=TwoWay}" />
 
-                <ui:NumberBox Header="Maximum t value" 
-                              Margin="0,15,0,0"
-                              Value="{Binding Max, Mode=TwoWay}" 
-                              SmallChange="1" 
-                              LargeChange="1"
-                              Minimum="0"
-                              SpinButtonPlacementMode="Inline"/>
+                <ui:NumberBox
+                    Margin="0,15,0,0"
+                    Header="Maximum t value"
+                    LargeChange="1"
+                    Minimum="0"
+                    SmallChange="1"
+                    SpinButtonPlacementMode="Inline"
+                    Value="{Binding Max, Mode=TwoWay}" />
 
-                <ui:NumberBox Header="Minimum t value"  
-                              Value="{Binding Min, Mode=TwoWay}" 
-                              SmallChange="1" 
-                              LargeChange="1"
-                              Minimum="0"
-                              SpinButtonPlacementMode="Inline"/>
+                <ui:NumberBox
+                    Header="Minimum t value"
+                    LargeChange="1"
+                    Minimum="0"
+                    SmallChange="1"
+                    SpinButtonPlacementMode="Inline"
+                    Value="{Binding Min, Mode=TwoWay}" />
 
-                <ui:NumberBox Header="YBaseValue"  
-                              Value="{Binding YBaseValue, Mode=TwoWay}" 
-                              SmallChange="0.05" 
-                              LargeChange="0.1"
-                              SpinButtonPlacementMode="Inline"/>
-                
- 
+                <ui:NumberBox
+                    Header="YBaseValue"
+                    LargeChange="0.1"
+                    SmallChange="0.05"
+                    SpinButtonPlacementMode="Inline"
+                    Value="{Binding YBaseValue, Mode=TwoWay}" />
+
+
             </StackPanel>
 
 

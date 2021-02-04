@@ -12,6 +12,9 @@ using MvvmCharting.Axis;
 using MvvmCharting.GridLine;
 using MvvmCharting.Series;
 using MvvmCharting.WpfFX.Series;
+#if NETCOREAPP
+using Range = MvvmCharting.Common.Range;
+#endif
 
 namespace MvvmCharting.WpfFX
 {

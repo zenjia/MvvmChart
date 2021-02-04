@@ -6,10 +6,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Media;
 using MvvmCharting.Common;
 using MvvmCharting.Series;
+#if NETCOREAPP
+using Range = MvvmCharting.Common.Range;
+#endif
 
 namespace MvvmCharting.WpfFX.Series
 {

@@ -1,170 +1,27 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{02960B4D-ACC3-4B6D-93D6-E578F33655E0}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Demo.WpfFX</RootNamespace>
-    <AssemblyName>DemoWpfFX</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
+    <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x64</Platforms>
+    <LangVersion>latest</LangVersion>
+    <Copyright>Copyright ©  2020</Copyright>
+    <PackageId>DemoWpfFX</PackageId>
+    <Product>Demo</Product>
+    <Company />
+    <Title>Demo</Title>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="netstandard" />
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-  </ItemGroup>
-  <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="View\CategoryAxisDemoView.xaml.cs">
-      <DependentUpon>CategoryAxisDemoView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Converters\GeometryBuilderConverter.cs" />
-    <Compile Include="Converters\ItemToScatterFillConverter.cs" />
-    <Compile Include="View\SeriesCustomizingDemoView.xaml.cs">
-      <DependentUpon>SeriesCustomizingDemoView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Converters\IndexToScatterTemplateConverter.cs" />
-    <Compile Include="View\ScatterCustomizationDemoView.xaml.cs">
-      <DependentUpon>ScatterCustomizationDemoView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\DateTimeDemoView.xaml.cs">
-      <DependentUpon>DateTimeDemoView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\BigDataTestView.xaml.cs">
-      <DependentUpon>BigDataTestView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\GeneralDemoView.xaml.cs">
-      <DependentUpon>GeneralDemoView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Converters\SeriesTemplateSelector.cs" />
-    <Page Include="View\CategoryAxisDemoView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\SeriesCustomizingDemoView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\ScatterCustomizationDemoView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\DateTimeDemoView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\BigDataTestView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\GeneralDemoView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\DemoViewModel\DemoViewModel.csproj">
-      <Project>{b5633cd3-cb1d-45fa-a219-84c540e8e46c}</Project>
-      <Name>DemoViewModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\MvvmChartWpfFX\MvvmChartWpfFX.csproj">
-      <Project>{28c40709-2e83-4a1f-be8a-eba5ab886012}</Project>
-      <Name>MvvmChartWpfFX</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\CommonLib\CommonLib.csproj">
-      <Project>{2ac79084-def9-4164-8ace-bcb735047d96}</Project>
-      <Name>CommonLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="image\Caribbean1.jpg" />
+    <PackageReference Include="ModernWpfUI" Version="0.9.2" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="ModernWpfUI">
-      <Version>0.9.2</Version>
-    </PackageReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  
 </Project>

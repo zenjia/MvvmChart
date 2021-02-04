@@ -13,7 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MvvmCharting.Common;
-
+#if NETCOREAPP
+using Range = MvvmCharting.Common.Range;
+#endif
 namespace DemoViewModel
 {
     public class RangeToPointConverter : IValueConverter

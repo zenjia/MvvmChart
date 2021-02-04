@@ -6,4 +6,10 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\CommonLib\CommonLib.csproj" />
+    <ProjectReference Include="..\..\..\DemoViewModel\DemoViewModel.csproj" />
+    <ProjectReference Include="..\..\WpfFX\MvvmChartWpfFX\MvvmChartWpfFX.csproj" />
+  </ItemGroup>
+
 </Project>
